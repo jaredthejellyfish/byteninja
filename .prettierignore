@@ -26,7 +26,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
-.env
+
 # vercel
 .vercel
 
@@ -164,3 +164,17 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+.VS*
+
+prisma/
+
+*.json
+
+.*
+
+*.yaml
+
+*.md
+
+*.d.ts
