@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect } from 'react';
+import React from 'react';
 
 import { set, reset, CurrentCourse } from '@/redux/features/currentCourseSlice';
 import { useAppDispatch } from '@/redux/hooks';
-import React from 'react';
 
 type Props = { currentCourse: CurrentCourse };
 

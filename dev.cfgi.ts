@@ -1,6 +1,6 @@
-import { task, command, runs, commandLive } from 'cfgi';
+import { task, command, runs, commandLive, TaskConfig } from 'cfgi';
 
-const options = { silent: false, exclude: 'none' };
+const options: TaskConfig = { silent: false, exclude: 'none' };
 
 task(
   'dev',

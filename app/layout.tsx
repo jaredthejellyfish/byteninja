@@ -2,6 +2,7 @@ import { AuthOptions, getServerSession } from 'next-auth';
 import { Inter } from 'next/font/google';
 import type { Metadata } from 'next';
 import React from 'react';
+
 import KeyboardShortcuts from '@/components/keyboard-shortcuts';
 import Navigation from '@/components/navigation/navigation';
 import { ThemeProvider } from '@/components/theme-provider';
