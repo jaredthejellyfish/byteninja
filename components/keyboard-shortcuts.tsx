@@ -3,10 +3,9 @@
 import { useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
+import React from 'react';
 
-type Props = {};
-
-const KeyboardShortcuts = (props: Props) => {
+const KeyboardShortcuts = () => {
   const router = useRouter();
 
   const handleKeyPress = useCallback((event: KeyboardEvent) => {
@@ -32,7 +31,7 @@ const KeyboardShortcuts = (props: Props) => {
       event.preventDefault(); // Prevent the default action
       router.push('/');
     }
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     // attach the event listener

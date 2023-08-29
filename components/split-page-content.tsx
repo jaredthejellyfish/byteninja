@@ -1,10 +1,6 @@
 import React from 'react';
 
-type Props = {
-  children: React.ReactNode;
-};
-
-const SplitPageContent = (props: Props) => {
+const SplitPageContent = () => {
   return <div>SplitPageContent</div>;
 };
 

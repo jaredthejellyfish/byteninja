@@ -1,8 +1,6 @@
 import React from 'react';
 
-type Props = {};
-
-const SiteLogo = (props: Props) => {
+const SiteLogo = () => {
   return <div>SiteLogo</div>;
 };
 

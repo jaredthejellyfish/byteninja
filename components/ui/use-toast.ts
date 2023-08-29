@@ -124,6 +124,7 @@ export const reducer = (state: State, action: Action): State => {
   }
 };
 
+// eslint-disable-next-line no-unused-vars
 const listeners: Array<(state: State) => void> = [];
 
 let memoryState: State = { toasts: [] };
@@ -167,20 +168,20 @@ function toast({ ...props }: Toast) {
 }
 
 function useToast() {
-  const [state, setState] = React.useState<State>(memoryState);
+  const [toasts, setToasts] = React.useState<State>(memoryState);
 
   React.useEffect(() => {
-    listeners.push(setState);
+    listeners.push(setToasts);
     return () => {
-      const index = listeners.indexOf(setState);
+      const index = listeners.indexOf(setToasts);
       if (index > -1) {
         listeners.splice(index, 1);
       }
     };
-  }, [state]);
+  }, []);
 
   return {
-    ...state,
+    ...toasts,
     toast,
     dismiss: (toastId?: string) => dispatch({ type: 'DISMISS_TOAST', toastId }),
   };

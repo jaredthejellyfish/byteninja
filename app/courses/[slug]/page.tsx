@@ -3,7 +3,7 @@ import React from 'react';
 import { CurrentCourse } from '@/redux/features/currentCourseSlice';
 import PageContainer from '@/components/page-container';
 import UpdateCourseRedux from './update-course-redux';
-import { prisma } from '@/lib/prisma';
+import prisma from '@/lib/prisma';
 
 type Props = { params: { slug: string } };
 

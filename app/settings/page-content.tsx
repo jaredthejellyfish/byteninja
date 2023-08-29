@@ -9,6 +9,7 @@ import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils/cn';
+
 const GeneralFormSchema = z.object({
   id: z.string(),
   name: z.string().max(32, { message: 'Please use 32 characters at maximum.' }),
@@ -21,6 +22,7 @@ const GeneralFormSchema = z.object({
 
 type Props = {
   user: UserExtendedSettings;
+  // eslint-disable-next-line no-unused-vars
   action: (formData: z.infer<typeof GeneralFormSchema>) => void;
 };
 
@@ -33,7 +35,8 @@ const GeneralSettingsPage = ({
   action,
 }: {
   user: UserExtendedSettings;
-  action: (FormData: z.infer<typeof GeneralFormSchema>) => void;
+  // eslint-disable-next-line no-unused-vars
+  action: (formData: z.infer<typeof GeneralFormSchema>) => void;
 }) => {
   const FormSchema = GeneralFormSchema;
 
@@ -238,22 +241,28 @@ export default function SettingsMenu(props: Props) {
 
   return (
     <div className="flex flex-row px-5 sm:px-10 lg:px-28">
-      <div id="left" className="flex flex-col w-1/4  mx-[-12px] gap-0.5">
+      <div
+        id="left"
+        className="flex flex-col w-full sm:w-1/4  mx-[-12px] gap-0.5"
+      >
         {settingsPages.map((page) => (
-          <div
-            className={cn(
-              'flex flex-row text-neutral-500 transition-all min-w-[150px] hover:bg-neutral-500/30 py-2 px-3 rounded-sm w-4/5 font-light cursor-pointer text-base',
-              activePage === page.name &&
-                'text-black dark:text-neutral-50 font-medium',
-            )}
-            onClick={() => setActivePage(page.name)}
-            key={page.name}
-          >
-            {page.name}
-          </div>
+          <>
+            <div
+              className={cn(
+                'flex flex-row text-neutral-500 transition-all w-screen sm:min-w-[150px] hover:bg-neutral-500/30 py-2 px-3 rounded-sm sm:w-4/5 font-light cursor-pointer text-base',
+                activePage === page.name &&
+                  'text-black dark:text-neutral-50 font-medium',
+              )}
+              onClick={() => setActivePage(page.name)}
+              key={page.name.split(' ').join('-')}
+            >
+              {page.name}
+            </div>
+            <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
+          </>
         ))}
       </div>
-      <div id="right" className="w-3/4">
+      <div id="right" className="hidden sm:w-3/4 sm:block">
         {settingsPages.find((page) => page.name === activePage)?.component}
       </div>
     </div>

@@ -1,11 +1,10 @@
 import { AuthOptions, getServerSession } from 'next-auth';
 import { Inter } from 'next/font/google';
 import type { Metadata } from 'next';
-
+import React from 'react';
 import KeyboardShortcuts from '@/components/keyboard-shortcuts';
 import Navigation from '@/components/navigation/navigation';
 import { ThemeProvider } from '@/components/theme-provider';
-import PageContainer from '@/components/page-container';
 import { Toaster } from '@/components/ui/toaster';
 import { authOptions } from '@/auth/authOptions';
 import { ReduxProvider } from '@/redux/provider';

@@ -1,7 +1,7 @@
 import { AuthOptions, getServerSession } from 'next-auth';
 
 import { authOptions } from '@/auth/authOptions';
-import { prisma } from '../prisma';
+import prisma from '../prisma';
 
 function generateIncludes(
   includes: 'settings' | 'courses' | 'default' = 'default',
@@ -59,11 +59,14 @@ export async function getServerUser(
     } else {
       throw new Error('User not found');
     }
-  } catch (e: any) {
+  } catch (e: unknown) {
+    const error = e as Error;
+    const message = error.message || 'Error getting user';
+
     return {
       user: null,
       isError: true,
-      error: e.message || 'Error getting user',
+      error: message || 'Error getting user',
     };
   }
 }

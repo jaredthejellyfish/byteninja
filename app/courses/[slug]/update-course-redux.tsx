@@ -3,12 +3,12 @@
 import { useEffect } from 'react';
 
 import { set, reset, CurrentCourse } from '@/redux/features/currentCourseSlice';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { useAppDispatch } from '@/redux/hooks';
+import React from 'react';
 
 type Props = { currentCourse: CurrentCourse };
 
 const UpdateCourseRedux = (props: Props) => {
-  const currentCourse = useAppSelector((state) => state.currentCourseReducer);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -16,9 +16,9 @@ const UpdateCourseRedux = (props: Props) => {
     return () => {
       dispatch(reset());
     };
-  }, [props.currentCourse]);
+  }, [props.currentCourse, dispatch]);
 
-  return <></>
+  return <></>;
 };
 
 export default UpdateCourseRedux;

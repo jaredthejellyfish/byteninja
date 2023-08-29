@@ -5,9 +5,7 @@ import { getServerUser } from '@/lib/utils/getServerUser';
 import PageContainer from '@/components/page-container';
 import CourseCard from '@/components/course-card';
 
-type Props = {};
-
-const Profile = async (props: Props) => {
+const Profile = async () => {
   const { user, isError, error } = await getServerUser('courses');
 
   if (isError && error === 'Session not found') {

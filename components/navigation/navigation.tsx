@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
@@ -38,10 +38,10 @@ const NavigationLeftDisplay = () => {
 
   switch (pathname[0]) {
     case 'courses':
-      if (!!currentCourse.name)
+      if (currentCourse.name)
         return (
           <div className="flex flex-row items-center justify-center gap-1">
-            {!!currentCourse.image ? (
+            {currentCourse.image ? (
               <Image
                 className="rounded-full"
                 src={currentCourse.image}
@@ -101,7 +101,7 @@ const Navigation = () => {
     } else {
       dispatch(reset());
     }
-  }, [status]);
+  }, [status, dispatch, session]);
 
   return (
     <nav className="shadow border-b fixed top-0 left-0 right-0 border-b-neutral-800/20 h-[52px] dark:border-b-neutral-800 dark:bg-neutral-950 flex flex-row items-center px-5 lg:px-11 justify-between">

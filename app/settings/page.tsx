@@ -7,16 +7,14 @@ import { UserExtendedSettings } from '@/lib/types/types';
 import PageContainer from '@/components/page-container';
 import { Separator } from '@/components/ui/separator';
 import SettingsMenu from './page-content';
-import { prisma } from '@/lib/prisma';
+import prisma from '@/lib/prisma';
 
-type Props = {};
-
-const UserSettings = async (props: Props) => {
+const UserSettings = async () => {
   const { user, isError, error } = await getServerUser('settings');
 
-  console.log('render');
 
-  async function editUser(formData: any) {
+
+  async function editUser(formData: UserExtendedSettings) {
     'use server';
 
     console.log(formData);
