@@ -40,7 +40,7 @@ export function ProfileDropdown(props: Props) {
       <DropdownMenuTrigger asChild>
         <div className="pt-0.5">
           <Skeleton
-            className="h-[32px] w-[32px] rounded-full ml-5 border-zinc-800 border"
+            className="h-[32px] w-[32px] rounded-full ml-5 border-neutral-800 border"
             hidden={!!props.image || !props.authStatus}
           />
 
@@ -49,7 +49,7 @@ export function ProfileDropdown(props: Props) {
             src={props.image || ProfileIcon}
             hidden={!props.image && props.authStatus}
             className={cn(
-              'rounded-full ml-5 dark:border-zinc-800 border-zinc-300 border',
+              'rounded-full ml-5 dark:border-neutral-800 border-neutral-300 border',
               !props.authStatus && 'p-1 dark:bg-white',
             )}
             width={35}

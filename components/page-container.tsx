@@ -12,8 +12,8 @@ const PageContainer = (props: Props) => {
   return (
     <main
       className={cn(
-        className,
         'min-h-screen dark:bg-neutral-900/80 p-5 lg:px-10 pt-[72px]',
+        className,
       )}
     >
       {children}

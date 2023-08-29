@@ -17,6 +17,8 @@ const UpdateCourseRedux = (props: Props) => {
       dispatch(reset());
     };
   }, [props.currentCourse]);
+
+  return <></>
 };
 
 export default UpdateCourseRedux;

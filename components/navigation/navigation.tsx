@@ -101,15 +101,15 @@ const Navigation = () => {
     } else {
       dispatch(reset());
     }
-  }, [status, session, dispatch]);
+  }, [status]);
 
   return (
-    <nav className="shadow border-b fixed top-0 left-0 right-0 border-b-zinc-800/20 h-[52px] dark:border-b-zinc-800 dark:bg-zinc-950 flex flex-row items-center px-5 lg:px-11 justify-between">
+    <nav className="shadow border-b fixed top-0 left-0 right-0 border-b-neutral-800/20 h-[52px] dark:border-b-neutral-800 dark:bg-neutral-950 flex flex-row items-center px-5 lg:px-11 justify-between">
       <div id="nav-left" className="flex w-2/3 pt-0.5">
         <NavigationLeftDisplay />
       </div>
       <div id="nav-right" className="flex items-center justify-end w-1/3">
-        <DarkModeToggle className="mt-0.5 dark:bg-zinc-950 dark:text-white bg-white text-black hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-black border border-zinc-200 dark:border-zinc-800 focus-visible:dark:border-zinc-800" />
+        <DarkModeToggle className="mt-0.5 dark:bg-neutral-950 dark:text-white bg-white text-black hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-black border border-neutral-200 dark:border-neutral-800 focus-visible:dark:border-neutral-800" />
         <ProfileDropdown
           authStatus={status === 'authenticated'}
           image={auth?.user?.image ?? ''}
