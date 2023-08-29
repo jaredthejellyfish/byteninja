@@ -1,26 +1,122 @@
 'use client';
 
-import { signIn, signOut, useSession } from 'next-auth/react';
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
+import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import Image from 'next/image';
+import Link from 'next/link';
 
-import { Button } from '../ui/button';
+import { set, reset, AuthState } from '@/redux/features/authSlice';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import SiteLogoLight from '@/public/site-logo-light.png';
+import SiteLogoDark from '@/public/site-logo-dark.png';
+import { ProfileDropdown } from './profile-dropdown';
+import { DarkModeToggle } from './darkmode-toggle';
 
-type Props = {};
+const SiteLogo = () => (
+  <Link href="/">
+    <Image
+      className="block dark:hidden"
+      src={SiteLogoLight}
+      width={50}
+      height={50}
+      alt="logo"
+    />
+    <Image
+      className="hidden dark:block"
+      src={SiteLogoDark}
+      width={50}
+      height={50}
+      alt="logo"
+    />
+  </Link>
+);
 
-const Navigation = (props: Props) => {
+const NavigationLeftDisplay = () => {
+  const currentCourse = useAppSelector((state) => state.currentCourseReducer);
+  const pathname = usePathname().split('/').filter(Boolean);
+
+  switch (pathname[0]) {
+    case 'courses':
+      if (!!currentCourse.name)
+        return (
+          <div className="flex flex-row items-center justify-center gap-1">
+            {!!currentCourse.image ? (
+              <Image
+                className="rounded-full"
+                src={currentCourse.image}
+                width={50}
+                height={50}
+                alt="logo"
+              />
+            ) : (
+              <SiteLogo />
+            )}
+            <h2 className="font-medium">{currentCourse.name}</h2>
+          </div>
+        );
+      else
+        return (
+          <div className="flex flex-row items-center justify-center gap-1">
+            <SiteLogo />
+            <h2 className="font-medium">Courses</h2>
+          </div>
+        );
+
+    case 'settings':
+      return (
+        <div className="flex flex-row items-center justify-center gap-1">
+          <SiteLogo />
+          <h2 className="font-medium">Settings</h2>
+        </div>
+      );
+
+    case undefined: // Home
+      return (
+        <div className="flex flex-row items-center justify-center gap-1">
+          <SiteLogo />
+          <h2 className="font-medium">Home</h2>
+        </div>
+      );
+
+    default:
+      return (
+        <div className="flex flex-row items-center justify-center gap-1">
+          <SiteLogo />
+          <h2 className="font-medium">Learncode</h2>
+        </div>
+      );
+  }
+};
+
+const Navigation = () => {
   const { data: session, status } = useSession();
 
-  return (
-    <div>
-      <Button onClick={() => signIn()} disabled={status === 'authenticated'}>
-        sign in
-      </Button>
-      <Button onClick={() => signOut()} disabled={status !== 'authenticated'}>
-        sign out
-      </Button>
+  const auth = useAppSelector((state) => state.authReducer);
+  const dispatch = useAppDispatch();
 
-      {JSON.stringify(session, null, 2)}
-    </div>
+  useEffect(() => {
+    if (status === 'authenticated' && session) {
+      dispatch(set(session as AuthState));
+    } else {
+      dispatch(reset());
+    }
+  }, [status, session, dispatch]);
+
+  return (
+    <nav className="shadow border-b fixed top-0 left-0 right-0 border-b-zinc-800/20 h-[52px] dark:border-b-zinc-800 dark:bg-zinc-950 flex flex-row items-center px-5 lg:px-11 justify-between">
+      <div id="nav-left" className="flex w-2/3 pt-0.5">
+        <NavigationLeftDisplay />
+      </div>
+      <div id="nav-right" className="flex items-center justify-end w-1/3">
+        <DarkModeToggle className="mt-0.5 dark:bg-zinc-950 dark:text-white bg-white text-black hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-black border border-zinc-200 dark:border-zinc-800 focus-visible:dark:border-zinc-800" />
+        <ProfileDropdown
+          authStatus={status === 'authenticated'}
+          image={auth?.user?.image ?? ''}
+          name={auth?.user?.name ?? ''}
+        />
+      </div>
+    </nav>
   );
 };
 

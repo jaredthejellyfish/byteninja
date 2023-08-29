@@ -1,11 +1,18 @@
-import { AuthOptions, getServerSession } from 'next-auth';
-import Image from 'next/image';
+import { redirect } from 'next/navigation';
 
-import { ModeToggle } from '@/components/darkmode-toggle';
-import { authOptions } from '@/auth/authOptions';
-import { Button } from '@/components/ui/button';
+import { getServerUser } from '@/lib/utils/getServerUser';
+import PageContainer from '@/components/page-container';
 
 export default async function Home() {
-  const session = await getServerSession(authOptions as AuthOptions);
-  return <main className="">Hi yes hello? {JSON.stringify(session)}</main>;
+  const { user, isError, error } = await getServerUser();
+
+  if (isError && error === 'Session not found') {
+    redirect('/api/auth/signin');
+  }
+
+  return (
+    <PageContainer>
+      <pre id="json-output">Home: {JSON.stringify(user, null, 2)}</pre>
+    </PageContainer>
+  );
 }

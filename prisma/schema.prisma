@@ -39,17 +39,30 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String        @id @default(cuid())
   name          String?
-  username      String?   @unique
-  email         String?   @unique
+  username      String?       @unique
+  email         String?       @unique
   emailVerified DateTime?
   image         String?
   password      String?
+  settings      UserSettings?
   accounts      Account[]
   sessions      Session[]
+  courses       Course[]
 
   @@map("users")
+}
+
+model UserSettings {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  emailNotifications Boolean @default(false)
+  pushNotifications  Boolean @default(false)
+
+  @@map("user_settings")
 }
 
 model VerificationToken {
@@ -59,4 +72,28 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verification_tokens")
+}
+
+model Course {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String
+  image       String?
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  lessons     Lesson[]
+
+  @@map("courses")
+}
+
+model Lesson {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  description String
+  image       String?
+  course      Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId    String
+
+  @@map("lessons")
 }
