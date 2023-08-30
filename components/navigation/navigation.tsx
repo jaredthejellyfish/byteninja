@@ -104,7 +104,7 @@ const Navigation = () => {
   }, [status, dispatch, session]);
 
   return (
-    <nav className="shadow border-b fixed top-0 left-0 right-0 border-b-neutral-800/20 h-[52px] dark:border-b-neutral-800 dark:bg-neutral-950 flex flex-row items-center px-5 lg:px-11 justify-between">
+    <nav className="shadow border-b fixed top-0 left-0 right-0 border-b-neutral-800/20 h-[52px] dark:border-b-neutral-800 dark:bg-neutral-950 bg-white flex flex-row items-center px-5 lg:px-11 justify-between">
       <div id="nav-left" className="flex w-2/3 pt-0.5">
         <NavigationLeftDisplay />
       </div>

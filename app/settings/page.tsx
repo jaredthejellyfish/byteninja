@@ -1,14 +1,13 @@
 import { redirect } from 'next/navigation';
 import React from 'react';
 
+import { GeneralFormSchemaType } from './settings-pages/general';
 import { getServerUser } from '@/lib/utils/getServerUser';
 import { UserExtendedSettings } from '@/lib/types/types';
 import PageContainer from '@/components/page-container';
-
 import { Separator } from '@/components/ui/separator';
 import SettingsMenu from './page-content';
 import prisma from '@/lib/prisma';
-import { GeneralFormSchemaType } from './settings-pages/general';
 
 const UserSettings = async () => {
   const { user, isError, error } = await getServerUser('settings');

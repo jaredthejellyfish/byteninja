@@ -25,7 +25,7 @@ type Props = {
   user: UserExtendedSettings;
   // eslint-disable-next-line no-unused-vars
   action?: (formData: GeneralFormSchemaType) => void;
-}
+};
 
 const GeneralSettingsPage = (props: Props) => {
   const { user, action } = props;
