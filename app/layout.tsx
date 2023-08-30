@@ -2,6 +2,7 @@ import { AuthOptions, getServerSession } from 'next-auth';
 import { Inter } from 'next/font/google';
 import type { Metadata } from 'next';
 import React from 'react';
+import GoogleAnalytics from '@/components/google-analytics';
 
 import KeyboardShortcuts from '@/components/keyboard-shortcuts';
 import Navigation from '@/components/navigation/navigation';
@@ -27,6 +28,7 @@ export default async function RootLayout({
   const session = await getServerSession(authOptions as AuthOptions);
   return (
     <html lang="en">
+      <GoogleAnalytics GA_MEASUREMENT_ID='G-YE1ND0HBBW'/>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ReduxProvider>
