@@ -12,6 +12,13 @@ const GeneralSettingsPage = dynamic(() => import('./settings-pages/general'), {
   ssr: false,
 });
 
+const LoginConnectionsPage = dynamic(
+  () => import('./settings-pages/login-connections'),
+  {
+    ssr: false,
+  },
+);
+
 const BlankSettingsPage = (props: { user: ExtendedUser }) => {
   return <pre>{JSON.stringify(props.user, null, 2)}</pre>;
 };
@@ -36,29 +43,21 @@ const menuVariants = {
 };
 
 const SettingsContent = ({ user }: { user: ExtendedUser }) => {
-  const [activePage, setActivePage] = useState('General');
+  const [activePage, setActivePage] = useState('Login Connections');
 
   const settingsPages = [
     { name: 'General', component: GeneralSettingsPage },
-    { name: 'Login Connections', component: BlankSettingsPage },
+    { name: 'Login Connections', component: LoginConnectionsPage },
     { name: 'Billing', component: BlankSettingsPage },
     { name: 'Notifications', component: BlankSettingsPage },
   ];
 
-  const renderPage = (
-    page:
-      | {
-          name: string;
-          //eslint-disable-next-line no-unused-vars
-          component: (props: { user: ExtendedUser }) => React.JSX.Element;
-        }
-      | {
-          name: string;
-          component: React.ComponentType<{
-            user: ExtendedUser;
-          }>;
-        },
-  ) => {
+  const renderPage = (page: {
+    name: string;
+    component: React.ComponentType<{
+      user: ExtendedUser;
+    }>;
+  }) => {
     if (page.name === activePage) {
       const ActivePageComponent = page.component;
       return <ActivePageComponent user={user} key={0} />;

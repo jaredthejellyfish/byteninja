@@ -17,7 +17,7 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Byteninja',
+  title: 'ByteNinja',
   description: 'Created by Gerard Hernandez',
 };
 

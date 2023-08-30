@@ -31,6 +31,8 @@ function generateIncludes(
             id: true,
             type: true,
             provider: true,
+            created_at: true,
+            updated_at: true,
           },
         },
       };

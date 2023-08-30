@@ -10,7 +10,7 @@ import {
   ExtendedUser,
   UserWithoutPassword,
 } from '@/lib/types/types';
-import { AuthState, set } from '@/redux/features/authSlice';
+import { AuthState, set, reset } from '@/redux/features/authSlice';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
@@ -77,7 +77,7 @@ const generalSettingsSections: SectionInfoType[] = [
     title: 'Your Email',
     placeholder: 'email@byteninja.xyz',
     description:
-      'Please enter the email address you want to use to log in with Byteninja.',
+      'Please enter the email address you want to use to log in with ByteNinja.',
     secondaryDescription: 'We will email you to verify the change.',
   },
 ];
@@ -105,17 +105,17 @@ function GeneralSection(props: GeneralSectionProps) {
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col w-full">
         <div className="p-5">
           <h3 className="mb-2 text-xl font-semibold">{info.title}</h3>
-          <p className="pb-3 text-sm text-neutral-400">{info.description}</p>
+          <p className="text-sm pb-1 text-neutral-400">{info.description}</p>
           <Input
             placeholder={info.placeholder}
             {...register(info.id)}
-            className="max-w-[340px]"
+            className="max-w-[650px]"
           />
         </div>
         <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
         <div className="flex flex-row items-center justify-between px-5 py-2">
           <span className="text-xs sm:text-sm text-neutral-400">
-            Please use 48 characters at maximum.
+            {info.secondaryDescription}
           </span>
           <Button
             variant={'ghost'}
@@ -186,6 +186,8 @@ function GeneralSettingsPage(props: { user: ExtendedUser }) {
         ...event,
       };
 
+      dispatch(reset());
+
       if (JSON.stringify(updatedUser) === JSON.stringify(user))
         throw new Error('No changes were made.');
 
@@ -245,7 +247,7 @@ function GeneralSettingsPage(props: { user: ExtendedUser }) {
               This is your avatar.
               <br /> Click on the avatar to upload a custom one from your files.
             </p>
-            {!!user.image && (
+            {!!user && !!user.image && (
               <Image
                 src={user.image}
                 alt="user avatar"

@@ -5,6 +5,13 @@ export interface UserWithoutPassword extends Omit<User, 'password'> {}
 
 export interface UserWithSettings extends UserWithoutPassword {
   settings: UserSettings;
+  accounts: {
+    id: string;
+    type: string;
+    provider: string;
+    created_at: string;
+    updated_at: string;
+  }[];
 }
 
 export interface UserWithCourses extends UserWithoutPassword {

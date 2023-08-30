@@ -17,6 +17,11 @@ module.exports = {
     },
     extend: {
       colors: {
+        discord: '#5865F2',
+        twitch: '#6441a5',
+        github: '#333',
+        google: '#DB4437',
+
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',

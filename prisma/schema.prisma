@@ -9,18 +9,20 @@ generator client {
 }
 
 model Account {
-  id                String  @id @default(cuid())
+  id                String   @id @default(cuid())
   userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?  @db.Text
   session_state     String?
+  created_at        DateTime @default(now())
+  updated_at        DateTime @default(now()) @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -33,6 +35,8 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now()) @updatedAt
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
@@ -46,6 +50,8 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
+  created_at    DateTime      @default(now())
+  updated_at    DateTime      @default(now()) @updatedAt
   settings      UserSettings?
   accounts      Account[]
   sessions      Session[]
@@ -55,9 +61,11 @@ model User {
 }
 
 model UserSettings {
-  id     String @id @default(cuid())
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   emailNotifications Boolean @default(false)
   pushNotifications  Boolean @default(false)
@@ -69,6 +77,8 @@ model VerificationToken {
   identifier String
   token      String   @unique
   expires    DateTime
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
 
   @@unique([identifier, token])
   @@map("verification_tokens")
@@ -83,17 +93,21 @@ model Course {
   authorId    String
   author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   lessons     Lesson[]
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now()) @updatedAt
 
   @@map("courses")
 }
 
 model Lesson {
-  id          String  @id @default(cuid())
-  name        String  @unique
+  id          String   @id @default(cuid())
+  name        String   @unique
   description String
   image       String?
-  course      Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId    String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now()) @updatedAt
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@map("lessons")
 }
