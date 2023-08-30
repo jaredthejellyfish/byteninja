@@ -33,6 +33,7 @@ interface Props {
   image: string;
   name: string;
   authStatus: boolean;
+  pathname: string[];
 }
 
 export function ProfileDropdown(props: Props) {
@@ -68,7 +69,7 @@ export function ProfileDropdown(props: Props) {
         )}
 
         <Link href="/">
-          <DropdownMenuItem>
+          <DropdownMenuItem disabled={props.pathname[0] === undefined}>
             <LayoutDashboard className="w-4 h-4 mr-2" />
             <span>Home</span>
             <DropdownMenuShortcut>⇧⌘H</DropdownMenuShortcut>
@@ -80,14 +81,14 @@ export function ProfileDropdown(props: Props) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <Link href="/courses">
-                <DropdownMenuItem>
+                <DropdownMenuItem disabled={props.pathname[0] === 'courses'}>
                   <Book className="w-4 h-4 mr-2" />
                   <span>Courses</span>
                   <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
                 </DropdownMenuItem>
               </Link>
               <Link href="/settings">
-                <DropdownMenuItem>
+                <DropdownMenuItem disabled={props.pathname[0] === 'settings'}>
                   <Settings className="w-4 h-4 mr-2" />
                   <span>Settings</span>
                   <DropdownMenuShortcut>⇧⌘S</DropdownMenuShortcut>

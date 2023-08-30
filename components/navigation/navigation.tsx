@@ -32,9 +32,8 @@ const SiteLogo = () => (
   </Link>
 );
 
-const NavigationLeftDisplay = () => {
+const NavigationLeftDisplay = ({ pathname }: { pathname: string[] }) => {
   const currentCourse = useAppSelector((state) => state.currentCourseReducer);
-  const pathname = usePathname().split('/').filter(Boolean);
 
   switch (pathname[0]) {
     case 'courses':
@@ -94,6 +93,7 @@ const Navigation = () => {
 
   const auth = useAppSelector((state) => state.authReducer);
   const dispatch = useAppDispatch();
+  const pathname = usePathname().split('/').filter(Boolean);
 
   useEffect(() => {
     if (status === 'authenticated' && session) {
@@ -106,11 +106,12 @@ const Navigation = () => {
   return (
     <nav className="shadow border-b fixed top-0 left-0 right-0 border-b-neutral-800/20 h-[52px] dark:border-b-neutral-800 dark:bg-neutral-950 bg-white flex flex-row items-center px-5 lg:px-11 justify-between">
       <div id="nav-left" className="flex w-2/3 pt-0.5">
-        <NavigationLeftDisplay />
+        <NavigationLeftDisplay pathname={pathname} />
       </div>
       <div id="nav-right" className="flex items-center justify-end w-1/3">
         <DarkModeToggle className="mt-0.5 dark:bg-neutral-950 dark:text-white bg-white text-black hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-black border border-neutral-200 dark:border-neutral-800 focus-visible:dark:border-neutral-800" />
         <ProfileDropdown
+          pathname={pathname}
           authStatus={status === 'authenticated'}
           image={auth?.user?.image ?? ''}
           name={auth?.user?.name ?? ''}
