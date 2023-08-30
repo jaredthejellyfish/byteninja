@@ -4,7 +4,7 @@ import PageContainer from '@/components/page-container';
 import useUserWithAuth from '@/hooks/useUserWithAuth';
 import CourseCard from '@/components/course-card';
 
-const Profile = async () => {
+const CoursesPage = async () => {
   const { user } = await useUserWithAuth('courses');
 
   return (
@@ -25,4 +25,4 @@ const Profile = async () => {
   );
 };
 
-export default Profile;
+export default CoursesPage;

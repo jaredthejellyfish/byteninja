@@ -3,7 +3,7 @@ import React from 'react';
 import PageContainer from '@/components/page-container';
 import useUserWithAuth from '@/hooks/useUserWithAuth';
 
-const Home = async () => {
+const HomePage = async () => {
   const { user } = await useUserWithAuth();
 
   return (
@@ -13,4 +13,4 @@ const Home = async () => {
   );
 };
 
-export default Home;
+export default HomePage;

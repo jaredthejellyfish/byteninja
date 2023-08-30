@@ -8,7 +8,7 @@ import useUserWithAuth from '@/hooks/useUserWithAuth';
 import SettingsContent from './page-content';
 import prisma from '@/lib/prisma';
 
-const UserSettings = async () => {
+const SettingsPage = async () => {
   const { user } = await useUserWithAuth();
 
   async function editUser(formData: GeneralFormSchemaType) {
@@ -38,4 +38,4 @@ const UserSettings = async () => {
   );
 };
 
-export default UserSettings;
+export default SettingsPage;

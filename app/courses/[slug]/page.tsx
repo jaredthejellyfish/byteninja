@@ -15,7 +15,7 @@ async function getCourseBySlug(slug: string) {
   });
 }
 
-const Course = async (props: Props) => {
+const CoursePage = async (props: Props) => {
   const course = (await getCourseBySlug(props.params.slug)) as CurrentCourse;
   if (!course) {
     return <div>404</div>;
@@ -28,4 +28,4 @@ const Course = async (props: Props) => {
   );
 };
 
-export default Course;
+export default CoursePage;
