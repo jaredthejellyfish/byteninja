@@ -1,6 +1,8 @@
 'use client';
+
+import React, { FormEvent, useEffect, useMemo, useState } from 'react';
 import { Separator } from '@radix-ui/react-dropdown-menu';
-import React, { FormEvent, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import * as z from 'zod';
@@ -11,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils/cn';
 
-export const GeneralFormSchema = z.object({
+const GeneralFormSchema = z.object({
   id: z.string(),
   name: z.string().max(32, { message: 'Please use 32 characters at maximum.' }),
   username: z
@@ -21,10 +23,12 @@ export const GeneralFormSchema = z.object({
   image: z.nullable(z.string().url({ message: 'Please enter a valid URL.' })),
 });
 
+export type GeneralFormSchemaType = z.infer<typeof GeneralFormSchema>;
+
 type Props = {
   user: UserExtendedSettings;
   // eslint-disable-next-line no-unused-vars
-  action: (formData: z.infer<typeof GeneralFormSchema>) => void;
+  action: (formData: GeneralFormSchemaType) => void;
 };
 
 const BlankSettingsPage = ({ user }: { user: UserExtendedSettings }) => {
@@ -37,24 +41,28 @@ const GeneralSettingsPage = ({
 }: {
   user: UserExtendedSettings;
   // eslint-disable-next-line no-unused-vars
-  action: (formData: z.infer<typeof GeneralFormSchema>) => void;
+  action: (formData: GeneralFormSchemaType) => void;
 }) => {
   const FormSchema = GeneralFormSchema;
+  const router = useRouter();
 
-  const initialFormState = {
-    id: user.id,
-    name: user.name || '',
-    username: user.username || '',
-    email: user.email || '',
-    image: user.image || null,
-  };
+  const initialFormState = useMemo(() => {
+    return {
+      id: user.id,
+      name: user.name || '',
+      username: user.username || '',
+      email: user.email || '',
+      image: user.image || null,
+    };
+  }, [user]);
+
+  useEffect(() => {
+    setFormState(initialFormState);
+  }, [initialFormState]);
 
   const [formState, setFormState] = useState(initialFormState);
 
-  function onSubmit(
-    e: FormEvent,
-    data: z.infer<typeof FormSchema> = formState,
-  ) {
+  function onSubmit(e: FormEvent, data: GeneralFormSchemaType = formState) {
     e.preventDefault();
 
     try {
@@ -66,6 +74,8 @@ const GeneralSettingsPage = ({
         title: 'Success!',
         description: 'Your settings have been updated.',
       });
+
+      router.refresh();
     } catch (err) {
       if (err instanceof z.ZodError) {
         const errorMessages = err.errors.map((error) => {
@@ -105,6 +115,7 @@ const GeneralSettingsPage = ({
             </span>
             <Button
               variant={'ghost'}
+              disabled={initialFormState.username === formState.username}
               className="p-0 px-4 border border-neutral-200 dark:border-neutral-700"
             >
               Save
@@ -137,6 +148,7 @@ const GeneralSettingsPage = ({
             </span>
             <Button
               variant={'ghost'}
+              disabled={initialFormState.name === formState.name}
               className="p-0 px-4 border border-neutral-200 dark:border-neutral-700"
             >
               Save
@@ -169,6 +181,7 @@ const GeneralSettingsPage = ({
             </span>
             <Button
               variant={'ghost'}
+              disabled={initialFormState.email === formState.email}
               className="p-0 px-4 border border-neutral-200 dark:border-neutral-700"
             >
               Save
@@ -181,22 +194,19 @@ const GeneralSettingsPage = ({
         <form onSubmit={onSubmit} className="relative flex flex-col w-full">
           <div className="p-5">
             <h3 className="mb-2 text-xl font-semibold">Your Avatar</h3>
-            <div className="flex flex-row">
-              <p className="pb-0 text-sm text-neutral-400">
-                This is your avatar.
-                <br /> Click on the avatar to upload a custom one from your
-                files.
-              </p>
-              {!!user.image && (
-                <Image
-                  src={user.image}
-                  alt="user avatar"
-                  className="absolute rounded-full top-6 right-5"
-                  width={70}
-                  height={70}
-                />
-              )}
-            </div>
+            <p className="pb-0 text-sm text-neutral-400 sm:w-full w-3/4">
+              This is your avatar.
+              <br /> Click on the avatar to upload a custom one from your files.
+            </p>
+            {!!user.image && (
+              <Image
+                src={user.image}
+                alt="user avatar"
+                className="absolute rounded-full top-7 sm:top-6 right-5"
+                width={70}
+                height={70}
+              />
+            )}
           </div>
           <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
           <div className="flex flex-row items-center justify-between px-5 py-2">
@@ -205,6 +215,7 @@ const GeneralSettingsPage = ({
             </span>
             <Button
               variant={'ghost'}
+              disabled={!initialFormState.image === !!formState.image}
               className="p-0 px-4 border border-neutral-200 dark:border-neutral-700"
             >
               Save
@@ -244,25 +255,24 @@ const menuVariants = {
 
 export default function SettingsMenu(props: Props) {
   const [activePage, setActivePage] = useState('General');
+  const { user, action } = props;
 
   const settingsPages = [
     {
       name: 'General',
-      component: (
-        <GeneralSettingsPage action={props.action} user={props.user} />
-      ),
+      component: GeneralSettingsPage,
     },
     {
       name: 'Login Connections',
-      component: <BlankSettingsPage user={props.user} />,
+      component: BlankSettingsPage,
     },
     {
       name: 'Billing',
-      component: <BlankSettingsPage user={props.user} />,
+      component: BlankSettingsPage,
     },
     {
       name: 'Notifications',
-      component: <BlankSettingsPage user={props.user} />,
+      component: BlankSettingsPage,
     },
   ];
 
@@ -294,14 +304,38 @@ export default function SettingsMenu(props: Props) {
                 animate={activePage === page.name ? 'open' : 'closed'}
                 className="mt-5"
               >
-                {page.component}
+                {settingsPages.map((page) => {
+                  if (page.name === activePage) {
+                    const ActivePageComponent = page.component;
+                    return (
+                      <ActivePageComponent
+                        key={page.name}
+                        user={user}
+                        action={action}
+                      />
+                    );
+                  }
+                  return null;
+                })}
               </motion.div>
             </div>
           </div>
         ))}
       </div>
       <div id="right" className="hidden sm:w-3/4 sm:block">
-        {settingsPages.find((page) => page.name === activePage)?.component}
+        {settingsPages.map((page) => {
+          if (page.name === activePage) {
+            const ActivePageComponent = page.component;
+            return (
+              <ActivePageComponent
+                key={page.name}
+                user={user}
+                action={action}
+              />
+            );
+          }
+          return null;
+        })}
       </div>
     </div>
   );
