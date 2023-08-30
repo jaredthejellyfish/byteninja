@@ -67,9 +67,9 @@ const SettingsContent = (props: Props) => {
 
   return (
     <div className="flex flex-row px-0 sm:px-10">
-      <div className="flex flex-col w-full sm:w-1/4 ml-[-12px] gap-0.5 justify-center sm:justify-start lg:px-28">
+      <div className="flex flex-col sm:w-1/4 ml-[-12px] gap-0.5 justify-center sm:justify-start sm:items-start w-full">
         {settingsPages.map((page) => (
-          <div className="pl-5" key={page.name}>
+          <div className="pl-6 w-full sm:pl-0 xl:pl-[72px]" key={page.name}>
             <div
               className={cn(
                 'flex flex-row text-neutral-500 transition-all text-lg sm:min-w-[150px] hover:bg-neutral-500/30 py-2 px-3 rounded-sm sm:w-4/5 font-light cursor-pointer sm:text-base',

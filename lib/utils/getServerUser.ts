@@ -1,6 +1,7 @@
 import { AuthOptions, getServerSession } from 'next-auth';
 
 import { authOptions } from '@/auth/authOptions';
+import { ExtendedSession } from '../types/types';
 import prisma from '../prisma';
 
 function generateIncludes(
@@ -31,15 +32,17 @@ export async function getServerUser(
   includes: 'settings' | 'courses' | 'default' = 'default',
 ) {
   try {
-    const session = await getServerSession(authOptions as AuthOptions);
+    const session = (await getServerSession(
+      authOptions as AuthOptions,
+    )) as ExtendedSession;
 
     if (!session) {
       throw new Error('Session not found');
     }
 
-    const email = session?.user?.email;
+    const id = session?.user.id;
 
-    if (!email) {
+    if (!id) {
       throw new Error('Email not found');
     }
 
@@ -47,7 +50,7 @@ export async function getServerUser(
 
     const user = await prisma.user.findUnique({
       where: {
-        email,
+        id: id,
       },
       include: include,
     });

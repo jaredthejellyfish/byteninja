@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type AuthState = {
+  id?: string;
   user: {
     name: string;
     email: string;
@@ -23,6 +24,7 @@ export const auth = createSlice({
   reducers: {
     reset: () => initialState,
     set: (state, action: PayloadAction<AuthState>) => {
+      state.id = action.payload.id;
       state.user.name = action.payload.user.name;
       state.user.email = action.payload.user.email;
       state.user.image = action.payload.user.image;

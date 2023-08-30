@@ -30,7 +30,7 @@ const SettingsPage = async () => {
   return (
     <PageContainer className="dark:bg-neutral-950 px-0 sm:px-5 lg:px-10 pt-[72px]">
       <h2 className="px-5 sm:px-10 my-5 mb-10 text-3xl lg:px-28">
-        Personal Account Settings
+        Account Settings
       </h2>
       <Separator className="lg:ml-[-40px] sm:ml-[-20px] ml-0 w-screen mb-10" />
       <SettingsContent action={editUser} user={user as UserExtendedSettings} />

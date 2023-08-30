@@ -89,7 +89,8 @@ const GeneralSettingsPage = (props: Props) => {
         });
 
         toast({
-          title: 'Error!',
+          variant: 'destructive',
+          title: 'Uh oh! Something went wrong.',
           description: errorMessages[0],
         });
       }

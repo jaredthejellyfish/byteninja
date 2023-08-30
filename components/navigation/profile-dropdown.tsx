@@ -34,6 +34,7 @@ interface Props {
   name: string;
   authStatus: boolean;
   pathname: string[];
+  id: string;
 }
 
 export function ProfileDropdown(props: Props) {

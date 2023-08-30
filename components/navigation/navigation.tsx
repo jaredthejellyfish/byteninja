@@ -115,6 +115,7 @@ const Navigation = () => {
           authStatus={status === 'authenticated'}
           image={auth?.user?.image ?? ''}
           name={auth?.user?.name ?? ''}
+          id={auth?.id ?? ''}
         />
       </div>
     </nav>
