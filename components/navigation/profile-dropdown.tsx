@@ -99,7 +99,7 @@ export function ProfileDropdown(props: Props) {
           </>
         )}
         <DropdownMenuSeparator />
-        <Link href="https://github.com/jaredthejellyfish/learncode/tree/main">
+        <Link href="https://github.com/jaredthejellyfish/byteninja/tree/main">
           <DropdownMenuItem>
             <Github className="w-4 h-4 mr-2" />
             <span>GitHub</span>

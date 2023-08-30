@@ -66,7 +66,6 @@ export const authOptions: AuthOptions = {
     jwt: async ({ token, user }) => {
       if (user) {
         token.id = user.id;
-
       }
       return token;
     },

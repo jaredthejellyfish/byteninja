@@ -170,7 +170,7 @@ const GeneralSettingsPage = (props: Props) => {
             <h3 className="mb-2 text-xl font-semibold">Your Email</h3>
             <p className="pb-3 text-sm text-neutral-400">
               Please enter the email address you want to use to log in with
-              Learncode.
+              Byteninja.
             </p>
             <Input
               onChange={(e) =>

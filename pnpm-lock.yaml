@@ -50,6 +50,9 @@ dependencies:
   class-variance-authority:
     specifier: ^0.7.0
     version: 0.7.0
+  client-only:
+    specifier: ^0.0.1
+    version: 0.0.1
   clsx:
     specifier: ^2.0.0
     version: 2.0.0
@@ -112,6 +115,9 @@ devDependencies:
   '@types/bcryptjs':
     specifier: ^2.4.3
     version: 2.4.3
+  '@types/gtag.js':
+    specifier: ^0.0.13
+    version: 0.0.13
   '@types/node':
     specifier: 20.5.6
     version: 20.5.6
@@ -2321,6 +2327,10 @@ packages:
 
   /@types/bcryptjs@2.4.3:
     resolution: {integrity: sha512-XTnH9E/rp51aKGsiMtQCHV/owDLW2E9QAxI7ItpWWm6Gi6XO1e4o3VuEYDma0lbitj1vNOBj05Qk8l2BYoiN4A==}
+    dev: true
+
+  /@types/gtag.js@0.0.13:
+    resolution: {integrity: sha512-yOXFkfnt1DQr1v9B4ERulJOGnbdVqnPHV8NG4nkQhnu4qbrJecQ06DlaKmSjI3nzIwBj5U9/X61LY4sTc2KbaQ==}
     dev: true
 
   /@types/hoist-non-react-statics@3.3.1:

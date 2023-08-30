@@ -82,7 +82,7 @@ const NavigationLeftDisplay = ({ pathname }: { pathname: string[] }) => {
       return (
         <div className="flex flex-row items-center justify-center gap-1">
           <SiteLogo />
-          <h2 className="font-medium">Learncode</h2>
+          <h2 className="font-medium">Byteninja</h2>
         </div>
       );
   }
