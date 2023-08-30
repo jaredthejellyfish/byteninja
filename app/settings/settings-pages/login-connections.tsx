@@ -148,7 +148,7 @@ function ConnectionLabel(props: { accounts: UserWithSettings['accounts'] }) {
             </div>
           </div>
           <div className="flex gap-4">
-            <span className="text-xs font-light text-neutral-400 flex items-center justify-center">
+            <span className="text-xs font-light text-neutral-400 items-center justify-center hidden sm:flex">
               Connected {format(updated_at)}
             </span>
             <DropdownMenu>

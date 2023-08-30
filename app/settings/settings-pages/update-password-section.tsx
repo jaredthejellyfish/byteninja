@@ -14,6 +14,10 @@ async function fetchUpdatePassword({
   oldPassword: string;
   newPassword: string;
 }) {
+  if (!oldPassword || !newPassword) throw new Error('Please fill all fields.');
+  if (oldPassword === newPassword)
+    throw new Error('Your new password cannot be the same as your old one.');
+
   const res = await fetch('/api/user/password', {
     method: 'POST',
     headers: {
@@ -28,10 +32,16 @@ async function fetchUpdatePassword({
 export default function PasswordSection(props: { disabled: boolean }) {
   const { disabled } = props;
 
+    const { register, handleSubmit, reset } = useForm<{
+      oldPassword: string;
+      newPassword: string;
+    }>({});
+
   const { mutate: updatePassword, isLoading } = useMutation(
     fetchUpdatePassword,
     {
       onSuccess: () => {
+        reset();
         toast({
           title: 'Success!',
           description: 'Your settings have been updated.',
@@ -48,10 +58,7 @@ export default function PasswordSection(props: { disabled: boolean }) {
     },
   );
 
-  const { register, handleSubmit } = useForm<{
-    oldPassword: string;
-    newPassword: string;
-  }>({});
+
 
   return (
     <div className="border rounded-lg dark:bg-neutral-900/40">

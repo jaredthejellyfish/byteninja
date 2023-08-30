@@ -2,7 +2,7 @@
 
 import { Separator } from '@radix-ui/react-dropdown-menu';
 import { motion, AnimatePresence } from 'framer-motion';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 
 import { UserWithSettings } from '@/lib/types/types';
@@ -43,7 +43,7 @@ const menuVariants = {
 };
 
 const SettingsContent = ({ user }: { user: UserWithSettings }) => {
-  const [activePage, setActivePage] = useState('Login');
+  const [activePage, setActivePage] = useState('General');
 
   const settingsPages = [
     { name: 'General', component: GeneralSettingsPage },
@@ -52,9 +52,21 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
     { name: 'Notifications', component: BlankSettingsPage },
   ];
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // if the window is defined, check the size of the screen
+      if (window.innerWidth < 640) {
+        setActivePage('');
+      }
+    }
+  }, []);
+
   return (
-    <div className="flex flex-row px-0 sm:px-10">
-      <div className="flex flex-col sm:w-1/4 ml-[-12px] gap-0.5 justify-center sm:justify-start sm:items-start w-full">
+    <div className="flex flex-row px-0 sm:px-10 h-[calc(100vh - 170px)]">
+      <div
+        id="left"
+        className="flex flex-col sm:w-1/4 ml-[-12px] gap-0.5 justify-center sm:justify-start sm:items-start w-full"
+      >
         {settingsPages.map((page) => {
           const ActivePageComponent = page.component;
           return (
@@ -86,7 +98,7 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
           );
         })}
       </div>
-      <div id="right" className="hidden sm:w-3/4 sm:block">
+      <div id="right" className="hidden sm:w-3/4 sm:block h-screen">
         <AnimatePresence>
           {settingsPages.map((page) => {
             if (page.name === activePage) {

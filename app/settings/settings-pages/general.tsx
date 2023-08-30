@@ -241,7 +241,7 @@ function GeneralSettingsPage(props: { user: ExtendedUser }) {
       ))}
       <PasswordSection disabled={isLoading} />
 
-      <div className="border rounded-lg dark:bg-neutral-900/40">
+      <div className="border rounded-lg dark:bg-neutral-900/40 mb-10">
         <form onSubmit={onSubmit} className="relative flex flex-col w-full">
           <div className="p-5">
             <h3 className="mb-2 text-xl font-semibold">Your Avatar</h3>
