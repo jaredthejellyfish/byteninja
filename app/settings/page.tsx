@@ -4,18 +4,17 @@ import React from 'react';
 import { getServerUser } from '@/lib/utils/getServerUser';
 import { UserExtendedSettings } from '@/lib/types/types';
 import PageContainer from '@/components/page-container';
-import { GeneralFormSchemaType } from './page-content';
+
 import { Separator } from '@/components/ui/separator';
 import SettingsMenu from './page-content';
 import prisma from '@/lib/prisma';
+import { GeneralFormSchemaType } from './settings-pages/general';
 
 const UserSettings = async () => {
   const { user, isError, error } = await getServerUser('settings');
 
   async function editUser(formData: GeneralFormSchemaType) {
     'use server';
-
-    console.log(formData);
 
     await prisma.user.update({
       where: {
