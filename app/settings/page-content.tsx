@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 
-import { GeneralSettingsProps } from './settings-pages/general';
 import { ExtendedUser } from '@/lib/types/types';
 import { cn } from '@/lib/utils/cn';
 
@@ -53,7 +52,12 @@ const SettingsContent = ({ user }: { user: ExtendedUser }) => {
           //eslint-disable-next-line no-unused-vars
           component: (props: { user: ExtendedUser }) => React.JSX.Element;
         }
-      | { name: string; component: React.ComponentType<GeneralSettingsProps> },
+      | {
+          name: string;
+          component: React.ComponentType<{
+            user: ExtendedUser;
+          }>;
+        },
   ) => {
     if (page.name === activePage) {
       const ActivePageComponent = page.component;

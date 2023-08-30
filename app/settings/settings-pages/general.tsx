@@ -5,7 +5,11 @@ import { useForm } from 'react-hook-form';
 import Image from 'next/image';
 import * as z from 'zod';
 
-import { ExtendedUser, UserWithoutPassword } from '@/lib/types/types';
+import {
+  AuthUpdate,
+  ExtendedUser,
+  UserWithoutPassword,
+} from '@/lib/types/types';
 import { AuthState, set } from '@/redux/features/authSlice';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
@@ -127,9 +131,17 @@ function GeneralSection(props: GeneralSectionProps) {
 }
 
 async function postUser(user: ExtendedUser) {
+  const authUpdateData: AuthUpdate = {
+    id: user.id!,
+    name: user.name!,
+    email: user.email!,
+    image: user.image!,
+    username: user.username!,
+  };
+
   const response = await fetch('/api/user/update', {
     method: 'POST',
-    body: JSON.stringify(user),
+    body: JSON.stringify(authUpdateData),
   });
 
   return response.json() as Promise<{ user: UserWithoutPassword }>;
@@ -233,7 +245,7 @@ function GeneralSettingsPage(props: { user: ExtendedUser }) {
               This is your avatar.
               <br /> Click on the avatar to upload a custom one from your files.
             </p>
-            {user.image && (
+            {!!user.image && (
               <Image
                 src={user.image}
                 alt="user avatar"

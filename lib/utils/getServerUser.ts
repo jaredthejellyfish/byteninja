@@ -2,12 +2,22 @@ import { AuthOptions, getServerSession } from 'next-auth';
 
 import {
   ExtendedSession,
+  ExtendedUser,
   UserWithCourses,
   UserWithSettings,
   UserWithoutPassword,
 } from '../types/types';
 import { authOptions } from '@/auth/authOptions';
 import prisma from '../prisma';
+
+type GetServerUserType<T extends 'settings' | 'courses' | 'default'> =
+  T extends 'default'
+    ? { user: UserWithoutPassword; isError: boolean; error: null }
+    : T extends 'courses'
+    ? { user: UserWithCourses; isError: boolean; error: null }
+    : T extends 'settings'
+    ? { user: UserWithSettings; isError: boolean; error: null }
+    : { user: null; isError: boolean; error: string | null };
 
 function generateIncludes(
   includes: 'settings' | 'courses' | 'default' = 'default',
@@ -33,13 +43,18 @@ function generateIncludes(
   }
 }
 
-export async function getServerUser(
-  includes: 'settings' | 'courses' | 'default' = 'default',
-): Promise<{
-  user: UserWithCourses | UserWithSettings | UserWithoutPassword | null;
-  isError: boolean;
-  error: string | null;
-}> {
+export async function getServerUser(): Promise<GetServerUserType<'default'>>;
+// eslint-disable-next-line no-redeclare
+export async function getServerUser<
+  T extends 'settings' | 'courses' | 'default',
+>(
+  // eslint-disable-next-line no-unused-vars
+  includes: T,
+): Promise<GetServerUserType<T>>;
+// eslint-disable-next-line no-redeclare
+export async function getServerUser<
+  T extends 'settings' | 'courses' | 'default' = 'default',
+>(includes?: T): Promise<GetServerUserType<T>> {
   try {
     const session = (await getServerSession(
       authOptions as AuthOptions,
@@ -49,9 +64,7 @@ export async function getServerUser(
       throw new Error('Session not found');
     }
 
-    const id = session?.user.id;
-
-    if (!id) {
+    if (!session?.user.id) {
       throw new Error('Email not found');
     }
 
@@ -59,7 +72,7 @@ export async function getServerUser(
 
     const user = await prisma.user.findUnique({
       where: {
-        id: id,
+        id: session?.user.id,
       },
       include: include,
     });
@@ -67,25 +80,11 @@ export async function getServerUser(
     const userWithoutPassword = { ...user, password: undefined };
 
     if (user) {
-      if (includes === 'courses') {
-        return {
-          user: userWithoutPassword as UserWithCourses,
-          isError: false,
-          error: null,
-        };
-      }
-      if (includes === 'settings') {
-        return {
-          user: userWithoutPassword as UserWithSettings,
-          isError: false,
-          error: null,
-        };
-      }
       return {
-        user: userWithoutPassword as UserWithoutPassword,
+        user: userWithoutPassword as ExtendedUser,
         isError: false,
         error: null,
-      };
+      } as GetServerUserType<T>;
     } else {
       throw new Error('User not found');
     }
@@ -97,6 +96,6 @@ export async function getServerUser(
       user: null,
       isError: true,
       error: message || 'Error getting user',
-    };
+    } as GetServerUserType<T>;
   }
 }

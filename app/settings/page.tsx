@@ -6,7 +6,7 @@ import useUserWithAuth from '@/hooks/useUserWithAuth';
 import SettingsContent from './page-content';
 
 const SettingsPage = async () => {
-  const { user } = await useUserWithAuth();
+  const { user } = await useUserWithAuth('settings');
 
   return (
     <PageContainer className="dark:bg-neutral-950 px-0 sm:px-5 lg:px-10 pt-[72px]">
