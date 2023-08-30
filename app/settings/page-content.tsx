@@ -43,11 +43,11 @@ const menuVariants = {
 };
 
 const SettingsContent = ({ user }: { user: UserWithSettings }) => {
-  const [activePage, setActivePage] = useState('Login Connections');
+  const [activePage, setActivePage] = useState('Login');
 
   const settingsPages = [
     { name: 'General', component: GeneralSettingsPage },
-    { name: 'Login Connections', component: LoginConnectionsPage },
+    { name: 'Login', component: LoginConnectionsPage },
     { name: 'Billing', component: BlankSettingsPage },
     { name: 'Notifications', component: BlankSettingsPage },
   ];

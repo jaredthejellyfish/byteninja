@@ -11,6 +11,7 @@ import {
   UserWithoutPassword,
 } from '@/lib/types/types';
 import { AuthState, set, reset } from '@/redux/features/authSlice';
+import PasswordSection from './update-password-section';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
@@ -238,6 +239,7 @@ function GeneralSettingsPage(props: { user: ExtendedUser }) {
           disabled={isLoading}
         />
       ))}
+      <PasswordSection disabled={isLoading} />
 
       <div className="border rounded-lg dark:bg-neutral-900/40">
         <form onSubmit={onSubmit} className="relative flex flex-col w-full">

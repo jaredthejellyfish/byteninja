@@ -1,29 +1,24 @@
 import { Separator } from '@radix-ui/react-dropdown-menu';
-import { useForm } from 'react-hook-form';
+import { useMutation } from '@tanstack/react-query';
+import { MoreHorizontal } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import React from 'react';
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import DiscordIcon from '@/public/icons/discord-icon.svg';
 import GithubIcon from '@/public/icons/github-icon.svg';
 import TwitchIcon from '@/public/icons/twitch-icon.svg';
 import GoogleIcon from '@/public/icons/google-icon.svg';
 import { UserWithSettings } from '@/lib/types/types';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { toast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils/cn';
-
-type PasswordSectionProps = {
-  disabled: boolean;
-  onSubmit: ({
-    //eslint-disable-next-line no-unused-vars
-    oldPassword,
-    //eslint-disable-next-line no-unused-vars
-    newPassword,
-  }: {
-    oldPassword: string;
-    newPassword: string;
-  }) => void;
-};
+import { format } from 'timeago.js';
 
 const providers = [
   {
@@ -51,59 +46,6 @@ const providers = [
     wh: 29,
   },
 ];
-
-function PasswordSection(props: PasswordSectionProps) {
-  const { disabled, onSubmit } = props;
-
-  const { register, handleSubmit } = useForm<{
-    oldPassword: string;
-    newPassword: string;
-  }>({});
-
-  return (
-    <div className="border rounded-lg dark:bg-neutral-900/40">
-      <form
-        onSubmit={handleSubmit((password) => onSubmit(password))}
-        className="flex flex-col w-full"
-      >
-        <div className="p-5">
-          <h3 className="mb-2 text-xl font-semibold">Your Password</h3>
-          <p className="text-sm pb-1 text-neutral-400">
-            Please enter your current password.
-          </p>
-          <Input
-            type="password"
-            placeholder=""
-            {...register('oldPassword')}
-            className="max-w-[650px]"
-          />
-          <p className="text-sm mt-4 pb-1 text-neutral-400">
-            Please enter your new password.
-          </p>
-          <Input
-            type="password"
-            placeholder=""
-            {...register('newPassword')}
-            className="max-w-[650px]"
-          />
-        </div>
-        <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
-        <div className="flex flex-row items-center justify-between px-5 py-2">
-          <span className="text-xs sm:text-sm text-neutral-400">
-            Please use 32 characters at maximum.
-          </span>
-          <Button
-            variant={'ghost'}
-            disabled={disabled}
-            className="p-0 px-4 border border-neutral-200 dark:border-neutral-700"
-          >
-            Save
-          </Button>
-        </div>
-      </form>
-    </div>
-  );
-}
 
 function ProviderLabel(props: { provider: string }) {
   const { provider } = props;
@@ -136,55 +78,131 @@ function ProviderLabel(props: { provider: string }) {
   );
 }
 
-function LoginConnectionsSection(props: {
-  accounts: UserWithSettings['accounts'];
-}) {
-  const { accounts } = props;
+async function fetchDeleteConnection({ id }: { id: string }) {
+  const res = await fetch('/api/user/delete-connection', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ id }),
+  });
+
+  return res.json();
+}
+
+function ConnectionLabel(props: { accounts: UserWithSettings['accounts'] }) {
+  const router = useRouter();
+  const { mutate: deleteConnection } = useMutation(fetchDeleteConnection, {
+    onSuccess: () => {
+      toast({
+        title: 'Success!',
+        description: 'The connection has been deleted.',
+      });
+      router.refresh();
+    },
+    onError: (e) => {
+      const error = e as Error;
+      toast({
+        variant: 'destructive',
+        title: 'Error!',
+        description: error.message,
+      });
+    },
+  });
+
+  return props.accounts.map((account) => {
+    const { id, provider, updated_at } = account;
+
+    const providerData = providers.find(
+      (providerData) =>
+        providerData.name.toLowerCase() === provider.toLowerCase(),
+    );
+
+    if (!providerData) return null;
+
+    const { wh, name } = providerData;
+
+    return (
+      <div
+        className="flex flex-col mt-3 border-neutral-700 rounded border"
+        key={id}
+      >
+        <div className="bg-black flex flex-row items-center justify-between px-5 py-3.5">
+          <div className="flex flex-row items-center justify-center">
+            <Image
+              src={providers.find((p) => p.name === provider)?.icon}
+              alt={`${provider} icon`}
+              className="filter invert"
+              height={wh}
+              width={wh * 1.5}
+            />
+            <div className="flex flex-col ml-3">
+              <span className="text-sm font-medium">
+                {name.charAt(0).toUpperCase() + name.slice(1)}
+              </span>
+              <span className="text-xs font-light text-neutral-400">
+                {name.charAt(0).toUpperCase() + name.slice(1)}
+              </span>
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <span className="text-xs font-light text-neutral-400 flex items-center justify-center">
+              Connected {format(updated_at)}
+            </span>
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <MoreHorizontal />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem
+                  className="text-red-700"
+                  onClick={() => deleteConnection({ id })}
+                >
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+      </div>
+    );
+  });
+}
+
+const LoginConnectionsPage = (props: { user: UserWithSettings }) => {
+  const accounts = props.user.accounts;
+
   const registeredProviders = accounts.map((account) => account.provider);
   const unusedProviders = providers.filter(
     (provider) => !registeredProviders.includes(provider.name),
   );
 
   return (
-    <div className="mt-8">
-      <h3 className="text-xl">Login Connections:</h3>
-      <p className="text-sm text-neutral-400 mb-2 lg:w-3/4 mt-2">
-        Connect your Personal Account on ByteNinja with a third-party service to
-        use it for login. One Login Connection can be added per third-party
-        service.
-      </p>
-      <div className="border rounded-lg dark:bg-neutral-900/40 mt-4 px-5">
-        <h3 className="pt-3.5 pb-3 text-base">Add new:</h3>
-        <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
-        <div className="flex flex-row gap-x-3 py-3">
-          {unusedProviders.map((provider) => (
-            <ProviderLabel key={provider.name} provider={provider.name} />
-          ))}
-        </div>
-        <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
-        <p className="pt-4 pb-4 text-xs font-light text-neutral-400">
-          Learn more about Login Connections.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-const LoginConnectionsPage = (props: { user: UserWithSettings }) => {
-  const accounts = props.user.accounts;
-  function handleSubmit({
-    oldPassword,
-    newPassword,
-  }: {
-    oldPassword: string;
-    newPassword: string;
-  }) {
-    console.log(oldPassword, newPassword);
-  }
-  return (
     <div>
-      <PasswordSection disabled={false} onSubmit={handleSubmit} />
-      <LoginConnectionsSection accounts={accounts} />
+      <div className="">
+        <h3 className="text-xl">Login Connections:</h3>
+        <p className="text-sm text-neutral-400 mb-2 lg:w-3/4 mt-2">
+          Connect your Personal Account on ByteNinja with a third-party service
+          to use it for login. One Login Connection can be added per third-party
+          service.
+        </p>
+        <div className="border rounded-lg dark:bg-neutral-900/40 mt-4 px-5">
+          <h3 className="pt-3.5 pb-3 text-base">Add new:</h3>
+          <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
+          <div className="flex flex-row gap-x-3 py-3">
+            {unusedProviders.map((provider) => (
+              <ProviderLabel key={provider.name} provider={provider.name} />
+            ))}
+          </div>
+          <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
+          <p className="pt-4 pb-4 text-xs font-light text-neutral-400">
+            Learn more about Login Connections.
+          </p>
+        </div>
+        <div className="mt-8">
+          <ConnectionLabel accounts={accounts} />
+        </div>
+      </div>
     </div>
   );
 };
