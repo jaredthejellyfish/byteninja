@@ -25,7 +25,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import ProfileIcon from '@/public/profile-icon.svg';
+import ProfileIcon from '@/public/icons/profile-icon.svg';
 import { Skeleton } from '../ui/skeleton';
 import { cn } from '@/lib/utils/cn';
 

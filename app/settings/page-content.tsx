@@ -91,9 +91,7 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
           {settingsPages.map((page) => {
             if (page.name === activePage) {
               const ActivePageComponent = page.component;
-              return (
-                <ActivePageComponent user={user} key={0} />
-              );
+              return <ActivePageComponent user={user} key={0} />;
             }
             return null;
           })}

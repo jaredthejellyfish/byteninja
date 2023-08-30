@@ -3,11 +3,11 @@ import { useForm } from 'react-hook-form';
 import Image from 'next/image';
 import React from 'react';
 
+import DiscordIcon from '@/public/icons/discord-icon.svg';
+import GithubIcon from '@/public/icons/github-icon.svg';
+import TwitchIcon from '@/public/icons/twitch-icon.svg';
+import GoogleIcon from '@/public/icons/google-icon.svg';
 import { UserWithSettings } from '@/lib/types/types';
-import DiscordIcon from '@/public/discord-icon.svg';
-import GithubIcon from '@/public/github-icon.svg';
-import TwitchIcon from '@/public/twitch-icon.svg';
-import GoogleIcon from '@/public/google-icon.svg';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils/cn';
