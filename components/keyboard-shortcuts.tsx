@@ -21,7 +21,7 @@ const KeyboardShortcuts = () => {
 
       if (event.shiftKey && event.metaKey && event.key === 'p') {
         event.preventDefault(); // Prevent the default action
-        router.push('/dashboard');
+        router.push('/courses');
       }
 
       if (event.shiftKey && event.metaKey && event.key === 'o') {

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import React from 'react';
 
 import { cn } from '@/lib/utils/cn';
@@ -29,12 +28,10 @@ export default function CookieBanner() {
       )}
     >
       <div className="text-center">
-        <Link href="/info/cookies">
-          <p>
-            We use <span className="font-bold text-sky-400">cookies</span> on
-            our site.
-          </p>
-        </Link>
+        <p>
+          We use <span className="font-bold text-sky-400">cookies</span> on our
+          site.
+        </p>
       </div>
 
       <div className="flex gap-2">

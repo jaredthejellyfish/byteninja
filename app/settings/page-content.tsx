@@ -5,22 +5,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 
-import { GeneralFormSchemaType } from './settings-pages/general';
-import { UserExtendedSettings } from '@/lib/types/types';
+import { GeneralSettingsProps } from './settings-pages/general';
+import { ExtendedUser } from '@/lib/types/types';
 import { cn } from '@/lib/utils/cn';
 
 const GeneralSettingsPage = dynamic(() => import('./settings-pages/general'), {
   ssr: false,
 });
 
-type Props = {
-  user: UserExtendedSettings;
-  // eslint-disable-next-line no-unused-vars
-  action: (formData: GeneralFormSchemaType) => void;
-};
-
-const BlankSettingsPage = ({ user }: { user: UserExtendedSettings }) => {
-  return <pre>{JSON.stringify(user, null, 2)}</pre>;
+const BlankSettingsPage = (props: { user: ExtendedUser }) => {
+  return <pre>{JSON.stringify(props.user, null, 2)}</pre>;
 };
 
 const menuVariants = {
@@ -42,28 +36,31 @@ const menuVariants = {
   },
 };
 
-const SettingsContent = (props: Props) => {
+const SettingsContent = ({ user }: { user: ExtendedUser }) => {
   const [activePage, setActivePage] = useState('General');
-  const { user, action } = props;
 
   const settingsPages = [
-    {
-      name: 'General',
-      component: GeneralSettingsPage,
-    },
-    {
-      name: 'Login Connections',
-      component: BlankSettingsPage,
-    },
-    {
-      name: 'Billing',
-      component: BlankSettingsPage,
-    },
-    {
-      name: 'Notifications',
-      component: BlankSettingsPage,
-    },
+    { name: 'General', component: GeneralSettingsPage },
+    { name: 'Login Connections', component: BlankSettingsPage },
+    { name: 'Billing', component: BlankSettingsPage },
+    { name: 'Notifications', component: BlankSettingsPage },
   ];
+
+  const renderPage = (
+    page:
+      | {
+          name: string;
+          //eslint-disable-next-line no-unused-vars
+          component: (props: { user: ExtendedUser }) => React.JSX.Element;
+        }
+      | { name: string; component: React.ComponentType<GeneralSettingsProps> },
+  ) => {
+    if (page.name === activePage) {
+      const ActivePageComponent = page.component;
+      return <ActivePageComponent user={user} key={0} />;
+    }
+    return null;
+  };
 
   return (
     <div className="flex flex-row px-0 sm:px-10">
@@ -80,29 +77,17 @@ const SettingsContent = (props: Props) => {
                 setActivePage(page.name === activePage ? '' : page.name)
               }
             >
-              <span className="">{page.name}</span>
+              <span>{page.name}</span>
             </div>
             <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800 sm:hidden block" />
-            <div className={'block sm:hidden overflow:hidden m-0'}>
+            <div className="block sm:hidden overflow:hidden m-0">
               <motion.div
                 variants={menuVariants}
                 initial="closed"
                 animate={activePage === page.name ? 'open' : 'closed'}
                 className="mt-5"
               >
-                {settingsPages.map((page) => {
-                  if (page.name === activePage) {
-                    const ActivePageComponent = page.component;
-                    return (
-                      <ActivePageComponent
-                        key={page.name}
-                        user={user}
-                        action={action}
-                      />
-                    );
-                  }
-                  return null;
-                })}
+                {renderPage(page)}
               </motion.div>
             </div>
           </div>
@@ -110,23 +95,7 @@ const SettingsContent = (props: Props) => {
       </div>
       <div id="right" className="hidden sm:w-3/4 sm:block">
         <AnimatePresence>
-          {settingsPages.map((page) => {
-            if (page.name === activePage) {
-              const ActivePageComponent = page.component;
-              return (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0, display: 'none' }}
-                  transition={{ delay: 0.2, duration: 0.2 }}
-                  key={page.name}
-                >
-                  <ActivePageComponent user={user} action={action} />
-                </motion.div>
-              );
-            }
-            return null;
-          })}
+          {settingsPages.map((page) => renderPage(page))}
         </AnimatePresence>
       </div>
     </div>

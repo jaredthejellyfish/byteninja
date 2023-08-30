@@ -1,7 +1,12 @@
 import { AuthOptions, getServerSession } from 'next-auth';
 
+import {
+  ExtendedSession,
+  UserWithCourses,
+  UserWithSettings,
+  UserWithoutPassword,
+} from '../types/types';
 import { authOptions } from '@/auth/authOptions';
-import { ExtendedSession } from '../types/types';
 import prisma from '../prisma';
 
 function generateIncludes(
@@ -30,7 +35,11 @@ function generateIncludes(
 
 export async function getServerUser(
   includes: 'settings' | 'courses' | 'default' = 'default',
-) {
+): Promise<{
+  user: UserWithCourses | UserWithSettings | UserWithoutPassword | null;
+  isError: boolean;
+  error: string | null;
+}> {
   try {
     const session = (await getServerSession(
       authOptions as AuthOptions,
@@ -58,7 +67,25 @@ export async function getServerUser(
     const userWithoutPassword = { ...user, password: undefined };
 
     if (user) {
-      return { user: userWithoutPassword, isError: false, error: null };
+      if (includes === 'courses') {
+        return {
+          user: userWithoutPassword as UserWithCourses,
+          isError: false,
+          error: null,
+        };
+      }
+      if (includes === 'settings') {
+        return {
+          user: userWithoutPassword as UserWithSettings,
+          isError: false,
+          error: null,
+        };
+      }
+      return {
+        user: userWithoutPassword as UserWithoutPassword,
+        isError: false,
+        error: null,
+      };
     } else {
       throw new Error('User not found');
     }

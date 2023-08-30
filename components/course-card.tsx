@@ -21,7 +21,7 @@ type Props = {
 const CourseCard = (props: Props) => {
   const { name, description, image, authorId, slug } = props;
   return (
-    <Link href={'/courses/' + slug}>
+    <Link href={`/courses/${slug}`}>
       <Card>
         <CardHeader>
           <CardTitle>{name}</CardTitle>
