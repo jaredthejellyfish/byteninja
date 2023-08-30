@@ -2,6 +2,7 @@ import { Separator } from '@radix-ui/react-dropdown-menu';
 import { useMutation } from '@tanstack/react-query';
 import { MoreHorizontal } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import React from 'react';
 
@@ -60,9 +61,10 @@ function ProviderLabel(props: { provider: string }) {
   return (
     <div
       className={cn(
-        'flex flex-row items-center justify-start py-1.5 px-4 rounded-lg',
+        'flex flex-row items-center justify-start py-1.5 px-4 rounded-lg cursor-pointer',
         providerData.color,
       )}
+      onClick={() => signIn(provider)}
     >
       <Image
         src={providerData.icon}
@@ -186,19 +188,21 @@ const LoginConnectionsPage = (props: { user: UserWithSettings }) => {
           to use it for login. One Login Connection can be added per third-party
           service.
         </p>
-        <div className="border rounded-lg dark:bg-neutral-900/40 mt-4 px-5">
-          <h3 className="pt-3.5 pb-3 text-base">Add new:</h3>
-          <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
-          <div className="flex flex-row gap-x-3 py-3">
-            {unusedProviders.map((provider) => (
-              <ProviderLabel key={provider.name} provider={provider.name} />
-            ))}
+        {unusedProviders.length > 0 && (
+          <div className="border rounded-lg dark:bg-neutral-900/40 mt-4 px-5">
+            <h3 className="pt-3.5 pb-3 text-base">Add new:</h3>
+            <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
+            <div className="flex flex-row gap-x-3 py-3">
+              {unusedProviders.map((provider) => (
+                <ProviderLabel key={provider.name} provider={provider.name} />
+              ))}
+            </div>
+            <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
+            <p className="pt-4 pb-4 text-xs font-light text-neutral-400">
+              Learn more about Login Connections.
+            </p>
           </div>
-          <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
-          <p className="pt-4 pb-4 text-xs font-light text-neutral-400">
-            Learn more about Login Connections.
-          </p>
-        </div>
+        )}
         <div className="mt-8">
           <ConnectionLabel accounts={accounts} />
         </div>

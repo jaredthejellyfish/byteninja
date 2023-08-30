@@ -70,7 +70,10 @@ export function ProfileDropdown(props: Props) {
         )}
 
         <Link href="/">
-          <DropdownMenuItem disabled={props.pathname[0] === undefined}>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            disabled={props.pathname[0] === undefined}
+          >
             <LayoutDashboard className="w-4 h-4 mr-2" />
             <span>Home</span>
             <DropdownMenuShortcut>⇧⌘H</DropdownMenuShortcut>
@@ -82,14 +85,20 @@ export function ProfileDropdown(props: Props) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <Link href="/courses">
-                <DropdownMenuItem disabled={props.pathname[0] === 'courses'}>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  disabled={props.pathname[0] === 'courses'}
+                >
                   <Book className="w-4 h-4 mr-2" />
                   <span>Courses</span>
                   <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
                 </DropdownMenuItem>
               </Link>
               <Link href="/settings">
-                <DropdownMenuItem disabled={props.pathname[0] === 'settings'}>
+                <DropdownMenuItem
+                  className="cursor-auto"
+                  disabled={props.pathname[0] === 'settings'}
+                >
                   <Settings className="w-4 h-4 mr-2" />
                   <span>Settings</span>
                   <DropdownMenuShortcut>⇧⌘S</DropdownMenuShortcut>
@@ -100,22 +109,23 @@ export function ProfileDropdown(props: Props) {
         )}
         <DropdownMenuSeparator />
         <Link href="https://github.com/jaredthejellyfish/byteninja/tree/main">
-          <DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer">
             <Github className="w-4 h-4 mr-2" />
             <span>GitHub</span>
           </DropdownMenuItem>
         </Link>
-        <DropdownMenuItem disabled>
+        <DropdownMenuItem className="cursor-auto" disabled>
           <LifeBuoy className="w-4 h-4 mr-2" />
           <span>Support</span>
         </DropdownMenuItem>
-        <DropdownMenuItem disabled>
+        <DropdownMenuItem className="cursor-auto" disabled>
           <Cloud className="w-4 h-4 mr-2" />
           <span>API</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
+          className="cursor-pointer"
           onClick={() => (props.authStatus ? signOut() : signIn())}
         >
           {props.authStatus ? (
