@@ -1,13 +1,17 @@
 'use client';
 
 import { Separator } from '@radix-ui/react-dropdown-menu';
+import { motion, AnimatePresence } from 'framer-motion';
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import dynamic from 'next/dynamic';
 
 import { GeneralFormSchemaType } from './settings-pages/general';
-import GeneralSettingsPage from './settings-pages/general';
 import { UserExtendedSettings } from '@/lib/types/types';
 import { cn } from '@/lib/utils/cn';
+
+const GeneralSettingsPage = dynamic(() => import('./settings-pages/general'), {
+  ssr: false,
+});
 
 type Props = {
   user: UserExtendedSettings;
@@ -22,16 +26,9 @@ const BlankSettingsPage = ({ user }: { user: UserExtendedSettings }) => {
 const menuVariants = {
   closed: {
     opacity: 0,
-    outerHeight: 0,
     height: '0%',
     display: 'none',
     marginBottom: 0,
-    transition: {
-      duration: 0.2,
-      display: {
-        delay: 0.2,
-      },
-    },
   },
   open: {
     opacity: 1,
@@ -45,7 +42,7 @@ const menuVariants = {
   },
 };
 
-export default function SettingsMenu(props: Props) {
+const SettingsContent = (props: Props) => {
   const [activePage, setActivePage] = useState('General');
   const { user, action } = props;
 
@@ -115,20 +112,28 @@ export default function SettingsMenu(props: Props) {
         ))}
       </div>
       <div id="right" className="hidden sm:w-3/4 sm:block">
-        {settingsPages.map((page) => {
-          if (page.name === activePage) {
-            const ActivePageComponent = page.component;
-            return (
-              <ActivePageComponent
-                key={page.name}
-                user={user}
-                action={action}
-              />
-            );
-          }
-          return null;
-        })}
+        <AnimatePresence>
+          {settingsPages.map((page) => {
+            if (page.name === activePage) {
+              const ActivePageComponent = page.component;
+              return (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0, display: 'none' }}
+                  transition={{ delay: 0.2, duration: 0.2 }}
+                  key={page.name}
+                >
+                  <ActivePageComponent user={user} action={action} />
+                </motion.div>
+              );
+            }
+            return null;
+          })}
+        </AnimatePresence>
       </div>
     </div>
   );
-}
+};
+
+export default SettingsContent;

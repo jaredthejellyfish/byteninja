@@ -1,16 +1,11 @@
-import { redirect } from 'next/navigation';
 import React from 'react';
 
-import { getServerUser } from '@/lib/utils/getServerUser';
 import PageContainer from '@/components/page-container';
+import useUserWithAuth from '@/hooks/useUserWithAuth';
 import CourseCard from '@/components/course-card';
 
 const Profile = async () => {
-  const { user, isError, error } = await getServerUser('courses');
-
-  if (isError && error === 'Session not found') {
-    redirect('/api/auth/signin');
-  }
+  const { user } = await useUserWithAuth('courses');
 
   return (
     <PageContainer>

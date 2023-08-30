@@ -1,19 +1,16 @@
-import { redirect } from 'next/navigation';
 import React from 'react';
 
-import { getServerUser } from '@/lib/utils/getServerUser';
 import PageContainer from '@/components/page-container';
+import useUserWithAuth from '@/hooks/useUserWithAuth';
 
-export default async function Home() {
-  const { user, isError, error } = await getServerUser();
-
-  if (isError && error === 'Session not found') {
-    redirect('/api/auth/signin');
-  }
+const Home = async () => {
+  const { user } = await useUserWithAuth();
 
   return (
     <PageContainer>
       <pre id="json-output">Home: {JSON.stringify(user, null, 2)}</pre>
     </PageContainer>
   );
-}
+};
+
+export default Home;

@@ -1,12 +1,20 @@
-import React, { FormEvent, useEffect, useMemo, useState } from 'react';
+import React, {
+  FormEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import * as z from 'zod';
 
+import { AuthState, set } from '@/redux/features/authSlice';
 import { UserExtendedSettings } from '@/lib/types/types';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
+import { useAppDispatch } from '@/redux/hooks';
 import { Input } from '@/components/ui/input';
 
 export type GeneralFormSchemaType = z.infer<typeof GeneralFormSchema>;
@@ -31,6 +39,7 @@ const GeneralSettingsPage = (props: Props) => {
   const { user, action } = props;
   const FormSchema = GeneralFormSchema;
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const initialFormState = useMemo(() => {
     return {
@@ -42,9 +51,20 @@ const GeneralSettingsPage = (props: Props) => {
     };
   }, [user]);
 
+  const updatedSession = useCallback((): AuthState => {
+    return {
+      user: {
+        name: initialFormState.name,
+        email: initialFormState.email,
+        image: initialFormState.image!,
+      },
+    };
+  }, [initialFormState]);
+
   useEffect(() => {
     setFormState(initialFormState);
-  }, [initialFormState]);
+    dispatch(set(updatedSession()));
+  }, [initialFormState, dispatch, updatedSession]);
 
   const [formState, setFormState] = useState(initialFormState);
 
