@@ -1,5 +1,6 @@
+import React, { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import React from 'react';
 import { z } from 'zod';
 
 import {
@@ -10,6 +11,7 @@ import {
   FormItem,
   FormLabel,
 } from '@/components/ui/form';
+import { updateUserSettings } from './server-actions';
 import { UserWithSettings } from '@/lib/types/types';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from '@/components/ui/use-toast';
@@ -27,25 +29,36 @@ const FormSchema = z.object({
 });
 
 export default function NotificationsPage(props: Props) {
+  const [isLoading, startTransition] = useTransition();
+  const router = useRouter();
+
   const form = useForm<FormValues>({
     defaultValues: {
       pushNotifications: props.user.settings.pushNotifications,
       emailNotifications: props.user.settings.emailNotifications,
     },
   });
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   function onSubmit(data: FormValues) {
-    toast({
-      title: 'You submitted the following values:',
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">
-            {JSON.stringify(props.user.settings, null, 2)}
-          </code>
-        </pre>
-      ),
+    startTransition(async () => {
+      try {
+        await updateUserSettings({ settings: data, id: props.user.id });
+        toast({
+          title: 'Success!',
+          description: 'The connection has been deleted successfully.',
+        });
+        router.refresh();
+      } catch (e) {
+        const error = e as Error;
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: error.message,
+        });
+      }
     });
   }
+
   return (
     <Form {...form}>
       <h3 className="text-xl">Notification Settings</h3>
@@ -97,7 +110,9 @@ export default function NotificationsPage(props: Props) {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit" disabled={isLoading}>
+          Submit
+        </Button>
       </form>
     </Form>
   );

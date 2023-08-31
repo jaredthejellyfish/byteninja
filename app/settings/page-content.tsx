@@ -1,9 +1,9 @@
 'use client';
 
+import React, { useEffect, useState, useTransition } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Separator } from '@radix-ui/react-dropdown-menu';
 import { motion, AnimatePresence } from 'framer-motion';
-import React, { useEffect, useState, useTransition } from 'react';
 import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
 
@@ -14,10 +14,10 @@ import {
 } from '@/lib/types/types';
 import { AuthState, reset, set } from '@/redux/features/authSlice';
 import NotificationsPage from './settings-pages/notifications';
+import { updateUser } from './settings-pages/server-actions';
 import { toast } from '@/components/ui/use-toast';
 import { useAppDispatch } from '@/redux/hooks';
 import { cn } from '@/lib/utils/cn';
-import { updateUser } from './settings-pages/server-actions';
 
 const GeneralSettingsPage = dynamic(() => import('./settings-pages/general'));
 
@@ -48,7 +48,6 @@ const menuVariants = {
   },
 };
 
-
 const SettingsContent = ({ user }: { user: UserWithSettings }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -59,59 +58,57 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
 
   const updateUserTransition = (user: UserWithSettings) => {
     const authUpdateData: AuthUpdate = {
-    id: user.id!,
-    name: user.name!,
-    email: user.email!,
-    image: user.image!,
-    username: user.username!,
-  };
+      id: user.id!,
+      name: user.name!,
+      email: user.email!,
+      image: user.image!,
+      username: user.username!,
+    };
 
     startTransition(async () => {
       try {
-        await updateUser({user: authUpdateData});
+        await updateUser({ user: authUpdateData });
         dispatch(reset());
 
-      const newReduxUser: AuthState = {
-        id: user.id,
-        user: {
-          name: user.name!,
-          email: user.email!,
-          image: user.image!,
-        },
-      };
+        const newReduxUser: AuthState = {
+          id: user.id,
+          user: {
+            name: user.name!,
+            email: user.email!,
+            image: user.image!,
+          },
+        };
 
-      dispatch(set(newReduxUser));
+        dispatch(set(newReduxUser));
 
-      const newSession = {
-        expires: session?.expires ?? undefined,
-        user: {
-          email: user.email!,
-          id: user.id!,
-          image: user.image!,
-          name: user.name!,
-        },
-      };
+        const newSession = {
+          expires: session?.expires ?? undefined,
+          user: {
+            email: user.email!,
+            id: user.id!,
+            image: user.image!,
+            name: user.name!,
+          },
+        };
 
-      await update(newSession);
+        await update(newSession);
 
-      toast({
-        title: 'Success!',
-        description: 'Your settings have been updated.',
-      });
+        toast({
+          title: 'Success!',
+          description: 'Your settings have been updated.',
+        });
 
-      router.refresh();
+        router.refresh();
       } catch (e) {
         const error = e as Error;
         toast({
-        variant: 'destructive',
-        title: 'Uh oh! An error occurred :C',
-        description: error.message,
-      });
+          variant: 'destructive',
+          title: 'Uh oh! An error occurred :C',
+          description: error.message,
+        });
       }
     });
-  }
-
- 
+  };
 
   const sectionFromSearchProper = section
     ? section.toLowerCase().slice(0, 1).toUpperCase() + section.slice(1)

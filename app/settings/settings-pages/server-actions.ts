@@ -1,7 +1,7 @@
 'use server';
 
+import { UserSettings } from '@prisma/client';
 import { getServerSession } from 'next-auth';
-import { NextResponse } from 'next/server';
 import { compare, hash } from 'bcryptjs';
 
 import { AuthUpdate, ExtendedSession } from '@/lib/types/types';
@@ -13,48 +13,38 @@ export async function deleteUserConnection({
 }: {
   connectionId: { id: string };
 }) {
-  try {
-    if (!connectionId) {
-      return NextResponse.json({ error: 'Invalid Request' }, { status: 500 });
-    }
+  if (!connectionId) {
+    throw new Error('Invalid Request');
+  }
 
-    const session = (await getServerSession(authOptions)) as ExtendedSession;
+  const session = (await getServerSession(authOptions)) as ExtendedSession;
 
-    if (!session || !session.user.id) {
-      return NextResponse.json({ error: 'Unauthenticated' }, { status: 401 });
-    }
+  if (!session || !session.user.id) {
+    throw new Error('Unauthenticated');
+  }
 
-    const connection = await prisma.account.findUnique({
-      where: { id: connectionId.id },
-      select: {
-        id: true,
-        userId: true,
-      },
-    });
+  const connection = await prisma.account.findUnique({
+    where: { id: connectionId.id },
+    select: {
+      id: true,
+      userId: true,
+    },
+  });
 
-    if (!connection || !connection.id) {
-      return NextResponse.json({ error: 'No connection' }, { status: 403 });
-    }
+  if (!connection || !connection.id) {
+    throw new Error('Could not find connection');
+  }
 
-    if (connection.userId !== session.user.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
-    }
+  if (connection.userId !== session.user.id) {
+    throw new Error('Unauthorized');
+  }
 
-    const deletedConnection = await prisma.account.delete({
-      where: { id: connection.id },
-    });
+  const deletedConnection = await prisma.account.delete({
+    where: { id: connection.id },
+  });
 
-    if (!deletedConnection || !deletedConnection.id) {
-      return NextResponse.json(
-        { error: 'Could not delete connection' },
-        { status: 500 },
-      );
-    }
-
-    return NextResponse.json({ status: 'success' }, { status: 200 });
-  } catch (e) {
-    const error = e as Error;
-    return NextResponse.json({ status: error.message }, { status: 500 });
+  if (!deletedConnection || !deletedConnection.id) {
+    throw new Error('Could not delete connection');
   }
 }
 
@@ -112,26 +102,62 @@ export async function updatePassword({
 }
 
 export async function updateUser({ user }: { user: AuthUpdate }) {
-  try {
-    if (!user) {
-      return NextResponse.json({ error: 'Invalid Request' }, { status: 500 });
-    }
+  if (!user) {
+    throw new Error('Invalid Request');
+  }
 
-    const session = (await getServerSession(authOptions)) as ExtendedSession;
+  const session = (await getServerSession(authOptions)) as ExtendedSession;
 
-    if (!session || session.user.id !== user.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+  if (!session || session.user.id !== user.id) {
+    throw new Error('Unauthenticated');
+  }
 
-    const newUser = await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        ...user,
-      },
-    });
-    return NextResponse.json({ user: newUser });
-  } catch (e) {
-    const error = e as Error;
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  const newUser = await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      ...user,
+    },
+  });
+
+  if (!newUser) {
+    throw new Error('Could not update user');
+  }
+}
+
+export async function updateUserSettings({
+  id,
+  settings,
+}: {
+  id: string;
+  settings: Partial<UserSettings>;
+}) {
+  if (!id) {
+    throw new Error('Invalid Request');
+  }
+
+  const session = (await getServerSession(authOptions)) as ExtendedSession;
+
+  if (!session || session.user.id !== id) {
+    throw new Error('Unauthenticated');
+  }
+
+  const userSettings = await prisma.userSettings.findUnique({
+    where: { userId: id },
+  });
+
+  if (!userSettings) {
+    throw new Error('Could not find user settings');
+  }
+
+  const updatedUserSettings = await prisma.userSettings.update({
+    where: { userId: id },
+    data: {
+      ...userSettings,
+      ...settings,
+    },
+  });
+
+  if (!updatedUserSettings) {
+    throw new Error('Could not update user settings');
   }
 }
