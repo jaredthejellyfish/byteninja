@@ -119,7 +119,7 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
   const settingsPages = [
     { name: 'General', component: GeneralSettingsPage },
     { name: 'Login', component: LoginConnectionsPage },
-    { name: 'Billing', component: BlankSettingsPage },
+    //{ name: 'Billing', component: BlankSettingsPage },
     { name: 'Notifications', component: NotificationsPage },
   ];
 
