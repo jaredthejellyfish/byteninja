@@ -17,10 +17,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 
-type Props = {
-  user: UserWithSettings;
-};
-
 type FormValues = z.infer<typeof FormSchema>;
 
 const FormSchema = z.object({
@@ -28,7 +24,7 @@ const FormSchema = z.object({
   emailNotifications: z.boolean().default(false).optional(),
 });
 
-export default function NotificationsPage(props) {
+export default function NotificationsPage(props: { user: UserWithSettings }) {
   const [isLoading, startTransition] = useTransition();
   const router = useRouter();
 
