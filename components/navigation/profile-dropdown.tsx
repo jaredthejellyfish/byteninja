@@ -3,12 +3,12 @@
 import {
   Cloud,
   Github,
-  LifeBuoy,
   LogOut,
   LogIn,
   Settings,
   LayoutDashboard,
   Book,
+  UserSquare,
 } from 'lucide-react';
 import { signIn, signOut } from 'next-auth/react';
 import Link from 'next/link';
@@ -77,34 +77,42 @@ export function ProfileDropdown(props: Props) {
             <DropdownMenuShortcut>⇧⌘H</DropdownMenuShortcut>
           </DropdownMenuItem>
         </Link>
-
+        <DropdownMenuSeparator />
         {props.authStatus && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <Link href="/courses">
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  disabled={props.pathname[0] === 'courses'}
-                >
-                  <Book className="w-4 h-4 mr-2" />
-                  <span>Courses</span>
-                  <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-                </DropdownMenuItem>
-              </Link>
-              <Link href="/settings">
-                <DropdownMenuItem
-                  className="cursor-auto"
-                  disabled={props.pathname[0] === 'settings'}
-                >
-                  <Settings className="w-4 h-4 mr-2" />
-                  <span>Settings</span>
-                  <DropdownMenuShortcut>⇧⌘S</DropdownMenuShortcut>
-                </DropdownMenuItem>
-              </Link>
-            </DropdownMenuGroup>
-          </>
+          <DropdownMenuGroup>
+            <Link href="/courses">
+              <DropdownMenuItem
+                className="cursor-pointer"
+                disabled={props.pathname[0] === 'courses'}
+              >
+                <Book className="w-4 h-4 mr-2" />
+                <span>Courses</span>
+                <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+              </DropdownMenuItem>
+            </Link>
+          </DropdownMenuGroup>
         )}
+        <DropdownMenuSeparator />
+        <Link href="/settings">
+          <DropdownMenuItem
+            className="cursor-auto"
+            disabled={props.pathname[0] === 'settings'}
+          >
+            <Settings className="w-4 h-4 mr-2" />
+            <span>Settings</span>
+            <DropdownMenuShortcut>⇧⌘S</DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </Link>
+        <Link href="/profile">
+          <DropdownMenuItem
+            className="cursor-auto"
+            disabled={props.pathname[0] === 'profile'}
+          >
+            <UserSquare className="w-4 h-4 mr-2" />
+            <span>Profile</span>
+            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </Link>
         <DropdownMenuSeparator />
         <Link href="https://github.com/jaredthejellyfish/byteninja/tree/main">
           <DropdownMenuItem className="cursor-pointer">
@@ -112,18 +120,11 @@ export function ProfileDropdown(props: Props) {
             <span>GitHub</span>
           </DropdownMenuItem>
         </Link>
-        <Link href="https://github.com/jaredthejellyfish/byteninja/issues">
-          <DropdownMenuItem className="cursor-pointer">
-            <LifeBuoy className="w-4 h-4 mr-2" />
-            <span>Support</span>
-          </DropdownMenuItem>
-        </Link>
         <DropdownMenuItem className="cursor-auto" disabled>
           <Cloud className="w-4 h-4 mr-2" />
           <span>API</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-
         <DropdownMenuItem
           className="cursor-pointer"
           onClick={() => (props.authStatus ? signOut() : signIn())}

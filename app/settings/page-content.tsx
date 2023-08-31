@@ -25,10 +25,6 @@ const LoginConnectionsPage = dynamic(
   () => import('./settings-pages/login-connections'),
 );
 
-const BlankSettingsPage = (props: { user: UserWithSettings }) => {
-  return <pre>{JSON.stringify(props.user, null, 2)}</pre>;
-};
-
 const menuVariants = {
   closed: {
     opacity: 0,
