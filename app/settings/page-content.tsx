@@ -3,10 +3,21 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Separator } from '@radix-ui/react-dropdown-menu';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useMutation } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
 
-import { UserWithSettings } from '@/lib/types/types';
+import {
+  AuthUpdate,
+  ExtendedSession,
+  ExtendedUser,
+  UserWithSettings,
+  UserWithoutPassword,
+} from '@/lib/types/types';
+import { AuthState, reset, set } from '@/redux/features/authSlice';
+import { toast } from '@/components/ui/use-toast';
+import { useAppDispatch } from '@/redux/hooks';
 import { cn } from '@/lib/utils/cn';
 
 const GeneralSettingsPage = dynamic(() => import('./settings-pages/general'));
@@ -38,11 +49,72 @@ const menuVariants = {
   },
 };
 
+async function fetchUpdateUser(user: ExtendedUser) {
+  const authUpdateData: AuthUpdate = {
+    id: user.id!,
+    name: user.name!,
+    email: user.email!,
+    image: user.image!,
+    username: user.username!,
+  };
+
+  const response = await fetch('/api/user/update', {
+    method: 'POST',
+    body: JSON.stringify(authUpdateData),
+  });
+
+  return response.json() as Promise<{ user: UserWithoutPassword }>;
+}
+
 const SettingsContent = ({ user }: { user: UserWithSettings }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
-
+  const dispatch = useAppDispatch();
   const section = searchParams.get('s');
+  const { update, data: session } = useSession();
+
+  const { mutate: updateUser, isLoading } = useMutation(fetchUpdateUser, {
+    onSuccess: async ({ user }: { user: UserWithoutPassword }) => {
+      dispatch(reset());
+
+      const newReduxUser: AuthState = {
+        id: user.id,
+        user: {
+          name: user.name!,
+          email: user.email!,
+          image: user.image!,
+        },
+      };
+
+      dispatch(set(newReduxUser));
+
+      const newSession = {
+        expires: session?.expires ?? undefined,
+        user: {
+          email: user.email!,
+          id: user.id!,
+          image: user.image!,
+          name: user.name!,
+        },
+      };
+
+      await update(newSession);
+
+      toast({
+        title: 'Success!',
+        description: 'Your settings have been updated.',
+      });
+
+      router.refresh();
+    },
+    onError: (error: Error) => {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! An error occurred :C',
+        description: error.message,
+      });
+    },
+  });
 
   const sectionFromSearchProper = section
     ? section.toLowerCase().slice(0, 1).toUpperCase() + section.slice(1)
@@ -102,7 +174,16 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
                   animate={activePage === page.name ? 'open' : 'closed'}
                   className="mt-5"
                 >
-                  {<ActivePageComponent user={user} key={0} />}
+                  {
+                    <ActivePageComponent
+                      user={user}
+                      key={0}
+                      updateUser={updateUser}
+                      updateSession={update}
+                      session={session as ExtendedSession}
+                      isLoading={isLoading}
+                    />
+                  }
                 </motion.div>
               </div>
             </div>
@@ -114,7 +195,16 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
           {settingsPages.map((page) => {
             if (page.name === activePage) {
               const ActivePageComponent = page.component;
-              return <ActivePageComponent user={user} key={0} />;
+              return (
+                <ActivePageComponent
+                  user={user}
+                  key={0}
+                  updateUser={updateUser}
+                  updateSession={update}
+                  session={session as ExtendedSession}
+                  isLoading={isLoading}
+                />
+              );
             }
             return null;
           })}

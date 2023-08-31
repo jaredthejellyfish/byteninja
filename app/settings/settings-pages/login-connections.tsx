@@ -172,7 +172,7 @@ function ConnectionLabels(props: { accounts: UserWithSettings['accounts'] }) {
   });
 }
 
-const LoginConnectionsPage = (props: { user: UserWithSettings }) => {
+function LoginConnectionsPage(props: { user: UserWithSettings }) {
   const accounts = props.user.accounts;
 
   const registeredProviders = accounts.map((account) => account.provider);
@@ -190,7 +190,7 @@ const LoginConnectionsPage = (props: { user: UserWithSettings }) => {
           service.
         </p>
         {unusedProviders.length > 0 && (
-          <div className="px-5 mt-4 border border-zinc-300 dark:border-zinc-700  rounded-lg dark:bg-neutral-900/40 shadow-sm">
+          <div className="px-5 mt-4 border border-zinc-300 dark:border-zinc-700 rounded-lg dark:bg-neutral-900/40 shadow-sm">
             <h3 className="pt-3.5 pb-3 text-base">Add new:</h3>
             <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
             <div className="flex flex-row py-3 gap-x-3">
@@ -216,6 +216,6 @@ const LoginConnectionsPage = (props: { user: UserWithSettings }) => {
       </div>
     </div>
   );
-};
+}
 
 export default LoginConnectionsPage;

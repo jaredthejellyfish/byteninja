@@ -1,4 +1,5 @@
-import React from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
+import React, { Suspense } from 'react';
 
 import PageContainer from '@/components/page-container';
 import { Separator } from '@/components/ui/separator';
@@ -14,7 +15,11 @@ const SettingsPage = async () => {
         Account Settings
       </h2>
       <Separator className="lg:ml-[-40px] sm:ml-[-20px] ml-0 w-screen mb-10" />
-      <SettingsContent user={user!} />
+      <ErrorBoundary fallback={<div>Something went wrong</div>}>
+        <Suspense fallback={<div>Loading...</div>}>
+          <SettingsContent user={user!} />
+        </Suspense>
+      </ErrorBoundary>
     </PageContainer>
   );
 };

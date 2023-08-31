@@ -1,21 +1,18 @@
 import React, { FormEvent, useEffect, useMemo } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { UseMutateFunction } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
-import Image from 'next/image';
 import * as z from 'zod';
 
 import {
-  AuthUpdate,
+  ExtendedSession,
   ExtendedUser,
   UserWithoutPassword,
 } from '@/lib/types/types';
-import { AuthState, set, reset } from '@/redux/features/authSlice';
-import PasswordSection from './update-password-section';
+import PasswordSection from './general-sections/update-password-section';
+import AvatarSection from './general-sections/avatar-section';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
-import { useAppDispatch } from '@/redux/hooks';
 import { Input } from '@/components/ui/input';
 
 const GeneralSettingsFormSchema = z.object({
@@ -46,12 +43,10 @@ type GeneralSectionProps = {
   info: SectionInfoType;
   user: ExtendedUser;
   disabled: boolean;
-  //eslint-disable-next-line no-unused-vars
   onSubmit: (e: DefaultValuesType) => void;
 };
 
 type defaultValuesType<K extends SectionId> = {
-  // eslint-disable-next-line no-unused-vars
   [key in K]: string;
 };
 
@@ -131,54 +126,20 @@ function GeneralSection(props: GeneralSectionProps) {
   );
 }
 
-async function postUser(user: ExtendedUser) {
-  const authUpdateData: AuthUpdate = {
-    id: user.id!,
-    name: user.name!,
-    email: user.email!,
-    image: user.image!,
-    username: user.username!,
-  };
-
-  const response = await fetch('/api/user/update', {
-    method: 'POST',
-    body: JSON.stringify(authUpdateData),
-  });
-
-  return response.json() as Promise<{ user: UserWithoutPassword }>;
-}
-
-function GeneralSettingsPage(props: { user: ExtendedUser }) {
+function GeneralSettingsPage(props: {
+  user: ExtendedUser;
+  updateUser: UseMutateFunction<
+    { user: UserWithoutPassword },
+    Error,
+    ExtendedUser
+  >;
+  isLoading: boolean;
+  updateSession: () => void;
+  session: ExtendedSession;
+}) {
   const FormSchema = GeneralSettingsFormSchema;
-  const router = useRouter();
-  const dispatch = useAppDispatch();
 
-  const { mutate: updateUser, isLoading } = useMutation(postUser, {
-    onSuccess: ({ user }: { user: UserWithoutPassword }) => {
-      toast({
-        title: 'Success!',
-        description: 'Your settings have been updated.',
-      });
-
-      const newReduxUser: AuthState = {
-        id: user.id,
-        user: {
-          name: user.name!,
-          email: user.email!,
-          image: user.image!,
-        },
-      };
-
-      dispatch(set(newReduxUser));
-
-      router.refresh();
-    },
-    onError: (error) => {
-      console.log(error);
-    },
-  });
-
-  const user = props.user;
+  const { user, updateUser, isLoading, updateSession, session } = props;
 
   function onSubmit(event: FormEvent | DefaultValuesType) {
     try {
@@ -186,8 +147,6 @@ function GeneralSettingsPage(props: { user: ExtendedUser }) {
         ...user,
         ...event,
       };
-
-      dispatch(reset());
 
       if (JSON.stringify(updatedUser) === JSON.stringify(user))
         throw new Error('No changes were made.');
@@ -240,40 +199,11 @@ function GeneralSettingsPage(props: { user: ExtendedUser }) {
         />
       ))}
       <PasswordSection disabled={isLoading} />
-
-      <div className="border rounded-lg dark:bg-neutral-900/40 mb-10">
-        <form onSubmit={onSubmit} className="relative flex flex-col w-full">
-          <div className="p-5">
-            <h3 className="mb-2 text-xl font-semibold">Your Avatar</h3>
-            <p className="pb-0 text-sm text-neutral-400 sm:w-full w-3/4">
-              This is your avatar.
-              <br /> Click on the avatar to upload a custom one from your files.
-            </p>
-            {!!user && !!user.image && (
-              <Image
-                src={user.image}
-                alt="user avatar"
-                className="absolute rounded-full top-7 sm:top-6 right-5"
-                width={70}
-                height={70}
-              />
-            )}
-          </div>
-          <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
-          <div className="flex flex-row items-center justify-between px-5 py-2">
-            <span className="text-xs sm:text-sm text-neutral-400">
-              An avatar is optional but strongly recommended.
-            </span>
-            <Button
-              variant={'ghost'}
-              disabled={true}
-              className="p-0 px-4 border border-neutral-200 dark:border-neutral-700"
-            >
-              Save
-            </Button>
-          </div>
-        </form>
-      </div>
+      <AvatarSection
+        user={user}
+        updateSession={updateSession}
+        session={session}
+      />
     </div>
   );
 }

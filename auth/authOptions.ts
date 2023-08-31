@@ -7,8 +7,19 @@ import { PrismaAdapter } from '@auth/prisma-adapter';
 import { PrismaClient } from '@prisma/client';
 import { AuthOptions } from 'next-auth';
 import { compare } from 'bcryptjs';
+import { z } from 'zod';
 
 import { ExtendedSession } from '@/lib/types/types';
+
+const SessionSchema = z.object({
+  expires: z.union([z.string(), z.undefined()]),
+  user: z.object({
+    email: z.string().email(),
+    id: z.string().cuid(),
+    image: z.string(),
+    name: z.string(),
+  }),
+});
 
 const prisma = new PrismaClient();
 
@@ -80,10 +91,22 @@ export const authOptions: AuthOptions = {
     }),
   ],
   callbacks: {
-    jwt: async ({ token, user }) => {
+    jwt: async ({ token, user, session }) => {
       if (user) {
         token.id = user.id;
       }
+
+      if (session) {
+        const sessionSchema = SessionSchema.safeParse(session);
+
+        if (sessionSchema.success) {
+          token.id = sessionSchema.data.user.id;
+          token.name = sessionSchema.data.user.name;
+          token.email = sessionSchema.data.user.email;
+          token.picture = sessionSchema.data.user.image;
+        }
+      }
+
       return token;
     },
     session: async ({ session, token }) => {

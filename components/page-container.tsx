@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils/cn';
 
 type Props = {
   className?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 };
 
 const PageContainer = (props: Props) => {

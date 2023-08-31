@@ -11,7 +11,6 @@ import {
   Book,
 } from 'lucide-react';
 import { signIn, signOut } from 'next-auth/react';
-import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
@@ -25,9 +24,8 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import ProfileIcon from '@/public/icons/profile-icon.svg';
-import { Skeleton } from '../ui/skeleton';
-import { cn } from '@/lib/utils/cn';
 
 interface Props {
   image: string;
@@ -42,22 +40,22 @@ export function ProfileDropdown(props: Props) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <div className="pt-0.5">
-          <Skeleton
-            className="h-[32px] w-[32px] rounded-full ml-5 border-neutral-800 border"
-            hidden={!!props.image || !props.authStatus}
-          />
+          <Avatar className="h-[35px] w-[35px] ml-4 border-neutral-300 dark:border-neutral-700 shadow-sm border">
+            <AvatarImage
+              src={props.authStatus ? props.image : ProfileIcon}
+              alt="Profile Image"
+              hidden={!props.image && props.authStatus}
+            />
 
-          <Image
-            alt="Profile Image"
-            src={props.image || ProfileIcon}
-            hidden={!props.image && props.authStatus}
-            className={cn(
-              'rounded-full ml-5 dark:border-neutral-800 border-neutral-300 border',
-              !props.authStatus && 'p-1 dark:bg-white',
-            )}
-            width={35}
-            height={35}
-          />
+            <AvatarFallback className="text-xs">
+              {props.name &&
+                props.name
+                  .split(' ')
+                  .slice(0, 2)
+                  .map((x) => x.charAt(0).toUpperCase())
+                  .join('')}
+            </AvatarFallback>
+          </Avatar>
         </div>
       </DropdownMenuTrigger>
 

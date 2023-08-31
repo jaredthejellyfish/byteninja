@@ -113,7 +113,7 @@ const Navigation = () => {
         <ProfileDropdown
           pathname={pathname}
           authStatus={status === 'authenticated'}
-          image={auth?.user?.image ?? ''}
+          image={session?.user?.image ?? ''}
           name={auth?.user?.name ?? ''}
           id={auth?.id ?? ''}
         />

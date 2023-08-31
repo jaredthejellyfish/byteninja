@@ -1,5 +1,6 @@
 import { AuthOptions, getServerSession } from 'next-auth';
 import { Inter } from 'next/font/google';
+import '@uploadthing/react/styles.css';
 import type { Metadata } from 'next';
 import React from 'react';
 

@@ -46,14 +46,9 @@ function generateIncludes(
 }
 
 export async function getServerUser(): Promise<GetServerUserType<'default'>>;
-// eslint-disable-next-line no-redeclare
 export async function getServerUser<
   T extends 'settings' | 'courses' | 'default',
->(
-  // eslint-disable-next-line no-unused-vars
-  includes: T,
-): Promise<GetServerUserType<T>>;
-// eslint-disable-next-line no-redeclare
+>(includes: T): Promise<GetServerUserType<T>>;
 export async function getServerUser<
   T extends 'settings' | 'courses' | 'default' = 'default',
 >(includes?: T): Promise<GetServerUserType<T>> {

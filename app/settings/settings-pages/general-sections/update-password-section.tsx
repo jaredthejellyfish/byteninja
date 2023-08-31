@@ -32,7 +32,7 @@ async function fetchUpdatePassword({
 export default function PasswordSection(props: { disabled: boolean }) {
   const { disabled } = props;
 
-  const { register, handleSubmit, reset } = useForm<{
+  const { register, handleSubmit, reset, watch } = useForm<{
     oldPassword: string;
     newPassword: string;
   }>({});
@@ -92,7 +92,12 @@ export default function PasswordSection(props: { disabled: boolean }) {
           </span>
           <Button
             variant={'ghost'}
-            disabled={isLoading || disabled}
+            disabled={
+              isLoading ||
+              disabled ||
+              !watch('oldPassword') ||
+              !watch('newPassword')
+            }
             className="p-0 px-4 border border-neutral-200 dark:border-neutral-700"
           >
             Save

@@ -14,6 +14,10 @@ task(
       command('pnpm prisma generate');
     }),
 
+    runs('ESLint', () => {
+      commandLive('pnpm eslint --fix .');
+    }),
+
     runs('TSC Checks', () => {
       commandLive('pnpm tsc-checks');
       command('rm -rf tsconfig.tsbuildinfo', true);
