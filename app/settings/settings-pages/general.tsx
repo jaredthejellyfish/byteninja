@@ -1,6 +1,5 @@
-import React, { FormEvent, useEffect, useMemo } from 'react';
 import { UseMutateFunction } from '@tanstack/react-query';
-import { useForm } from 'react-hook-form';
+import React, { FormEvent } from 'react';
 import * as z from 'zod';
 
 import {
@@ -8,12 +7,10 @@ import {
   ExtendedUser,
   UserWithoutPassword,
 } from '@/lib/types/types';
-import PasswordSection from './general-sections/update-password-section';
+import PasswordSection from './general-sections/password-section';
+import GeneralSection from './general-sections/general-section';
 import AvatarSection from './general-sections/avatar-section';
-import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 
 const GeneralSettingsFormSchema = z.object({
   id: z.string(),
@@ -31,19 +28,12 @@ export type GeneralSettingsFormSchemaType = z.infer<
 
 type SectionId = 'id' | 'name' | 'username' | 'email' | 'image';
 
-type SectionInfoType = {
+export type SectionInfoType = {
   id: SectionId;
   title: string;
   description: string;
   secondaryDescription: string;
   placeholder: string;
-};
-
-type GeneralSectionProps = {
-  info: SectionInfoType;
-  user: ExtendedUser;
-  disabled: boolean;
-  onSubmit: (e: DefaultValuesType) => void;
 };
 
 type defaultValuesType<K extends SectionId> = {
@@ -77,54 +67,6 @@ const generalSettingsSections: SectionInfoType[] = [
     secondaryDescription: 'We will email you to verify the change.',
   },
 ];
-
-function GeneralSection(props: GeneralSectionProps) {
-  const { info, disabled, user, onSubmit } = props;
-
-  const defaultValues: DefaultValuesType = useMemo(() => {
-    return {
-      [info.id]: user[info.id]!,
-    } as DefaultValuesType;
-  }, [info.id, user]);
-
-  const { register, handleSubmit, setValue, watch } =
-    useForm<DefaultValuesType>({
-      defaultValues,
-    });
-
-  useEffect(() => {
-    setValue(info.id, defaultValues[info.id]);
-  }, [defaultValues, setValue, info.id]);
-
-  return (
-    <div className="border rounded-lg dark:bg-neutral-900/40 shadow-sm">
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col w-full">
-        <div className="p-5">
-          <h3 className="mb-2 text-xl font-semibold">{info.title}</h3>
-          <p className="text-sm pb-1 text-neutral-400">{info.description}</p>
-          <Input
-            placeholder={info.placeholder}
-            {...register(info.id)}
-            className="max-w-[650px]"
-          />
-        </div>
-        <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
-        <div className="flex flex-row items-center justify-between px-5 py-2">
-          <span className="text-xs sm:text-sm text-neutral-400">
-            {info.secondaryDescription}
-          </span>
-          <Button
-            variant={'ghost'}
-            disabled={watch(info.id) === user[info.id] || disabled}
-            className="p-0 px-4 border border-neutral-200 dark:border-neutral-700"
-          >
-            Save
-          </Button>
-        </div>
-      </form>
-    </div>
-  );
-}
 
 function GeneralSettingsPage(props: {
   user: ExtendedUser;

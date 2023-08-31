@@ -26,7 +26,8 @@ export async function POST(request: Request) {
       },
     });
     return NextResponse.json({ user: newUser });
-  } catch (error) {
-    return NextResponse.error();
+  } catch (e) {
+    const error = e as Error;
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
