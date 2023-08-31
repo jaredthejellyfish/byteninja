@@ -14,10 +14,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import DiscordIcon from '@/public/icons/discord-icon.svg';
+import { deleteUserConnection } from '../server-actions';
 import GithubIcon from '@/public/icons/github-icon.svg';
 import TwitchIcon from '@/public/icons/twitch-icon.svg';
 import GoogleIcon from '@/public/icons/google-icon.svg';
-import { deleteUserConnection } from '../server-actions';
 import { UserWithSettings } from '@/lib/types/types';
 import { toast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils/cn';

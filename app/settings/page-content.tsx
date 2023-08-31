@@ -14,9 +14,9 @@ import {
 } from '@/lib/types/types';
 import { AuthState, reset, set } from '@/redux/features/authSlice';
 import NotificationsPage from './settings-pages/notifications';
-import { updateUser } from './server-actions';
 import { toast } from '@/components/ui/use-toast';
 import { useAppDispatch } from '@/redux/hooks';
+import { updateUser } from './server-actions';
 import { cn } from '@/lib/utils/cn';
 
 const GeneralSettingsPage = dynamic(() => import('./settings-pages/general'));
