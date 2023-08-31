@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { MoreHorizontal } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import { format } from 'timeago.js';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
@@ -20,7 +21,6 @@ import GoogleIcon from '@/public/icons/google-icon.svg';
 import { UserWithSettings } from '@/lib/types/types';
 import { toast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils/cn';
-import { format } from 'timeago.js';
 
 const providers = [
   {
@@ -127,7 +127,7 @@ function ConnectionLabels(props: { accounts: UserWithSettings['accounts'] }) {
 
     return (
       <div
-        className="flex flex-col mt-3 border-neutral-700 rounded border"
+        className="flex flex-col mt-3 border rounded border-neutral-700"
         key={id}
       >
         <div className="bg-black flex flex-row items-center justify-between px-5 py-3.5">
@@ -149,7 +149,7 @@ function ConnectionLabels(props: { accounts: UserWithSettings['accounts'] }) {
             </div>
           </div>
           <div className="flex gap-4">
-            <span className="text-xs font-light text-neutral-400 items-center justify-center hidden sm:flex">
+            <span className="items-center justify-center hidden text-xs font-light text-neutral-400 sm:flex">
               Connected {format(updated_at)}
             </span>
             <DropdownMenu>
@@ -184,32 +184,32 @@ const LoginConnectionsPage = (props: { user: UserWithSettings }) => {
     <div>
       <div className="">
         <h3 className="text-xl">Login Connections:</h3>
-        <p className="text-sm text-neutral-400 mb-2 lg:w-3/4 mt-2">
+        <p className="mt-2 mb-2 text-sm text-neutral-400 lg:w-3/4">
           Connect your Personal Account on ByteNinja with a third-party service
           to use it for login. One Login Connection can be added per third-party
           service.
         </p>
-          {unusedProviders.length > 0 && (
-            <div className="border rounded-lg dark:bg-neutral-900/40 mt-4 px-5">
-              <h3 className="pt-3.5 pb-3 text-base">Add new:</h3>
-              <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
-              <div className="flex flex-row gap-x-3 py-3">
-                {unusedProviders.map((provider) => (
-                  <ProviderLabel key={provider.name} provider={provider.name} />
-                ))}
-              </div>
-              <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
-              <span className="pt-4 pb-4 text-xs font-light text-neutral-400 flex flex-row items-center gap-1">
-                Learn more about
-                <Link
-                  href="https://auth0.com/intro-to-iam/what-is-oauth-2"
-                  className="text-blue-600"
-                >
-                  Login Connections.
-                </Link>
-              </span>
+        {unusedProviders.length > 0 && (
+          <div className="px-5 mt-4 border rounded-lg dark:bg-neutral-900/40">
+            <h3 className="pt-3.5 pb-3 text-base">Add new:</h3>
+            <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
+            <div className="flex flex-row py-3 gap-x-3">
+              {unusedProviders.map((provider) => (
+                <ProviderLabel key={provider.name} provider={provider.name} />
+              ))}
             </div>
-          )}
+            <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
+            <span className="flex flex-row items-center gap-1 pt-4 pb-4 text-xs font-light text-neutral-400">
+              Learn more about
+              <Link
+                href="https://auth0.com/intro-to-iam/what-is-oauth-2"
+                className="text-blue-600"
+              >
+                Login Connections.
+              </Link>
+            </span>
+          </div>
+        )}
         <div className="mt-8">
           <ConnectionLabels accounts={accounts} />
         </div>

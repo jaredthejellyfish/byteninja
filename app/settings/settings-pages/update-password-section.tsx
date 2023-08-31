@@ -32,10 +32,10 @@ async function fetchUpdatePassword({
 export default function PasswordSection(props: { disabled: boolean }) {
   const { disabled } = props;
 
-    const { register, handleSubmit, reset } = useForm<{
-      oldPassword: string;
-      newPassword: string;
-    }>({});
+  const { register, handleSubmit, reset } = useForm<{
+    oldPassword: string;
+    newPassword: string;
+  }>({});
 
   const { mutate: updatePassword, isLoading } = useMutation(
     fetchUpdatePassword,
@@ -57,8 +57,6 @@ export default function PasswordSection(props: { disabled: boolean }) {
       },
     },
   );
-
-
 
   return (
     <div className="border rounded-lg dark:bg-neutral-900/40">

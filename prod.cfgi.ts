@@ -6,12 +6,14 @@ task(
   'dev',
   () => {},
   [
-    runs('Prettier', () => {
-      command('pnpm prettier --write .');
+    runs('Git Add', () => {
+      command('git add .');
     }),
 
-    runs('Prisma Generate', () => {
-      command('pnpm prisma generate');
+    runs('Commit messge and commit', () => {
+      commandLive(
+        'read -p "Please enter your name: " username && echo "Hello, $username!"',
+      );
     }),
 
     runs('TSC Checks', () => {
@@ -22,7 +24,7 @@ task(
       command('rm -rf tsconfig.tsbuildinfo');
     }),
 
-    runs('Next Development Server', () => {
+    runs('Next Build', () => {
       commandLive('pnpm next build');
     }),
   ],

@@ -44,13 +44,11 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
 
   const section = searchParams.get('s');
 
-  const sectionProper = section
+  const sectionFromSearchProper = section
     ? section.toLowerCase().slice(0, 1).toUpperCase() + section.slice(1)
     : 'General';
 
-  console.log(sectionProper);
-
-  const [activePage, setActivePage] = useState(sectionProper);
+  const [activePage, setActivePage] = useState(sectionFromSearchProper);
 
   const settingsPages = [
     { name: 'General', component: GeneralSettingsPage },
@@ -64,9 +62,10 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
       // if the window is defined, check the size of the screen
       if (window.innerWidth < 640) {
         setActivePage('');
+        router.replace('/settings');
       }
     }
-  }, []);
+  }, [router]);
 
   return (
     <div className="flex flex-row px-0 sm:px-10 h-[calc(100vh - 170px)]">
@@ -86,9 +85,11 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
                 )}
                 onClick={() => {
                   setActivePage(page.name === activePage ? '' : page.name);
-                  router.replace(
-                    `/settings?s=${page.name.toLocaleLowerCase()}`,
-                  );
+                  page.name === activePage
+                    ? router.replace('/settings')
+                    : router.replace(
+                        `/settings?s=${page.name.toLocaleLowerCase()}`,
+                      );
                 }}
               >
                 <span>{page.name}</span>
