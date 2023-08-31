@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Separator } from '@radix-ui/react-dropdown-menu';
 import { motion, AnimatePresence } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
@@ -8,15 +9,10 @@ import dynamic from 'next/dynamic';
 import { UserWithSettings } from '@/lib/types/types';
 import { cn } from '@/lib/utils/cn';
 
-const GeneralSettingsPage = dynamic(() => import('./settings-pages/general'), {
-  ssr: false,
-});
+const GeneralSettingsPage = dynamic(() => import('./settings-pages/general'));
 
 const LoginConnectionsPage = dynamic(
   () => import('./settings-pages/login-connections'),
-  {
-    ssr: false,
-  },
 );
 
 const BlankSettingsPage = (props: { user: UserWithSettings }) => {
@@ -43,7 +39,18 @@ const menuVariants = {
 };
 
 const SettingsContent = ({ user }: { user: UserWithSettings }) => {
-  const [activePage, setActivePage] = useState('General');
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const section = searchParams.get('s');
+
+  const sectionProper = section
+    ? section.toLowerCase().slice(0, 1).toUpperCase() + section.slice(1)
+    : 'General';
+
+  console.log(sectionProper);
+
+  const [activePage, setActivePage] = useState(sectionProper);
 
   const settingsPages = [
     { name: 'General', component: GeneralSettingsPage },
@@ -77,9 +84,12 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
                   activePage === page.name &&
                     'text-black dark:text-neutral-50 font-medium',
                 )}
-                onClick={() =>
-                  setActivePage(page.name === activePage ? '' : page.name)
-                }
+                onClick={() => {
+                  setActivePage(page.name === activePage ? '' : page.name);
+                  router.replace(
+                    `/settings?s=${page.name.toLocaleLowerCase()}`,
+                  );
+                }}
               >
                 <span>{page.name}</span>
               </div>

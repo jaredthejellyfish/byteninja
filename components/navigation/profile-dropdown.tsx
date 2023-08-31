@@ -114,10 +114,12 @@ export function ProfileDropdown(props: Props) {
             <span>GitHub</span>
           </DropdownMenuItem>
         </Link>
-        <DropdownMenuItem className="cursor-auto" disabled>
-          <LifeBuoy className="w-4 h-4 mr-2" />
-          <span>Support</span>
-        </DropdownMenuItem>
+        <Link href="https://github.com/jaredthejellyfish/byteninja/issues">
+          <DropdownMenuItem className="cursor-pointer">
+            <LifeBuoy className="w-4 h-4 mr-2" />
+            <span>Support</span>
+          </DropdownMenuItem>
+        </Link>
         <DropdownMenuItem className="cursor-auto" disabled>
           <Cloud className="w-4 h-4 mr-2" />
           <span>API</span>
