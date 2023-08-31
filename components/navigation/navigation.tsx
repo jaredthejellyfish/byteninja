@@ -18,75 +18,21 @@ const SiteLogo = () => (
     <Image
       className="block dark:hidden"
       src={SiteLogoLight}
-      width={50}
-      height={50}
+      width={60}
+      height={60}
       alt="logo"
     />
     <Image
       className="hidden dark:block"
       src={SiteLogoDark}
-      width={50}
-      height={50}
+      width={60}
+      height={60}
       alt="logo"
     />
   </Link>
 );
 
-const NavigationLeftDisplay = ({ pathname }: { pathname: string[] }) => {
-  const currentCourse = useAppSelector((state) => state.currentCourseReducer);
 
-  switch (pathname[0]) {
-    case 'courses':
-      if (currentCourse.name)
-        return (
-          <div className="flex flex-row items-center justify-center gap-1">
-            {currentCourse.image ? (
-              <Image
-                className="rounded-full"
-                src={currentCourse.image}
-                width={50}
-                height={50}
-                alt="logo"
-              />
-            ) : (
-              <SiteLogo />
-            )}
-            <h2 className="font-medium">{currentCourse.name}</h2>
-          </div>
-        );
-      else
-        return (
-          <div className="flex flex-row items-center justify-center gap-1">
-            <SiteLogo />
-            <h2 className="font-medium">Courses</h2>
-          </div>
-        );
-
-    case 'settings':
-      return (
-        <div className="flex flex-row items-center justify-center gap-1">
-          <SiteLogo />
-          <h2 className="font-medium">Settings</h2>
-        </div>
-      );
-
-    case undefined: // Home
-      return (
-        <div className="flex flex-row items-center justify-center gap-1">
-          <SiteLogo />
-          <h2 className="font-medium">Home</h2>
-        </div>
-      );
-
-    default:
-      return (
-        <div className="flex flex-row items-center justify-center gap-1">
-          <SiteLogo />
-          <h2 className="font-medium">ByteNinja</h2>
-        </div>
-      );
-  }
-};
 
 const Navigation = () => {
   const { data: session, status } = useSession();
@@ -105,11 +51,16 @@ const Navigation = () => {
 
   return (
     <nav className="shadow border-b fixed top-0 left-0 right-0 border-b-neutral-800/20 h-[62px] dark:border-b-neutral-800 dark:bg-black bg-white flex flex-row items-center px-5 lg:px-11 justify-between">
-      <div id="nav-left" className="flex w-2/3 pt-0.5">
-        <NavigationLeftDisplay pathname={pathname} />
+      <div id="nav-left" className="flex w-2/3">
+        <div className="flex flex-row items-center justify-center gap-1">
+          <SiteLogo />
+          <h2 className="text-xl tracking-wide">
+            Byte<span className='text-neutral-400'>Ninja</span>
+          </h2>
+        </div>
       </div>
       <div id="nav-right" className="flex items-center justify-end w-1/3">
-        <DarkModeToggle className="mt-0.5 dark:bg-neutral-950 dark:text-white bg-white text-black hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-black border border-neutral-200 dark:border-neutral-800 focus-visible:dark:border-neutral-800" />
+        <DarkModeToggle className="dark:bg-neutral-950 dark:text-white bg-white text-black hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-black border border-neutral-200 dark:border-neutral-800 focus-visible:dark:border-neutral-800" />
         <ProfileDropdown
           pathname={pathname}
           authStatus={status === 'authenticated'}

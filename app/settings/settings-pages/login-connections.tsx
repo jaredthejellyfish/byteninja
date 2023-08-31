@@ -166,7 +166,7 @@ function ConnectionLabels(props: { accounts: UserWithSettings['accounts'] }) {
   });
 }
 
-function LoginConnectionsPage(props) {
+function LoginConnectionsPage(props: { user: UserWithSettings }) {
   const accounts = props.user.accounts;
 
   const registeredProviders = accounts.map((account) => account.provider);

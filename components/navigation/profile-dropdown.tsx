@@ -39,7 +39,6 @@ export function ProfileDropdown(props: Props) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <div className="pt-0.5">
           <Avatar className="h-[35px] w-[35px] ml-4 border-neutral-300 dark:border-neutral-700 shadow-sm border">
             <AvatarImage
               src={props.authStatus ? props.image : ProfileIcon}
@@ -56,7 +55,6 @@ export function ProfileDropdown(props: Props) {
                   .join('')}
             </AvatarFallback>
           </Avatar>
-        </div>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="w-56" align="end">

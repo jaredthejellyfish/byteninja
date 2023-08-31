@@ -8,7 +8,7 @@ import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-export default function PasswordSection(props) {
+export default function PasswordSection(props: { disabled: boolean }) {
   const [isLoading, startTransition] = useTransition();
   const { disabled } = props;
 

@@ -106,7 +106,16 @@ export default function NotificationsPage(props: { user: UserWithSettings }) {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isLoading}>
+        <Button
+          type="submit"
+          disabled={
+            isLoading ||
+            form.watch('emailNotifications') ===
+              props.user.settings.emailNotifications &&
+            form.watch('pushNotifications') ===
+              props.user.settings.pushNotifications
+          }
+        >
           Submit
         </Button>
       </form>
