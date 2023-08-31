@@ -13,6 +13,10 @@ task(
     runs('Commit baby commit!', () => {
       commandLive('npx commitgpt');
     }),
+
+    runs('Push to GitHub', () => {
+      commandLive('git push');
+    }),
   ],
   options,
 );
