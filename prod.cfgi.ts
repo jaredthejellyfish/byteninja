@@ -10,22 +10,8 @@ task(
       command('git add .');
     }),
 
-    runs('Commit messge and commit', () => {
-      commandLive(
-        'read -p "Please enter your name: " username && echo "Hello, $username!"',
-      );
-    }),
-
-    runs('TSC Checks', () => {
-      command('pnpm tsc --noEmit --strict');
-    }),
-
-    runs('Remove TSBuildinfo', () => {
-      command('rm -rf tsconfig.tsbuildinfo');
-    }),
-
-    runs('Next Build', () => {
-      commandLive('pnpm next build');
+    runs('Commit baby commit!', () => {
+      commandLive('npx commitgpt');
     }),
   ],
   options,
