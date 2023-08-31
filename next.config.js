@@ -6,7 +6,7 @@ const nextConfig = {
     typedRoutes: true,
   },
   images: {
-    domains: ['avatars.githubusercontent.com'],
+    domains: ['avatars.githubusercontent.com', 'uploadthing.com'],
   },
 };
 
