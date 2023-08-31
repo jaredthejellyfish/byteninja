@@ -177,7 +177,7 @@ function LoginConnectionsPage(props: { user: UserWithSettings }) {
   return (
     <div>
       <div className="">
-        <h3 className="text-xl">Login Connections:</h3>
+        <h3 className="text-xl">Login Connections</h3>
         <p className="mt-2 mb-2 text-sm text-neutral-400 lg:w-3/4">
           Connect your Personal Account on ByteNinja with a third-party service
           to use it for login. One Login Connection can be added per third-party
@@ -204,7 +204,7 @@ function LoginConnectionsPage(props: { user: UserWithSettings }) {
             </span>
           </div>
         )}
-        <div className="mt-8">
+        <div className={cn('mt-8', unusedProviders.length < 1 ? 'mt-4' : '')}>
           <ConnectionLabels accounts={accounts} />
         </div>
       </div>

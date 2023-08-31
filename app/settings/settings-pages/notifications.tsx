@@ -48,6 +48,11 @@ export default function NotificationsPage(props: Props) {
   }
   return (
     <Form {...form}>
+      <h3 className="text-xl">Notification Settings</h3>
+      <p className="mt-2 mb-3 text-sm text-neutral-400 lg:w-3/4">
+        Configure the notification settings for your account on this page to
+        tailor your experience to your preferences.
+      </p>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
