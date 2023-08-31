@@ -3,12 +3,12 @@ import { useForm } from 'react-hook-form';
 import { useTransition } from 'react';
 import React from 'react';
 
-import { updatePassword } from '../server-actions';
+import { updatePassword } from '../../server-actions';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-export default function PasswordSection(props: { disabled: boolean }) {
+export default function PasswordSection(props) {
   const [isLoading, startTransition] = useTransition();
   const { disabled } = props;
 

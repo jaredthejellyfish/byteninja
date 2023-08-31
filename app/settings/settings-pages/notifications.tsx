@@ -11,7 +11,7 @@ import {
   FormItem,
   FormLabel,
 } from '@/components/ui/form';
-import { updateUserSettings } from './server-actions';
+import { updateUserSettings } from '../server-actions';
 import { UserWithSettings } from '@/lib/types/types';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from '@/components/ui/use-toast';
@@ -28,7 +28,7 @@ const FormSchema = z.object({
   emailNotifications: z.boolean().default(false).optional(),
 });
 
-export default function NotificationsPage(props: Props) {
+export default function NotificationsPage(props) {
   const [isLoading, startTransition] = useTransition();
   const router = useRouter();
 
