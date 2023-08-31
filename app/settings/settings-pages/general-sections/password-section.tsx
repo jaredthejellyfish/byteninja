@@ -1,35 +1,15 @@
 import { Separator } from '@radix-ui/react-dropdown-menu';
-import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
+import { useTransition } from 'react';
 import React from 'react';
 
+import { updatePassword } from '../server-actions';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-async function fetchUpdatePassword({
-  oldPassword,
-  newPassword,
-}: {
-  oldPassword: string;
-  newPassword: string;
-}) {
-  if (!oldPassword || !newPassword) throw new Error('Please fill all fields.');
-  if (oldPassword === newPassword)
-    throw new Error('Your new password cannot be the same as your old one.');
-
-  const res = await fetch('/api/user/password', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ oldPassword, newPassword }),
-  });
-
-  return res.json();
-}
-
 export default function PasswordSection(props: { disabled: boolean }) {
+  const [isLoading, startTransition] = useTransition();
   const { disabled } = props;
 
   const { register, handleSubmit, reset, watch } = useForm<{
@@ -37,31 +17,30 @@ export default function PasswordSection(props: { disabled: boolean }) {
     newPassword: string;
   }>({});
 
-  const { mutate: updatePassword, isLoading } = useMutation(
-    fetchUpdatePassword,
-    {
-      onSuccess: () => {
+  function onSubmit(passwords: { oldPassword: string; newPassword: string }) {
+    startTransition(async () => {
+      try {
+        await updatePassword({ passwords });
         reset();
         toast({
           title: 'Success!',
-          description: 'Your settings have been updated.',
+          description: 'Your password has been updated.',
         });
-      },
-      onError: (e) => {
+      } catch (e) {
         const error = e as Error;
         toast({
           variant: 'destructive',
-          title: 'Error!',
+          title: 'Error',
           description: error.message,
         });
-      },
-    },
-  );
+      }
+    });
+  }
 
   return (
     <div className="border rounded-lg dark:bg-neutral-900/40 shadow-sm">
       <form
-        onSubmit={handleSubmit((password) => updatePassword(password))}
+        onSubmit={handleSubmit((passwords) => onSubmit(passwords))}
         className="flex flex-col w-full"
       >
         <div className="p-5">

@@ -1,11 +1,10 @@
-import { UseMutateFunction } from '@tanstack/react-query';
 import React, { FormEvent } from 'react';
 import * as z from 'zod';
 
 import {
   ExtendedSession,
   ExtendedUser,
-  UserWithoutPassword,
+  UserWithSettings,
 } from '@/lib/types/types';
 import PasswordSection from './general-sections/password-section';
 import GeneralSection from './general-sections/general-section';
@@ -70,11 +69,7 @@ const generalSettingsSections: SectionInfoType[] = [
 
 function GeneralSettingsPage(props: {
   user: ExtendedUser;
-  updateUser: UseMutateFunction<
-    { user: UserWithoutPassword },
-    Error,
-    ExtendedUser
-  >;
+  updateUser: (user: UserWithSettings) => void;
   isLoading: boolean;
   updateSession: () => void;
   session: ExtendedSession;
@@ -102,7 +97,7 @@ function GeneralSettingsPage(props: {
         throw isValid.error;
       }
 
-      updateUser(updatedUser);
+      updateUser(updatedUser as UserWithSettings);
     } catch (err) {
       if (err instanceof z.ZodError) {
         const errorMessages = err.errors.map((error) => {

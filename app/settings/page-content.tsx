@@ -3,22 +3,21 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Separator } from '@radix-ui/react-dropdown-menu';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useMutation } from '@tanstack/react-query';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useTransition } from 'react';
 import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
 
 import {
   AuthUpdate,
   ExtendedSession,
-  ExtendedUser,
   UserWithSettings,
-  UserWithoutPassword,
 } from '@/lib/types/types';
 import { AuthState, reset, set } from '@/redux/features/authSlice';
+import NotificationsPage from './settings-pages/notifications';
 import { toast } from '@/components/ui/use-toast';
 import { useAppDispatch } from '@/redux/hooks';
 import { cn } from '@/lib/utils/cn';
+import { updateUser } from './settings-pages/server-actions';
 
 const GeneralSettingsPage = dynamic(() => import('./settings-pages/general'));
 
@@ -49,22 +48,6 @@ const menuVariants = {
   },
 };
 
-async function fetchUpdateUser(user: ExtendedUser) {
-  const authUpdateData: AuthUpdate = {
-    id: user.id!,
-    name: user.name!,
-    email: user.email!,
-    image: user.image!,
-    username: user.username!,
-  };
-
-  const response = await fetch('/api/user/update', {
-    method: 'POST',
-    body: JSON.stringify(authUpdateData),
-  });
-
-  return response.json() as Promise<{ user: UserWithoutPassword }>;
-}
 
 const SettingsContent = ({ user }: { user: UserWithSettings }) => {
   const searchParams = useSearchParams();
@@ -72,10 +55,21 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
   const dispatch = useAppDispatch();
   const section = searchParams.get('s');
   const { update, data: session } = useSession();
+  const [isLoading, startTransition] = useTransition();
 
-  const { mutate: updateUser, isLoading } = useMutation(fetchUpdateUser, {
-    onSuccess: async ({ user }: { user: UserWithoutPassword }) => {
-      dispatch(reset());
+  const updateUserTransition = (user: UserWithSettings) => {
+    const authUpdateData: AuthUpdate = {
+    id: user.id!,
+    name: user.name!,
+    email: user.email!,
+    image: user.image!,
+    username: user.username!,
+  };
+
+    startTransition(async () => {
+      try {
+        await updateUser({user: authUpdateData});
+        dispatch(reset());
 
       const newReduxUser: AuthState = {
         id: user.id,
@@ -106,15 +100,18 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
       });
 
       router.refresh();
-    },
-    onError: (error: Error) => {
-      toast({
+      } catch (e) {
+        const error = e as Error;
+        toast({
         variant: 'destructive',
         title: 'Uh oh! An error occurred :C',
         description: error.message,
       });
-    },
-  });
+      }
+    });
+  }
+
+ 
 
   const sectionFromSearchProper = section
     ? section.toLowerCase().slice(0, 1).toUpperCase() + section.slice(1)
@@ -126,7 +123,7 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
     { name: 'General', component: GeneralSettingsPage },
     { name: 'Login', component: LoginConnectionsPage },
     { name: 'Billing', component: BlankSettingsPage },
-    { name: 'Notifications', component: BlankSettingsPage },
+    { name: 'Notifications', component: NotificationsPage },
   ];
 
   useEffect(() => {
@@ -178,7 +175,7 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
                     <ActivePageComponent
                       user={user}
                       key={0}
-                      updateUser={updateUser}
+                      updateUser={updateUserTransition}
                       updateSession={update}
                       session={session as ExtendedSession}
                       isLoading={isLoading}
@@ -199,7 +196,7 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
                 <ActivePageComponent
                   user={user}
                   key={0}
-                  updateUser={updateUser}
+                  updateUser={updateUserTransition}
                   updateSession={update}
                   session={session as ExtendedSession}
                   isLoading={isLoading}

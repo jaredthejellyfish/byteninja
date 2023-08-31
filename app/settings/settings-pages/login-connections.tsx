@@ -1,12 +1,11 @@
 import { Separator } from '@radix-ui/react-dropdown-menu';
-import { useMutation } from '@tanstack/react-query';
 import { MoreHorizontal } from 'lucide-react';
+import React, { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { format } from 'timeago.js';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
 
 import {
   DropdownMenu,
@@ -18,6 +17,7 @@ import DiscordIcon from '@/public/icons/discord-icon.svg';
 import GithubIcon from '@/public/icons/github-icon.svg';
 import TwitchIcon from '@/public/icons/twitch-icon.svg';
 import GoogleIcon from '@/public/icons/google-icon.svg';
+import { deleteUserConnection } from './server-actions';
 import { UserWithSettings } from '@/lib/types/types';
 import { toast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils/cn';
@@ -81,37 +81,30 @@ function ProviderLabel(props: { provider: string }) {
   );
 }
 
-async function fetchDeleteConnection({ id }: { id: string }) {
-  const res = await fetch('/api/user/delete-connection', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ id }),
-  });
-
-  return res.json();
-}
-
 function ConnectionLabels(props: { accounts: UserWithSettings['accounts'] }) {
   const router = useRouter();
-  const { mutate: deleteConnection } = useMutation(fetchDeleteConnection, {
-    onSuccess: () => {
-      toast({
-        title: 'Success!',
-        description: 'The connection has been deleted.',
-      });
-      router.refresh();
-    },
-    onError: (e) => {
-      const error = e as Error;
-      toast({
-        variant: 'destructive',
-        title: 'Error!',
-        description: error.message,
-      });
-    },
-  });
+
+  const [isLoading, startTransition] = useTransition();
+
+  async function onDelete({ id }: { id: string }) {
+    startTransition(async () => {
+      try {
+        await deleteUserConnection({ connectionId: { id } });
+        toast({
+          title: 'Success!',
+          description: 'The connection has been deleted successfully.',
+        });
+        router.refresh();
+      } catch (e) {
+        const error = e as Error;
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: error.message,
+        });
+      }
+    });
+  }
 
   return props.accounts.map((account) => {
     const { id, provider, updated_at } = account;
@@ -159,7 +152,8 @@ function ConnectionLabels(props: { accounts: UserWithSettings['accounts'] }) {
               <DropdownMenuContent>
                 <DropdownMenuItem
                   className="text-red-700"
-                  onClick={() => deleteConnection({ id })}
+                  onClick={() => onDelete({ id })}
+                  disabled={isLoading}
                 >
                   Delete
                 </DropdownMenuItem>
