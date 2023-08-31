@@ -102,7 +102,7 @@ function GeneralSection(props: GeneralSectionProps) {
   }, [defaultValues, setValue, info.id]);
 
   return (
-    <div className="border rounded-lg dark:bg-neutral-900/40">
+    <div className="border rounded-lg dark:bg-neutral-900/40 shadow-sm">
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col w-full">
         <div className="p-5">
           <h3 className="mb-2 text-xl font-semibold">{info.title}</h3>

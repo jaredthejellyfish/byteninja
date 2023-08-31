@@ -59,7 +59,7 @@ export default function PasswordSection(props: { disabled: boolean }) {
   );
 
   return (
-    <div className="border rounded-lg dark:bg-neutral-900/40">
+    <div className="border rounded-lg dark:bg-neutral-900/40 shadow-sm">
       <form
         onSubmit={handleSubmit((password) => updatePassword(password))}
         className="flex flex-col w-full"

@@ -15,9 +15,7 @@ task(
     }),
 
     runs('TSC Checks', () => {
-      commandLive(
-        'pnpm tsc-checks',
-      );
+      commandLive('pnpm tsc-checks');
       command('rm -rf tsconfig.tsbuildinfo', true);
     }),
   ],

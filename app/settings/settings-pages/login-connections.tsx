@@ -74,7 +74,7 @@ function ProviderLabel(props: { provider: string }) {
         height={providerData.wh}
         width={providerData.wh}
       />
-      <span className="text-sm font-medium">
+      <span className="text-sm font-medium text-white">
         {providerData.name.charAt(0).toUpperCase() + providerData.name.slice(1)}
       </span>
     </div>
@@ -127,15 +127,15 @@ function ConnectionLabels(props: { accounts: UserWithSettings['accounts'] }) {
 
     return (
       <div
-        className="flex flex-col mt-3 border rounded border-neutral-700"
+        className="flex flex-col mt-3 border rounded border-neutral-300 shadow-sm dark:border-neutral-700"
         key={id}
       >
-        <div className="bg-black flex flex-row items-center justify-between px-5 py-3.5">
+        <div className="dark:bg-black text-neutral-600 flex flex-row items-center justify-between px-5 py-3.5">
           <div className="flex flex-row items-center justify-center">
             <Image
               src={providers.find((p) => p.name === provider)?.icon}
               alt={`${provider} icon`}
-              className="filter invert"
+              className="filter dark:invert"
               height={wh}
               width={wh * 1.5}
             />
@@ -190,7 +190,7 @@ const LoginConnectionsPage = (props: { user: UserWithSettings }) => {
           service.
         </p>
         {unusedProviders.length > 0 && (
-          <div className="px-5 mt-4 border rounded-lg dark:bg-neutral-900/40">
+          <div className="px-5 mt-4 border border-zinc-300 dark:border-zinc-700  rounded-lg dark:bg-neutral-900/40 shadow-sm">
             <h3 className="pt-3.5 pb-3 text-base">Add new:</h3>
             <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
             <div className="flex flex-row py-3 gap-x-3">
