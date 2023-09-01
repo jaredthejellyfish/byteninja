@@ -12,12 +12,12 @@ import prisma from '../prisma';
 
 type GetServerUserType<T extends 'settings' | 'courses' | 'default'> =
   T extends 'default'
-    ? { user: UserWithoutPassword; isError: boolean; error: null }
+    ? { user: UserWithoutPassword; isError: boolean; error: string }
     : T extends 'courses'
-    ? { user: UserWithCourses; isError: boolean; error: null }
+    ? { user: UserWithCourses; isError: boolean; error: string }
     : T extends 'settings'
-    ? { user: UserWithSettings; isError: boolean; error: null }
-    : { user: null; isError: boolean; error: string | null };
+    ? { user: UserWithSettings; isError: boolean; error: string }
+    : { user: null; isError: true; error: string };
 
 function generateIncludes(
   includes: 'settings' | 'courses' | 'default' = 'default',
@@ -80,11 +80,10 @@ export async function getServerUser<
       return {
         user: userWithoutPassword as ExtendedUser,
         isError: false,
-        error: null,
+        error: '',
       } as GetServerUserType<T>;
-    } else {
-      throw new Error('User not found');
     }
+    throw new Error('User not found');
   } catch (e: unknown) {
     const error = e as Error;
     const message = error.message || 'Error getting user';

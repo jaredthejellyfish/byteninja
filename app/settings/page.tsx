@@ -1,10 +1,16 @@
 import { ErrorBoundary } from 'react-error-boundary';
 import React, { Suspense } from 'react';
+import type { Metadata } from 'next';
 
 import PageContainer from '@/components/page-container';
 import { Separator } from '@/components/ui/separator';
 import useUserWithAuth from '@/hooks/useUserWithAuth';
 import SettingsContent from './page-content';
+
+export const metadata: Metadata = {
+  title: 'ByteNinja | Settings',
+  description: 'Created by Gerard Hernandez',
+};
 
 const SettingsPage = async () => {
   const { user } = await useUserWithAuth('settings');

@@ -1,8 +1,13 @@
+import type { Metadata } from 'next';
 import React from 'react';
 
 import PageContainer from '@/components/page-container';
 import useUserWithAuth from '@/hooks/useUserWithAuth';
 import CourseCard from '@/components/course-card';
+
+export const metadata: Metadata = {
+  title: 'ByteNinja | Courses',
+};
 
 const CoursesPage = async () => {
   const { user } = await useUserWithAuth('courses');

@@ -5,6 +5,7 @@ import { getServerSession } from 'next-auth';
 import { compare, hash } from 'bcryptjs';
 
 import { AuthUpdate, ExtendedSession } from '@/lib/types/types';
+import { areValuesEqual } from '@/lib/utils/areValuesEqual';
 import { authOptions } from '@/auth/authOptions';
 import prisma from '@/lib/prisma';
 
@@ -96,7 +97,7 @@ export async function updatePassword({
     },
   });
 
-  if (!updatedUser) {
+  if (!updatedUser || updatedUser.password !== hashedNewPassword) {
     throw new Error('Could not update user');
   }
 }
@@ -119,7 +120,7 @@ export async function updateUser({ user }: { user: AuthUpdate }) {
     },
   });
 
-  if (!newUser) {
+  if (!newUser || !areValuesEqual(user, newUser)) {
     throw new Error('Could not update user');
   }
 }
@@ -157,7 +158,10 @@ export async function updateUserSettings({
     },
   });
 
-  if (!updatedUserSettings) {
+  if (
+    !updatedUserSettings ||
+    !areValuesEqual(settings, updatedUserSettings)
+  ) {
     throw new Error('Could not update user settings');
   }
 }

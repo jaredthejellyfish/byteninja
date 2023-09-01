@@ -68,7 +68,7 @@ export default function AvatarSection(props: Props) {
                     </div>
                   );
 
-                if (isUploading) return 'Uploading...';
+                if (isUploading) return <div>Uploading...</div>;
 
                 return 'Getting ready...';
               },

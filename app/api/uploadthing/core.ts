@@ -1,33 +1,49 @@
 import { createUploadthing, type FileRouter } from 'uploadthing/next';
-import { getServerSession } from 'next-auth';
+import { utapi } from 'uploadthing/server';
 
-import { ExtendedSession } from '@/lib/types/types';
-import { authOptions } from '@/auth/authOptions';
+import { getServerUser } from '@/lib/utils/getServerUser';
 import prisma from '@/lib/prisma';
 
 const f = createUploadthing();
 
-// FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
   profileImage: f({ image: { maxFileSize: '4MB' } })
     .middleware(async () => {
-      // This code runs on your server before upload
-      const session = (await getServerSession(authOptions)) as ExtendedSession;
+      const { user, isError, error } = await getServerUser();
+      const oldFileKey = user.image?.split('/').pop();
 
-      // If you throw, the user will not be able to upload
-      if (!session) throw new Error('Unauthorized');
+      if (!user) throw new Error('Unauthorized');
+      if (isError) throw error;
 
-      // Whatever is returned here is accessible in onUploadComplete as `metadata`
-      return { userId: session.user.id };
+      return { userId: user.id, oldFileKey };
+    })
+    .onUploadError(async (message) => {
+      console.error(message);
     })
     .onUploadComplete(async ({ metadata, file }) => {
       const userId = metadata.userId;
       const fileUrl = file.url;
+      const fileExtension = file.url.split('.').pop();
+      const newFileName = `profileImage_${userId}.${fileExtension}`;
 
-      await prisma.user.update({
+      const updatedUser = await prisma.user.update({
         where: { id: userId },
         data: { image: fileUrl },
       });
+
+      if (
+        !updatedUser ||
+        updatedUser.image !== fileUrl ||
+        updatedUser.id !== userId
+      )
+        throw new Error('Error updating database!');
+
+      if (metadata.oldFileKey) await utapi.deleteFiles(metadata.oldFileKey);
+      if (metadata.userId)
+        await utapi.renameFile({
+          fileKey: file.key,
+          newName: newFileName,
+        });
     }),
 } satisfies FileRouter;
 

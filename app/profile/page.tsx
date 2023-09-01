@@ -1,7 +1,23 @@
+import type { Metadata } from 'next';
 import React from 'react';
 
+import { getServerUser } from '@/lib/utils/getServerUser';
 import PageContainer from '@/components/page-container';
 import useUserWithAuth from '@/hooks/useUserWithAuth';
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { user, isError } = await getServerUser('default');
+
+  if (isError) {
+    return {
+      title: 'ByteNinja | Profile',
+    };
+  }
+
+  return {
+    title: `ByteNinja | ${user?.username}`,
+  };
+}
 
 export default async function Profile() {
   const { user } = await useUserWithAuth('settings');
