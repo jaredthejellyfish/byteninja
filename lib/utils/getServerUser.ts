@@ -38,7 +38,8 @@ function generateIncludes(
       };
     case 'courses':
       return {
-        courses: true,
+        authoredCourses: true,
+        subscribedCourse: true,
       };
     default:
       return {};

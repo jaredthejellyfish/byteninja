@@ -3,7 +3,7 @@ import prisma from '@/lib/prisma';
 
 export default async function getCourseBySlug(
   slug: string,
-): Promise<{course: CurrentCourse | null, isError: boolean, error?: string}> {
+): Promise<{ course: CurrentCourse | null; isError: boolean; error?: string }> {
   try {
     const currentCourse = await prisma.course.findUnique({
       where: {

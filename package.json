@@ -58,6 +58,7 @@
     "zod": "^3.22.2"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.0.2",
     "@total-typescript/ts-reset": "^0.5.1",
     "@types/bcrypt": "^5.0.0",
     "@types/bcryptjs": "^2.4.3",

@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useEffect, useState, useTransition } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Separator } from '@radix-ui/react-dropdown-menu';
 import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useTransition } from 'react';
 import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
 
@@ -106,11 +106,22 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
     });
   };
 
+  const checkIfMobile = () => {
+    if (typeof window !== 'undefined' && window.innerWidth < 640) return true;
+    return false;
+  };
+
+  const sectionIfMobileDefault = checkIfMobile() ? '' : 'General';
+
   const sectionFromSearchProper = section
     ? section.toLowerCase().slice(0, 1).toUpperCase() + section.slice(1)
-    : 'General';
+    : sectionIfMobileDefault;
 
   const [activePage, setActivePage] = useState(sectionFromSearchProper);
+
+  if (document) {
+    document.title = `${activePage || 'Settings'} | ByteNinja`;
+  }
 
   const settingsPages = [
     { name: 'General', component: GeneralSettingsPage },
@@ -118,16 +129,6 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
     //{ name: 'Billing', component: BlankSettingsPage },
     { name: 'Notifications', component: NotificationsPage },
   ];
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      // if the window is defined, check the size of the screen
-      if (window.innerWidth < 640) {
-        setActivePage('');
-        router.replace('/settings');
-      }
-    }
-  }, [router]);
 
   return (
     <div className="flex flex-row px-0 sm:px-10 h-[calc(100vh - 170px)]">

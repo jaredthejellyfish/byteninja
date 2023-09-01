@@ -15,7 +15,8 @@ export interface UserWithSettings extends UserWithoutPassword {
 }
 
 export interface UserWithCourses extends UserWithoutPassword {
-  courses: Course[];
+  authoredCourses: Course[];
+  subscribedCourse?: Course;
 }
 
 export interface AuthUpdate {

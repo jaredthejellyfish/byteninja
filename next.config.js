@@ -6,7 +6,11 @@ const nextConfig = {
     typedRoutes: true,
   },
   images: {
-    domains: ['avatars.githubusercontent.com', 'uploadthing.com'],
+    domains: [
+      'avatars.githubusercontent.com',
+      'uploadthing.com',
+      'loremflickr.com',
+    ],
   },
 };
 

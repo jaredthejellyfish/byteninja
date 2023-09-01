@@ -43,19 +43,21 @@ model Session {
 }
 
 model User {
-  id            String        @id @default(cuid())
-  name          String?
-  username      String?       @unique
-  email         String?       @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?
-  created_at    DateTime      @default(now())
-  updated_at    DateTime      @default(now()) @updatedAt
-  settings      UserSettings?
-  accounts      Account[]
-  sessions      Session[]
-  courses       Course[]
+  id               String        @id @default(cuid())
+  name             String?
+  username         String?       @unique
+  email            String?       @unique
+  emailVerified    DateTime?
+  image            String?
+  password         String?
+  created_at       DateTime      @default(now())
+  updated_at       DateTime      @default(now()) @updatedAt
+  subCourseId      String?
+  settings         UserSettings?
+  accounts         Account[]
+  sessions         Session[]
+  authoredCourses  Course[]      @relation(name: "authoredCourses")
+  subscribedCourse Course?       @relation(name: "subscribedCourse", fields: [subCourseId], references: [id])
 
   @@map("users")
 }
@@ -91,10 +93,11 @@ model Course {
   description String
   image       String?
   authorId    String
-  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author      User     @relation(name: "authoredCourses", fields: [authorId], references: [id], onDelete: Cascade)
   lessons     Lesson[]
   created_at  DateTime @default(now())
   updated_at  DateTime @default(now()) @updatedAt
+  subscribers User[]   @relation(name: "subscribedCourse")
 
   @@map("courses")
 }

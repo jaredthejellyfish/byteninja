@@ -21,6 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Profile() {
   const { user } = await useUserWithAuth('settings');
+
   return (
     <PageContainer>
       <div>
