@@ -32,8 +32,6 @@ const SiteLogo = () => (
   </Link>
 );
 
-
-
 const Navigation = () => {
   const { data: session, status } = useSession();
 
@@ -55,7 +53,7 @@ const Navigation = () => {
         <div className="flex flex-row items-center justify-center gap-1">
           <SiteLogo />
           <h2 className="text-xl tracking-wide">
-            Byte<span className='text-neutral-400'>Ninja</span>
+            Byte<span className="text-neutral-400">Ninja</span>
           </h2>
         </div>
       </div>

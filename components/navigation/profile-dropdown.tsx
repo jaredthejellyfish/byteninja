@@ -39,22 +39,22 @@ export function ProfileDropdown(props: Props) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-          <Avatar className="h-[35px] w-[35px] ml-4 border-neutral-300 dark:border-neutral-700 shadow-sm border">
-            <AvatarImage
-              src={props.authStatus ? props.image : ProfileIcon}
-              alt="Profile Image"
-              hidden={!props.image && props.authStatus}
-            />
+        <Avatar className="h-[35px] w-[35px] ml-4 border-neutral-300 dark:border-neutral-700 shadow-sm border">
+          <AvatarImage
+            src={props.authStatus ? props.image : ProfileIcon}
+            alt="Profile Image"
+            hidden={!props.image && props.authStatus}
+          />
 
-            <AvatarFallback className="text-xs">
-              {props.name &&
-                props.name
-                  .split(' ')
-                  .slice(0, 2)
-                  .map((x) => x.charAt(0).toUpperCase())
-                  .join('')}
-            </AvatarFallback>
-          </Avatar>
+          <AvatarFallback className="text-xs">
+            {props.name &&
+              props.name
+                .split(' ')
+                .slice(0, 2)
+                .map((x) => x.charAt(0).toUpperCase())
+                .join('')}
+          </AvatarFallback>
+        </Avatar>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="w-56" align="end">

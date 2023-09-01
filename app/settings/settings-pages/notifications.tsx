@@ -110,10 +110,10 @@ export default function NotificationsPage(props: { user: UserWithSettings }) {
           type="submit"
           disabled={
             isLoading ||
-            form.watch('emailNotifications') ===
+            (form.watch('emailNotifications') ===
               props.user.settings.emailNotifications &&
-            form.watch('pushNotifications') ===
-              props.user.settings.pushNotifications
+              form.watch('pushNotifications') ===
+                props.user.settings.pushNotifications)
           }
         >
           Submit
