@@ -10,12 +10,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
   if (isError) {
     return {
-      title: 'ByteNinja | Profile',
+      title: 'Profile | ByteNinja',
     };
   }
 
   return {
-    title: `ByteNinja | ${user?.username}`,
+    title: `${user?.username} | ByteNinja`,
   };
 }
 

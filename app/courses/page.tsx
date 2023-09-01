@@ -6,7 +6,7 @@ import useUserWithAuth from '@/hooks/useUserWithAuth';
 import CourseCard from '@/components/course-card';
 
 export const metadata: Metadata = {
-  title: 'ByteNinja | Courses',
+  title: 'Courses | ByteNinja',
 };
 
 const CoursesPage = async () => {

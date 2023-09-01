@@ -8,8 +8,7 @@ import useUserWithAuth from '@/hooks/useUserWithAuth';
 import SettingsContent from './page-content';
 
 export const metadata: Metadata = {
-  title: 'ByteNinja | Settings',
-  description: 'Created by Gerard Hernandez',
+  title: 'Settings | ByteNinja',
 };
 
 const SettingsPage = async () => {

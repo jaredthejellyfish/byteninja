@@ -158,10 +158,7 @@ export async function updateUserSettings({
     },
   });
 
-  if (
-    !updatedUserSettings ||
-    !areValuesEqual(settings, updatedUserSettings)
-  ) {
+  if (!updatedUserSettings || !areValuesEqual(settings, updatedUserSettings)) {
     throw new Error('Could not update user settings');
   }
 }

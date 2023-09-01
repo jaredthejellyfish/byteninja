@@ -17,33 +17,37 @@ export const ourFileRouter = {
 
       return { userId: user.id, oldFileKey };
     })
-    .onUploadError(async (message) => {
-      console.error(message);
+    .onUploadError(async (error) => {
+      console.error(error);
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      const userId = metadata.userId;
-      const fileUrl = file.url;
-      const fileExtension = file.url.split('.').pop();
-      const newFileName = `profileImage_${userId}.${fileExtension}`;
+      try {
+        const userId = metadata.userId;
+        const fileUrl = file.url;
+        const fileExtension = file.url.split('.').pop();
+        const newFileName = `profileImage_${userId}.${fileExtension}`;
 
-      const updatedUser = await prisma.user.update({
-        where: { id: userId },
-        data: { image: fileUrl },
-      });
-
-      if (
-        !updatedUser ||
-        updatedUser.image !== fileUrl ||
-        updatedUser.id !== userId
-      )
-        throw new Error('Error updating database!');
-
-      if (metadata.oldFileKey) await utapi.deleteFiles(metadata.oldFileKey);
-      if (metadata.userId)
-        await utapi.renameFile({
-          fileKey: file.key,
-          newName: newFileName,
+        const updatedUser = await prisma.user.update({
+          where: { id: userId },
+          data: { image: fileUrl },
         });
+
+        if (
+          !updatedUser ||
+          updatedUser.image !== fileUrl ||
+          updatedUser.id !== userId
+        )
+          throw new Error('Error updating database!');
+
+        if (metadata.oldFileKey) await utapi.deleteFiles(metadata.oldFileKey);
+        if (metadata.userId)
+          await utapi.renameFile({
+            fileKey: file.key,
+            newName: newFileName,
+          });
+      } catch (error) {
+        console.error(error);
+      }
     }),
 } satisfies FileRouter;
 

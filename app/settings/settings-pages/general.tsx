@@ -103,8 +103,7 @@ function GeneralSettingsPage(props: {
         const errorMessages = err.errors.map((error) => {
           return { message: error.message, name: error.path[0] };
         });
-
-        console.log(errorMessages);
+        
         toast({
           variant: 'destructive',
           title: `Uh oh! ${
