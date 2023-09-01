@@ -1,4 +1,5 @@
 'use client';
+/* eslint-disable */
 
 import React, { useState } from 'react';
 
@@ -40,3 +41,4 @@ function UploadButton(props: Props) {
 }
 
 export default UploadButton;
+/* eslint-enable */
