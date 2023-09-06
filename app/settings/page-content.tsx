@@ -82,7 +82,7 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
     <div className="flex flex-row px-0 sm:px-10">
       <div
         id="left"
-        className="flex flex-col sm:w-1/4 ml-[-12px] gap-0.5 justify-center sm:justify-start sm:items-start w-full"
+        className="flex flex-col md:w-1/4 ml-[-12px] gap-0.5 justify-center sm:justify-start sm:items-start w-full"
       >
         {settingsPages.map((page) => {
           const ActivePageComponent = page.component;
