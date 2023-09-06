@@ -6,7 +6,7 @@ type Props = {
   className?: string;
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
-  id: string;
+  id?: string;
 };
 
 const PageContainer = (props: Props) => {
