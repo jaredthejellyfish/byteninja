@@ -22,8 +22,12 @@ task(
       command('rm -rf tsconfig.tsbuildinfo');
     }),
 
+    runs('Delete old .next folder', () => {
+      command('rm -rf .next');
+    }),
+
     runs('Next Development Server', () => {
-      commandLive('pnpm dev');
+      commandLive('pnpm next dev');
     }),
   ],
   options,
