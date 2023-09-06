@@ -23,7 +23,7 @@ task(
     }),
 
     runs('Next Development Server', () => {
-      commandLive('pnpm next dev');
+      commandLive('pnpm dev');
     }),
   ],
   options,
