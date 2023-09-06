@@ -1,6 +1,7 @@
-import React, { useTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import { UserSettings } from '@prisma/client';
 import { useForm } from 'react-hook-form';
+import dynamic from 'next/dynamic';
+import React from 'react';
 import { z } from 'zod';
 
 import {
@@ -11,10 +12,9 @@ import {
   FormItem,
   FormLabel,
 } from '@/components/ui/form';
-import { updateUserSettings } from '../server-actions';
+import useMutateUserSettings from '@/hooks/useMutateUserSettings';
 import { UserWithSettings } from '@/lib/types/types';
 import { Checkbox } from '@/components/ui/checkbox';
-import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 
 type FormValues = z.infer<typeof FormSchema>;
@@ -24,9 +24,8 @@ const FormSchema = z.object({
   emailNotifications: z.boolean().default(false).optional(),
 });
 
-export default function NotificationsPage(props: { user: UserWithSettings }) {
-  const [isLoading, startTransition] = useTransition();
-  const router = useRouter();
+function NotificationsPage(props: { user: UserWithSettings }) {
+  const { mutateUserSettings, isLoading } = useMutateUserSettings();
 
   const form = useForm<FormValues>({
     defaultValues: {
@@ -36,23 +35,10 @@ export default function NotificationsPage(props: { user: UserWithSettings }) {
   });
 
   function onSubmit(data: FormValues) {
-    startTransition(async () => {
-      try {
-        await updateUserSettings({ settings: data, id: props.user.id });
-        toast({
-          title: 'Success!',
-          description: 'The connection has been deleted successfully.',
-        });
-        router.refresh();
-      } catch (e) {
-        const error = e as Error;
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: error.message,
-        });
-      }
-    });
+    const updatedSettings: Partial<UserSettings> = {
+      ...data,
+    };
+    mutateUserSettings({ id: props.user.id, settings: updatedSettings });
   }
 
   return (
@@ -122,3 +108,5 @@ export default function NotificationsPage(props: { user: UserWithSettings }) {
     </Form>
   );
 }
+
+export default dynamic(() => Promise.resolve(NotificationsPage));

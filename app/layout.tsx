@@ -31,7 +31,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <GoogleAnalytics GA_MEASUREMENT_ID="G-YE1ND0HBBW" />
-      <body className={inter.className}>
+      <body className={inter.className + ' ' + 'overflow-y-hidden'}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ReduxProvider>
             <Providers session={session}>

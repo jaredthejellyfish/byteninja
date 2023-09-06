@@ -25,6 +25,7 @@ export default async function getPaginatedCourses({
   courses: Course[] | [];
   isError: boolean;
   error: string;
+  coursesCount: number;
 }> {
   try {
     const count = await prisma.course.count();
@@ -32,18 +33,24 @@ export default async function getPaginatedCourses({
     const fixedPageSize = pageSize > count ? count : pageSize;
 
     if (page > totalPages) {
-      return { courses: [], isError: false, error: 'null' };
+      return {
+        courses: [],
+        isError: false,
+        error: 'null',
+        coursesCount: count,
+      };
     }
 
     const courses = await fetchCourses(page, fixedPageSize);
 
-    return { courses, isError: false, error: 'null' };
+    return { courses, isError: false, error: 'null', coursesCount: count };
   } catch (e) {
     const error = e as Error;
     return {
       courses: [],
       isError: true,
       error: error.message,
+      coursesCount: 0,
     };
   }
 }

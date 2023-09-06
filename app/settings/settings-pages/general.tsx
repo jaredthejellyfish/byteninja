@@ -1,4 +1,5 @@
 import React, { FormEvent } from 'react';
+import dynamic from 'next/dynamic';
 import * as z from 'zod';
 
 import {
@@ -143,5 +144,4 @@ function GeneralSettingsPage(props: {
     </div>
   );
 }
-
-export default GeneralSettingsPage;
+export default dynamic(() => Promise.resolve(GeneralSettingsPage));

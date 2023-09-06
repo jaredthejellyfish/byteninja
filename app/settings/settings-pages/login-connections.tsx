@@ -1,11 +1,11 @@
 import { Separator } from '@radix-ui/react-dropdown-menu';
 import { MoreHorizontal } from 'lucide-react';
-import React, { useTransition } from 'react';
-import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { format } from 'timeago.js';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
+import React from 'react';
 
 import {
   DropdownMenu,
@@ -13,13 +13,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import useDeleteUserConnection from '@/hooks/useDeleteUserConnection';
 import DiscordIcon from '@/public/icons/discord-icon.svg';
-import { deleteUserConnection } from '../server-actions';
 import GithubIcon from '@/public/icons/github-icon.svg';
 import TwitchIcon from '@/public/icons/twitch-icon.svg';
 import GoogleIcon from '@/public/icons/google-icon.svg';
 import { UserWithSettings } from '@/lib/types/types';
-import { toast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils/cn';
 
 const providers = [
@@ -82,28 +81,10 @@ function ProviderLabel(props: { provider: string }) {
 }
 
 function ConnectionLabels(props: { accounts: UserWithSettings['accounts'] }) {
-  const router = useRouter();
+  const { deleteUserConnection, isLoading } = useDeleteUserConnection();
 
-  const [isLoading, startTransition] = useTransition();
-
-  async function onDelete({ id }: { id: string }) {
-    startTransition(async () => {
-      try {
-        await deleteUserConnection({ connectionId: { id } });
-        toast({
-          title: 'Success!',
-          description: 'The connection has been deleted successfully.',
-        });
-        router.refresh();
-      } catch (e) {
-        const error = e as Error;
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: error.message,
-        });
-      }
-    });
+  function onDelete({ id }: { id: string }) {
+    deleteUserConnection(id);
   }
 
   return props.accounts.map((account) => {
@@ -175,41 +156,39 @@ function LoginConnectionsPage(props: { user: UserWithSettings }) {
   );
 
   return (
-    <div>
-      <div className="">
-        <h3 className="text-xl">Login Connections</h3>
-        <p className="mt-2 mb-2 text-sm text-neutral-400 lg:w-3/4">
-          Connect your Personal Account on ByteNinja with a third-party service
-          to use it for login. One Login Connection can be added per third-party
-          service.
-        </p>
-        {unusedProviders.length > 0 && (
-          <div className="px-5 mt-4 border border-zinc-300 dark:border-zinc-700 rounded-lg dark:bg-neutral-900/40 shadow-sm">
-            <h3 className="pt-3.5 pb-3 text-base">Add new:</h3>
-            <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
-            <div className="flex flex-row py-3 gap-x-3">
-              {unusedProviders.map((provider) => (
-                <ProviderLabel key={provider.name} provider={provider.name} />
-              ))}
-            </div>
-            <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
-            <span className="flex flex-row items-center gap-1 pt-4 pb-4 text-xs font-light text-neutral-400">
-              Learn more about
-              <Link
-                href="https://auth0.com/intro-to-iam/what-is-oauth-2"
-                className="text-blue-600"
-              >
-                Login Connections.
-              </Link>
-            </span>
+    <div className="">
+      <h3 className="text-xl">Login Connections</h3>
+      <p className="mt-2 mb-2 text-sm text-neutral-400 lg:w-3/4">
+        Connect your Personal Account on ByteNinja with a third-party service to
+        use it for login. One Login Connection can be added per third-party
+        service.
+      </p>
+      {unusedProviders.length > 0 && (
+        <div className="px-5 mt-4 border border-zinc-300 dark:border-zinc-700 rounded-lg dark:bg-neutral-900/40 shadow-sm">
+          <h3 className="pt-3.5 pb-3 text-base">Add new:</h3>
+          <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
+          <div className="flex flex-row py-3 gap-x-3">
+            {unusedProviders.map((provider) => (
+              <ProviderLabel key={provider.name} provider={provider.name} />
+            ))}
           </div>
-        )}
-        <div className={cn('mt-8', unusedProviders.length < 1 ? 'mt-4' : '')}>
-          <ConnectionLabels accounts={accounts} />
+          <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800" />
+          <span className="flex flex-row items-center gap-1 pt-4 pb-4 text-xs font-light text-neutral-400">
+            Learn more about
+            <Link
+              href="https://auth0.com/intro-to-iam/what-is-oauth-2"
+              className="text-blue-600"
+            >
+              Login Connections.
+            </Link>
+          </span>
         </div>
+      )}
+      <div className={cn('mt-8', unusedProviders.length < 1 ? 'mt-4' : '')}>
+        <ConnectionLabels accounts={accounts} />
       </div>
     </div>
   );
 }
 
-export default LoginConnectionsPage;
+export default dynamic(() => Promise.resolve(LoginConnectionsPage));

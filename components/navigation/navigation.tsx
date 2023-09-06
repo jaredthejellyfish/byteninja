@@ -35,17 +35,21 @@ const SiteLogo = () => (
 const Navigation = () => {
   const { data: session, status } = useSession();
 
-  const auth = useAppSelector((state) => state.authReducer);
+  const user = useAppSelector((state) => state.authReducer.user);
   const dispatch = useAppDispatch();
   const pathname = usePathname().split('/').filter(Boolean);
 
   useEffect(() => {
-    if (status === 'authenticated' && session) {
-      dispatch(set(session as AuthState));
-    } else {
-      dispatch(reset());
-    }
-  }, [status, dispatch, session]);
+    const updateRedux = () => {
+      if (status === 'authenticated' && session) {
+        dispatch(set(session as AuthState));
+      } else {
+        dispatch(reset());
+      }
+    };
+
+    updateRedux();
+  }, [status, session, dispatch]);
 
   return (
     <nav className="shadow border-b fixed top-0 left-0 right-0 border-b-neutral-800/20 h-[62px] dark:border-b-neutral-800 dark:bg-black bg-white flex flex-row items-center px-5 lg:px-11 justify-between z-10">
@@ -63,8 +67,8 @@ const Navigation = () => {
           pathname={pathname}
           authStatus={status === 'authenticated'}
           image={session?.user?.image ?? ''}
-          name={auth?.user?.name ?? ''}
-          id={auth?.id ?? ''}
+          name={user?.name ?? ''}
+          id={user?.id ?? ''}
         />
       </div>
     </nav>

@@ -6,6 +6,7 @@ export type AuthState = {
     name: string;
     email: string;
     image: string;
+    id: string;
   };
   expires?: string;
 };
@@ -15,6 +16,7 @@ const initialState: AuthState = {
     name: '',
     email: '',
     image: '',
+    id: '',
   },
 };
 
@@ -28,6 +30,7 @@ export const auth = createSlice({
       state.user.name = action.payload.user.name;
       state.user.email = action.payload.user.email;
       state.user.image = action.payload.user.image;
+      state.user.id = action.payload.user.id;
       state.expires = action.payload.expires || state.expires;
     },
   },

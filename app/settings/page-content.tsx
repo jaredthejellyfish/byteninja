@@ -1,29 +1,17 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
 import { Separator } from '@radix-ui/react-dropdown-menu';
-import { motion, AnimatePresence } from 'framer-motion';
-import React, { useState, useTransition } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import dynamic from 'next/dynamic';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 
-import {
-  AuthUpdate,
-  ExtendedSession,
-  UserWithSettings,
-} from '@/lib/types/types';
-import { AuthState, reset, set } from '@/redux/features/authSlice';
+import LoginConnectionsPage from './settings-pages/login-connections';
+import { ExtendedSession, UserWithSettings } from '@/lib/types/types';
 import NotificationsPage from './settings-pages/notifications';
-import { toast } from '@/components/ui/use-toast';
-import { useAppDispatch } from '@/redux/hooks';
-import { updateUser } from './server-actions';
+import GeneralSettingsPage from './settings-pages/general';
+import useMutateUser from '@/hooks/useMutateUser';
 import { cn } from '@/lib/utils/cn';
-
-const GeneralSettingsPage = dynamic(() => import('./settings-pages/general'));
-
-const LoginConnectionsPage = dynamic(
-  () => import('./settings-pages/login-connections'),
-);
 
 const menuVariants = {
   closed: {
@@ -46,65 +34,11 @@ const menuVariants = {
 
 const SettingsContent = ({ user }: { user: UserWithSettings }) => {
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const dispatch = useAppDispatch();
+
   const section = searchParams.get('s');
   const { update, data: session } = useSession();
-  const [isLoading, startTransition] = useTransition();
 
-  const updateUserTransition = (user: UserWithSettings) => {
-    const authUpdateData: AuthUpdate = {
-      id: user.id!,
-      name: user.name!,
-      email: user.email!,
-      image: user.image!,
-      username: user.username!,
-    };
-
-    startTransition(async () => {
-      try {
-        await updateUser({ user: authUpdateData });
-        dispatch(reset());
-
-        const newReduxUser: AuthState = {
-          id: user.id,
-          user: {
-            name: user.name!,
-            email: user.email!,
-            image: user.image!,
-          },
-        };
-
-        dispatch(set(newReduxUser));
-
-        const newSession = {
-          expires: session?.expires ?? undefined,
-          user: {
-            email: user.email!,
-            id: user.id!,
-            image: user.image!,
-            name: user.name!,
-          },
-        };
-
-        await update(newSession);
-
-        toast({
-          title: 'Success!',
-          description: 'Your settings have been updated.',
-        });
-
-        router.refresh();
-      } catch (e) {
-        const error = e as Error;
-        toast({
-          variant: 'destructive',
-          title: 'Uh oh! An error occurred :C',
-          description: error.message,
-        });
-      }
-    });
-  };
+  const { mutateUser, isLoading } = useMutateUser();
 
   const checkIfMobile = () => {
     if (typeof window !== 'undefined' && window.innerWidth < 640) return true;
@@ -119,19 +53,33 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
 
   const [activePage, setActivePage] = useState(sectionFromSearchProper);
 
-  if (document) {
+  if (typeof document !== 'undefined' && !!document && !!activePage) {
     document.title = `${activePage || 'Settings'} | ByteNinja`;
   }
+
+  const replaceSearchParams = (newSection?: string) => {
+    const newParams = new URLSearchParams(window.location.search);
+    if (typeof window !== 'undefined' && newSection) {
+      newParams.set('s', newSection.toLocaleLowerCase());
+    } else {
+      newParams.delete('s');
+    }
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}${newParams.get('s') ? `?${newParams}` : ''}`,
+    );
+  };
 
   const settingsPages = [
     { name: 'General', component: GeneralSettingsPage },
     { name: 'Login', component: LoginConnectionsPage },
-    //{ name: 'Billing', component: BlankSettingsPage },
+    //s{ name: 'Billing', component: NotificationsPage },
     { name: 'Notifications', component: NotificationsPage },
   ];
 
   return (
-    <div className="flex flex-row px-0 sm:px-10 h-[calc(100vh - 170px)]">
+    <div className="flex flex-row px-0 sm:px-10">
       <div
         id="left"
         className="flex flex-col sm:w-1/4 ml-[-12px] gap-0.5 justify-center sm:justify-start sm:items-start w-full"
@@ -149,10 +97,8 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
                 onClick={() => {
                   setActivePage(page.name === activePage ? '' : page.name);
                   page.name === activePage
-                    ? router.replace('/settings')
-                    : router.replace(
-                        `/settings?s=${page.name.toLocaleLowerCase()}`,
-                      );
+                    ? replaceSearchParams()
+                    : replaceSearchParams(page.name);
                 }}
               >
                 <span>{page.name}</span>
@@ -165,41 +111,39 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
                   animate={activePage === page.name ? 'open' : 'closed'}
                   className="mt-5"
                 >
-                  {
-                    <ActivePageComponent
-                      user={user}
-                      key={0}
-                      updateUser={updateUserTransition}
-                      updateSession={update}
-                      session={session as ExtendedSession}
-                      isLoading={isLoading}
-                    />
-                  }
+                  <ActivePageComponent
+                    user={user}
+                    key={0}
+                    updateUser={(user: UserWithSettings) => {
+                      mutateUser(user);
+                    }}
+                    updateSession={update}
+                    session={session as ExtendedSession}
+                    isLoading={isLoading}
+                  />
                 </motion.div>
               </div>
             </div>
           );
         })}
       </div>
-      <div id="right" className="hidden sm:w-3/4 sm:block h-screen">
-        <AnimatePresence>
-          {settingsPages.map((page) => {
-            if (page.name === activePage) {
-              const ActivePageComponent = page.component;
-              return (
-                <ActivePageComponent
-                  user={user}
-                  key={0}
-                  updateUser={updateUserTransition}
-                  updateSession={update}
-                  session={session as ExtendedSession}
-                  isLoading={isLoading}
-                />
-              );
-            }
-            return null;
-          })}
-        </AnimatePresence>
+      <div id="right" className="hidden sm:w-3/4 sm:block">
+        {settingsPages.map((page) => {
+          if (page.name === activePage) {
+            const ActivePageComponent = page.component;
+            return (
+              <ActivePageComponent
+                user={user}
+                key={0}
+                updateUser={(user: UserWithSettings) => mutateUser(user)}
+                updateSession={update}
+                session={session as ExtendedSession}
+                isLoading={isLoading}
+              />
+            );
+          }
+          return null;
+        })}
       </div>
     </div>
   );
