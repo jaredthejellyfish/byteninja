@@ -1,6 +1,7 @@
 import { Inter } from 'next/font/google';
 import '@uploadthing/react/styles.css';
 import type { Metadata } from 'next';
+import dynamic from 'next/dynamic';
 import React from 'react';
 
 import KeyboardShortcuts from '@/components/keyboard-shortcuts';
@@ -10,7 +11,6 @@ import { ThemeProvider } from '@/components/theme-provider';
 import CookieBanner from '@/components/cookie-banner';
 import { Toaster } from '@/components/ui/toaster';
 import { ReduxProvider } from '@/redux/provider';
-import dynamic from 'next/dynamic';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });

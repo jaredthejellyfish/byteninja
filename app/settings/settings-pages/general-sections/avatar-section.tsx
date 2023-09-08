@@ -32,9 +32,9 @@ export default function AvatarSection(props: Props) {
           </p>
           <Avatar className="absolute h-[72px] w-[72px] top-7 sm:top-6 right-5 border-neutral-300 dark:border-neutral-700 border">
             <AvatarImage
-              src={session.user.image!}
+              src={session?.user.image || undefined}
               alt="Profile Image"
-              hidden={!session.user.image}
+              hidden={!session?.user.image}
             />
 
             <AvatarFallback className="text-2xl">

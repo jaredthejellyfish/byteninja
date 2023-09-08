@@ -1,4 +1,4 @@
-import { Highlight, PrismTheme, themes } from 'prism-react-renderer';
+import { Highlight, themes } from 'prism-react-renderer';
 import { useTheme } from 'next-themes';
 import React from 'react';
 

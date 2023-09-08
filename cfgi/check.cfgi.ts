@@ -6,12 +6,16 @@ task(
   'dev',
   () => {},
   [
-    runs('Prettier', () => {
-      commandLive('echo "Running Prettier..."');
+    runs('Contentlayer', () => {
+      command('pnpm contentlayer build');
     }),
 
     runs('Prisma Generate', () => {
       command('pnpm prisma generate');
+    }),
+
+    runs('Prettier', () => {
+      commandLive('echo "Running Prettier..."');
     }),
 
     runs('ESLint', () => {

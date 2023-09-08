@@ -1,11 +1,15 @@
 import { task, command, runs, commandLive, TaskConfig } from 'cfgi';
 
-const options: TaskConfig = { silent: false,  };
+const options: TaskConfig = { silent: false };
 
 task(
   'dev',
   () => {},
   [
+    runs('Contentlayer', () => {
+      command('pnpm contentlayer build');
+    }),
+
     runs('Prettier', () => {
       command('pnpm prettier --write .');
     }),

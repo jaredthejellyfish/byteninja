@@ -6,6 +6,10 @@ task(
   'dev',
   () => {},
   [
+    runs('Contentlayer', () => {
+      command('pnpm contentlayer build');
+    }),
+
     runs('Prettier', () => {
       command('pnpm prettier --write .');
     }),
