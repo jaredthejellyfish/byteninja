@@ -1,4 +1,3 @@
-import { AuthOptions, getServerSession } from 'next-auth';
 import { Inter } from 'next/font/google';
 import '@uploadthing/react/styles.css';
 import type { Metadata } from 'next';
@@ -10,7 +9,6 @@ import GoogleAnalytics from '@/components/google-analytics';
 import { ThemeProvider } from '@/components/theme-provider';
 import CookieBanner from '@/components/cookie-banner';
 import { Toaster } from '@/components/ui/toaster';
-import { authOptions } from '@/auth/authOptions';
 import { ReduxProvider } from '@/redux/provider';
 import Providers from '@/components/providers';
 import './globals.css';
@@ -27,14 +25,13 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions as AuthOptions);
   return (
     <html lang="en">
       <GoogleAnalytics GA_MEASUREMENT_ID="G-YE1ND0HBBW" />
       <body className={inter.className + ' ' + 'overflow-y-hidden'}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ReduxProvider>
-            <Providers session={session}>
+            <Providers>
               <Navigation />
               {children}
               <CookieBanner />
