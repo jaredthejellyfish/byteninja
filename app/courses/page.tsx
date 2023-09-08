@@ -12,24 +12,24 @@ export const metadata: Metadata = {
 
 const PAGE_SIZE = 9;
 
-// export async function generateStaticParams() {
-//   const { coursesCount } = await getPaginatedCourses({
-//     page: 0,
-//     pageSize: PAGE_SIZE,
-//   });
+export async function generateStaticParams() {
+  const { coursesCount } = await getPaginatedCourses({
+    page: 0,
+    pageSize: PAGE_SIZE,
+  });
 
-//   const numberOfPages = Math.ceil(coursesCount / 9);
+  const numberOfPages = Math.ceil(coursesCount / 9);
 
-//   const params: { p: string }[] = [];
+  const params: { p: string }[] = [];
 
-//   for (let i = 0; i < numberOfPages; i++) {
-//     params[i] = {
-//       p: String(i),
-//     };
-//   }
+  for (let i = 0; i < numberOfPages; i++) {
+    params[i] = {
+      p: String(i),
+    };
+  }
 
-//   return params;
-// }
+  return params;
+}
 
 const CoursesPage = async (params: { searchParams: { p: number } }) => {
   const currentPage = Number(params.searchParams.p) || 0;
