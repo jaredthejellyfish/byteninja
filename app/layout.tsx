@@ -10,10 +10,13 @@ import { ThemeProvider } from '@/components/theme-provider';
 import CookieBanner from '@/components/cookie-banner';
 import { Toaster } from '@/components/ui/toaster';
 import { ReduxProvider } from '@/redux/provider';
-import Providers from '@/components/providers';
+import dynamic from 'next/dynamic';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
+const Providers = dynamic(() => import('@/components/providers'), {
+  ssr: false,
+});
 
 export const metadata: Metadata = {
   title: 'ByteNinja',

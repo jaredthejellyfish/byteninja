@@ -1,6 +1,6 @@
 import { task, command, runs, commandLive, TaskConfig } from 'cfgi';
 
-const options: TaskConfig = { silent: false, exclude: 'sync' };
+const options: TaskConfig = { silent: false,  };
 
 task(
   'dev',
