@@ -64,7 +64,7 @@ export async function Mdx({ source }: MdxProps) {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <article className="prose prose-neutral dark:prose-invert max-w-none prose-h1:leading-normal">
+      <article className="prose prose-neutral dark:prose-invert max-w-none prose-h1:leading-normal px-7">
         {/* @ts-expect-error issue with MDXComponent type */}
         <Content components={components} />
       </article>
