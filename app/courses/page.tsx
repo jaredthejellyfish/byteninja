@@ -57,6 +57,7 @@ const CoursesPage = async (params: { searchParams: { p: number } }) => {
             image={course.image}
             authorId={course.authorId}
             key={course.id}
+            skills={course.skills}
           />
         ))}
 

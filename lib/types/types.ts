@@ -35,3 +35,13 @@ export type ExtendedUser =
 export interface ExtendedSession extends Session {
   user: Session['user'] & { id: string };
 }
+
+export type CourseLesson = {
+  id: string;
+  name: string;
+  description: string;
+  image: string | null;
+  courseId: string;
+  created_at: Date | string;
+  updated_at: Date | string;
+};

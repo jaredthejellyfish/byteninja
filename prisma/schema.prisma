@@ -93,6 +93,7 @@ model Course {
   description String
   image       String?
   authorId    String
+  skills      String[]
   author      User     @relation(name: "authoredCourses", fields: [authorId], references: [id], onDelete: Cascade)
   lessons     Lesson[]
   created_at  DateTime @default(now())
