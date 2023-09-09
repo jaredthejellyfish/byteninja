@@ -1,16 +1,21 @@
 import { Course } from '@prisma/client';
+import { cache } from 'react';
 
 import prisma from '@/lib/prisma';
 
-async function fetchCourses(page: number, pageSize: number): Promise<Course[]> {
-  return await prisma.course.findMany({
-    skip: page * pageSize,
-    take: pageSize,
-    orderBy: {
-      created_at: 'desc',
-    },
-  });
-}
+export const revalidate = 1200 // revalidate the data at most every 20 min
+
+const fetchCourses = cache(
+  async (page: number, pageSize: number): Promise<Course[]> => {
+    return await prisma.course.findMany({
+      skip: page * pageSize,
+      take: pageSize,
+      orderBy: {
+        created_at: 'desc',
+      },
+    });
+  },
+);
 
 type getPaginatedCoursesType = {
   page: number;

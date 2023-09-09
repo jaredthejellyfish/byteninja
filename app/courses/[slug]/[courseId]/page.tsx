@@ -1,6 +1,6 @@
 import { allLessons } from 'contentlayer/generated';
+import React, { cache } from 'react';
 import type { Metadata } from 'next';
-import React from 'react';
 
 import PageContainer from '@/components/page-container';
 import { Mdx } from '@/components/mdx';
@@ -50,14 +50,16 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   };
 }
 
-async function getLessonBySlug(courseId: string) {
+export const revalidate = 1200 // revalidate the data at most every 20 min
+
+const getLessonBySlug = cache(async (courseId: string) => {
   const lesson = await prisma.lesson.findUnique({
     where: {
       id: courseId,
     },
   });
   return lesson;
-}
+});
 
 const CourseChallengePage = async (props: Props) => {
   const lesson = await getLessonBySlug(props.params.courseId);
