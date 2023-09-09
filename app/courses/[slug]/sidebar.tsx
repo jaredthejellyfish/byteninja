@@ -84,7 +84,7 @@ const Lesson = (props: LessonProps) => {
           : '',
       )}
     >
-      <p className="">
+      <p className="line-clamp-1">
         {lesson.name.at(0)?.toUpperCase() + lesson.name.slice(1)}
       </p>
     </Link>
