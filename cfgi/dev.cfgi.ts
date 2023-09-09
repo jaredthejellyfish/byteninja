@@ -31,7 +31,7 @@ task(
     }),
 
     runs('Next Development Server', () => {
-      commandLive('pnpm next dev');
+      commandLive('bun next dev');
     }),
   ],
   options,

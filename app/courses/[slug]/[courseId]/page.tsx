@@ -39,21 +39,17 @@ async function getLessonBySlug(courseId: string) {
 const CourseChallengePage = async (props: Props) => {
   const lesson = await getLessonBySlug(props.params.courseId);
   if (!lesson) {
-    throw new Error(
-      `Failed to find lesson for course ID ${props.params.courseId}`,
-    );
+    return `Failed to find lesson for course ID ${props.params.courseId}`;
   }
 
-  const post = allLessons.find((p) => p.id === lesson.id);
-  if (!post) {
-    throw new Error(
-      `Failed to find post for course ID ${props.params.courseId}`,
-    );
+  const mdLesson = allLessons.find((p) => p.id === lesson.id);
+  if (!mdLesson) {
+    return `Failed to find post for course ID ${props.params.courseId}`;
   }
 
   return (
     <PageContainer className="dark:bg-neutral-900/50 w-full px-0">
-      <Mdx source={post.body.code} />
+      <Mdx source={mdLesson.body.code} />
     </PageContainer>
   );
 };

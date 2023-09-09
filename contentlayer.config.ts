@@ -9,6 +9,9 @@ import fs from 'fs/promises';
 
 import prisma from './lib/prisma';
 
+const escapeMarkdown = (title: string) =>
+  title.replace(/([*_#])/g, '\\$1').replace(/:/g, '&#58;');
+
 const Lesson = defineDocumentType(() => ({
   name: 'Lesson',
   contentType: 'mdx',
@@ -55,6 +58,39 @@ const Lesson = defineDocumentType(() => ({
   },
 }));
 
+const Course = defineDocumentType(() => ({
+  name: 'Course',
+  contentType: 'mdx',
+  filePathPattern: '**/*.mdx',
+  fields: {
+    id: {
+      type: 'string',
+    },
+    title: {
+      type: 'string',
+      required: true,
+    },
+    date: {
+      type: 'date',
+      required: true,
+    },
+  },
+  computedFields: {
+    url: {
+      type: 'string',
+      resolve: async (post) => {
+        const course = await prisma.course.findUnique({
+          where: {
+            id: post.id,
+          },
+        });
+        const courseSlug = course?.slug;
+        return `/${courseSlug}`;
+      },
+    },
+  },
+}));
+
 const syncContentFromPrisma = async (contentDir: string) => {
   let wasCancelled = false;
   let syncInterval: NodeJS.Timeout;
@@ -71,10 +107,24 @@ const syncContentFromPrisma = async (contentDir: string) => {
       const courseDir = `${contentDir}/content/${course.slug}`;
       await fs.mkdir(courseDir, { recursive: true });
 
-      // create lesson files
-      for (const lesson of course.lessons) {
-        const lessonContent = `---
-title: ${lesson.name}
+      // create course and lesson files
+      for (const course of coursesWithLessons) {
+        const courseContent = `---
+title: ${escapeMarkdown(course.name)}
+date: ${course.created_at}
+id: ${course.id}
+type: Course
+---
+
+${course.description}`;
+
+        const courseFilePath = `/${courseDir}/course_${course.id}.mdx`;
+        await fs.writeFile(courseFilePath, courseContent);
+
+        // create lesson files
+        for (const lesson of course.lessons) {
+          const lessonContent = `---
+title: ${escapeMarkdown(lesson.name)}
 date: ${lesson.created_at}
 course: ${course.slug}
 id: ${lesson.id}
@@ -83,8 +133,9 @@ type: Lesson
 
 ${lesson.description}`;
 
-        const lessonFilePath = `/${courseDir}/${lesson.id}.mdx`;
-        await fs.writeFile(lessonFilePath, lessonContent);
+          const lessonFilePath = `/${courseDir}/lesson_${lesson.id}.mdx`;
+          await fs.writeFile(lessonFilePath, lessonContent);
+        }
       }
     }
   };
@@ -108,7 +159,7 @@ ${lesson.description}`;
 export default makeSource({
   contentDirPath: '.contentlayer/content',
   syncFiles: syncContentFromPrisma,
-  documentTypes: [Lesson],
+  documentTypes: [Lesson, Course],
   mdx: {
     remarkPlugins: [
       remarkGfm,

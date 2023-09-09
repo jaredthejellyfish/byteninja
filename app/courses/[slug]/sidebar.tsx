@@ -122,7 +122,12 @@ const Sidebar = (props: Props) => {
       >
         <div className="flex flex-row gap-2 justify-between w-full items-center px-7">
           <h3 className="font-medium sm:text-xl line-clamp-1">
-            {course.name.at(0)?.toUpperCase() + course.name.slice(1)}
+            <Link
+              href={`/courses/${course.slug}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {course.name.at(0)?.toUpperCase() + course.name.slice(1)}
+            </Link>
           </h3>
           <SidebarClose
             className="text-neutral-500"
@@ -145,10 +150,13 @@ const Sidebar = (props: Props) => {
         onClick={() => {
           if (!isHovering) setHidden(!isHidden);
         }}
-        className="absolute top-[72px] left-3 w-[95%] z-50"
+        className={cn(
+          'absolute top-[72px] left-3 w-[95%]',
+          isHidden ? 'z-50' : '-z-50',
+        )}
       >
         <motion.button
-          className="flex items-center justify-center p-1.5 rounded-lg bg-white dark:bg-black border dark:text-neutral-300 text-neutral-600"
+          className="flex items-center justify-center p-1.5 rounded-lg bg-white dark:bg-black border dark:text-neutral-300 text-neutral-600 z-50"
           drag="x"
           variants={sidebarVariants.openButton}
           initial="hidden"
