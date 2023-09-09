@@ -22,7 +22,9 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   }
 
   const fancyName =
-    course?.name.length > 10 ? `${course?.name.slice(0, 8)}…` : course?.name;
+    course?.name.length > 10
+      ? `${course?.name.slice(0, 8).replace(' ', '')}…`
+      : course?.name;
 
   const fancyNameCapitalized =
     fancyName.charAt(0).toUpperCase() + fancyName.slice(1);

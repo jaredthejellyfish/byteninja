@@ -4,6 +4,7 @@ import React from 'react';
 import PageContainer from '@/components/page-container';
 import { Mdx } from '@/components/mdx';
 import prisma from '@/lib/prisma';
+import type { Metadata } from 'next';
 
 export async function generateStaticParams() {
   const lessons = await prisma.course.findMany({
@@ -26,6 +27,28 @@ export async function generateStaticParams() {
 }
 
 type Props = { params: { courseId: string } };
+
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const lesson = await getLessonBySlug(props.params.courseId);
+
+  if (!lesson) {
+    return {
+      title: `Error | ByteNinja`,
+    };
+  }
+
+  const fancyName =
+    lesson?.name.length > 10
+      ? `${lesson?.name.slice(0, 8).replace(' ', '')}…`
+      : lesson?.name;
+
+  const fancyNameCapitalized =
+    fancyName.charAt(0).toUpperCase() + fancyName.slice(1);
+
+  return {
+    title: `${fancyNameCapitalized} | ByteNinja`,
+  };
+}
 
 async function getLessonBySlug(courseId: string) {
   const lesson = await prisma.lesson.findUnique({
