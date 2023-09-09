@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { SidebarClose, SidebarOpen } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
 import { set, reset, SidebarStatus } from '@/redux/features/sidebarStatusSlice';
@@ -92,11 +93,15 @@ const Lesson = (props: LessonProps) => {
 };
 
 const Sidebar = (props: Props) => {
-  const [isHidden, setHidden] = useState(false);
   const [isHovering, setHovering] = useState(false);
   const showButtonBoundsRef = useRef(null);
   const currentLessonId = usePathname().split('/')[3];
   const dispatch = useAppDispatch();
+
+  const isMobile =
+    typeof window !== 'undefined' ? window.innerWidth < 640 : false;
+
+  const [isHidden, setHidden] = useState(isMobile);
 
   useEffect(() => {
     if (isHidden) {
@@ -116,7 +121,7 @@ const Sidebar = (props: Props) => {
       <motion.div
         id="sidebar"
         variants={sidebarVariants.container}
-        initial="open"
+        initial={isMobile ? 'closed' : 'open'}
         animate={isHidden ? 'closed' : 'open'}
         className="flex flex-col sm:min-w-max sm:w-1/3 sm:max-w-[350px] sm:pt-[80px] w-full pb-4 pt-[80px] overflow-hidden relative sm:h-screen dark:bg-black border border-neutral-200 dark:border-neutral-900"
       >
@@ -172,4 +177,4 @@ const Sidebar = (props: Props) => {
   );
 };
 
-export default Sidebar;
+export default Sidebar
