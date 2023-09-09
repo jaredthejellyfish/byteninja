@@ -3,7 +3,7 @@ import { cache } from 'react';
 import { CurrentCourse } from '@/redux/features/currentCourseSlice';
 import prisma from '@/lib/prisma';
 
-export const revalidate = 1200 // revalidate the data at most every 20 min
+export const revalidate = 600; // revalidate the data at most every 20 min
 
 const getCourseBySlug = cache(
   async (

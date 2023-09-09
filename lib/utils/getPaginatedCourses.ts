@@ -3,7 +3,7 @@ import { cache } from 'react';
 
 import prisma from '@/lib/prisma';
 
-export const revalidate = 1200 // revalidate the data at most every 20 min
+export const revalidate = 600; // revalidate the data at most every 20 min
 
 const fetchCourses = cache(
   async (page: number, pageSize: number): Promise<Course[]> => {

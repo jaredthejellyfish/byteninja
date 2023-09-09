@@ -50,7 +50,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   };
 }
 
-export const revalidate = 1200 // revalidate the data at most every 20 min
+export const revalidate = 600; // revalidate the data at most every 20 min
 
 const getLessonBySlug = cache(async (courseId: string) => {
   const lesson = await prisma.lesson.findUnique({
