@@ -71,7 +71,7 @@ const CourseChallengePage = async (props: Props) => {
   }
 
   return (
-    <PageContainer className="dark:bg-neutral-900/50 w-full px-0">
+    <PageContainer className="dark:bg-neutral-900/50 bg-neutral-100/30 w-full px-0">
       <Mdx source={mdLesson.body.code} />
     </PageContainer>
   );

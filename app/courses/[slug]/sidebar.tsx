@@ -118,7 +118,7 @@ const Sidebar = (props: Props) => {
         variants={sidebarVariants.container}
         initial="open"
         animate={isHidden ? 'closed' : 'open'}
-        className="flex flex-col sm:min-w-max sm:w-1/3 sm:max-w-[350px] sm:pt-[80px] w-full pb-4 pt-[80px] overflow-hidden relative sm:h-screen dark:bg-black"
+        className="flex flex-col sm:min-w-max sm:w-1/3 sm:max-w-[350px] sm:pt-[80px] w-full pb-4 pt-[80px] overflow-hidden relative sm:h-screen dark:bg-black border border-neutral-200"
       >
         <div className="flex flex-row gap-2 justify-between w-full items-center px-7">
           <h3 className="font-medium sm:text-xl line-clamp-1">
