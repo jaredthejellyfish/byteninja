@@ -1,10 +1,10 @@
 import { allLessons } from 'contentlayer/generated';
+import type { Metadata } from 'next';
 import React from 'react';
 
 import PageContainer from '@/components/page-container';
 import { Mdx } from '@/components/mdx';
 import prisma from '@/lib/prisma';
-import type { Metadata } from 'next';
 
 export async function generateStaticParams() {
   const lessons = await prisma.course.findMany({

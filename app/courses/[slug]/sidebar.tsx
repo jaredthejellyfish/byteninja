@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { SidebarClose, SidebarOpen } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
 import { set, reset, SidebarStatus } from '@/redux/features/sidebarStatusSlice';
@@ -177,4 +176,4 @@ const Sidebar = (props: Props) => {
   );
 };
 
-export default Sidebar
+export default Sidebar;
