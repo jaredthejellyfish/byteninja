@@ -21,9 +21,7 @@ const SettingsPage = async () => {
       </h2>
       <Separator className="lg:ml-[-40px] sm:ml-[-20px] ml-0 w-screen mb-10" />
       <ErrorBoundary fallback={<div>Something went wrong</div>}>
-        <Suspense fallback={<div>Loading...</div>}>
-          <SettingsContent user={user!} />
-        </Suspense>
+        <SettingsContent user={user!} />
       </ErrorBoundary>
     </PageContainer>
   );

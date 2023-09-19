@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import dynamic from 'next/dynamic';
 
 import LoginConnectionsPage from './settings-pages/login-connections';
 import { ExtendedSession, UserWithSettings } from '@/lib/types/types';
@@ -149,4 +150,6 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
   );
 };
 
-export default SettingsContent;
+export default dynamic(() => Promise.resolve(SettingsContent), {
+  ssr: false,
+});
