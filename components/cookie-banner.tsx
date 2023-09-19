@@ -6,7 +6,6 @@ import dynamic from 'next/dynamic';
 import React from 'react';
 
 import { Button } from './ui/button';
-import { cn } from '@/lib/utils/cn';
 
 const motionVariants = {
   hidden: {
