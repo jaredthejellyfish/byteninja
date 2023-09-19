@@ -63,7 +63,7 @@ const CoursePage = async (props: Props) => {
   if (!mdCourse) return notFound();
 
   return (
-    <PageContainer className="bg-neutral-100/30 dark:bg-neutral-900/60">
+    <PageContainer className="bg-neutral-100/30 dark:bg-neutral-900/60 px-0">
       <Mdx source={mdCourse?.body.code} />
       <UpdateCourseRedux currentCourse={course} />
     </PageContainer>
