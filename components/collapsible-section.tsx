@@ -69,7 +69,7 @@ const CollapsibleSection = (props: Props) => {
     <div className="flex flex-col gap-0">
       <h3
         onClick={() => setIsOpen(!isOpen)}
-        className="flex flex-row items-center m-0"
+        className="flex flex-row items-center m-0 cursor-pointer"
       >
         <motion.div
           variants={variants.titleChevron}
