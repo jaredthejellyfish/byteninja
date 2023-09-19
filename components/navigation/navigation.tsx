@@ -14,7 +14,7 @@ import { ProfileDropdown } from './profile-dropdown';
 import { DarkModeToggle } from './darkmode-toggle';
 
 const SiteLogo = () => (
-  <Link href="/">
+  <Link href="/" className='flex flex-row items-center'>
     <Image
       className="block dark:hidden"
       src={SiteLogoLight}
@@ -29,6 +29,9 @@ const SiteLogo = () => (
       height={60}
       alt="logo"
     />
+    <h2 className="text-xl tracking-wide">
+      Byte<span className="text-neutral-400">Ninja</span>
+    </h2>
   </Link>
 );
 
@@ -56,9 +59,6 @@ const Navigation = () => {
       <div id="nav-left" className="flex w-2/3">
         <div className="flex flex-row items-center justify-center gap-1">
           <SiteLogo />
-          <h2 className="text-xl tracking-wide">
-            Byte<span className="text-neutral-400">Ninja</span>
-          </h2>
         </div>
       </div>
       <div id="nav-right" className="flex items-center justify-end w-1/3">
