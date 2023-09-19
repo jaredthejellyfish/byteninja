@@ -82,7 +82,7 @@ const CollapsibleSection = (props: Props) => {
         </motion.div>
         {title}
       </h3>
-      <motion.p
+      <motion.div
         variants={variants.body}
         animate={!isOpen ? 'open' : 'closed'}
         initial={'closed'}
@@ -90,7 +90,7 @@ const CollapsibleSection = (props: Props) => {
         className="m-0"
       >
         {children}
-      </motion.p>
+      </motion.div>
     </div>
   );
 };

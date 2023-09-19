@@ -16,7 +16,7 @@ const PageContainer = (props: Props) => {
       ref={ref ? ref : null}
       id={props.id}
       className={cn(
-        'h-screen dark:bg-neutral-900/80 p-5 lg:px-10 pt-[82px] sm:pb-[70px] pb-[250px] overflow-y-auto',
+        'h-screen dark:bg-neutral-900/80 p-5 lg:px-10 pt-[82px] sm:pb-[70px] overflow-y-auto',
         className,
       )}
     >
