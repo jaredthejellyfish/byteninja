@@ -54,7 +54,7 @@ const CollapsibleSectionSkeleton = () => {
         <div className="p-0 mr-2">
           <ChevronRight height={'1em'} className="w-4" />
         </div>
-        <Skeleton className="w-20 h-[1.1em] rounded-lg " />
+        <Skeleton className="w-1/4 h-[1.1em] rounded-lg " />
       </h3>
     </div>
   );
