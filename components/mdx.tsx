@@ -5,8 +5,8 @@ import Image from 'next/image';
 import * as React from 'react';
 import Link from 'next/link';
 
-import CollapsibleSection from './collapsible-section';
 import { barnCatThemeSSR } from '@/lib/codeTheme';
+import Collapsible from './collapsible-section';
 import YoutubeEmbed from './youtube-embed';
 import { cn } from '@/lib/utils/cn';
 
@@ -59,7 +59,7 @@ const components = {
 
   YoutubeEmbed,
 
-  CollapsibleSection,
+  Collapsible,
 };
 
 export async function Mdx({ source }: MdxProps) {

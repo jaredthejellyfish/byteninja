@@ -1,19 +1,23 @@
 'use client';
 
+import { cva } from 'class-variance-authority';
 import { ChevronRight } from 'lucide-react';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 
 import { Skeleton } from './ui/skeleton';
+import { cn } from '@/lib/utils/cn';
 
 type Props = {
   title: string;
   children: React.ReactNode;
+  variant?: 'header' | 'footer';
   initiallyOpen?: boolean;
+  className?: string;
 };
 
-const variants = {
+const animationVariants = {
   titleChevron: {
     open: { rotate: 90 },
     closed: { rotate: 0 },
@@ -47,7 +51,16 @@ const variants = {
   },
 };
 
-const CollapsibleSectionSkeleton = () => {
+const variants = cva('flex flex-row items-center m-0 cursor-pointer', {
+  variants: {
+    variant: {
+      header: 'text-xl font-semibold text-neutral-900 dark:text-neutral-100',
+      footer: 'text-base font-medium text-neutral-700 dark:text-neutral-300',
+    },
+  },
+});
+
+const CollapsibleSkeleton = () => {
   return (
     <div className="flex flex-col gap-0 mb-3">
       <h3 className="flex flex-row items-center m-0">
@@ -60,7 +73,7 @@ const CollapsibleSectionSkeleton = () => {
   );
 };
 
-const CollapsibleSection = (props: Props) => {
+const Collapsible = (props: Props) => {
   const { title, children } = props;
 
   const [isOpen, setIsOpen] = useState(!props.initiallyOpen || false);
@@ -69,10 +82,15 @@ const CollapsibleSection = (props: Props) => {
     <div className="flex flex-col gap-0">
       <h3
         onClick={() => setIsOpen(!isOpen)}
-        className="flex flex-row items-center m-0 cursor-pointer"
+        className={cn(
+          variants({
+            variant: props.variant || 'header',
+            className: props.className || '',
+          }),
+        )}
       >
         <motion.div
-          variants={variants.titleChevron}
+          variants={animationVariants.titleChevron}
           animate={!isOpen ? 'open' : 'closed'}
           initial={'closed'}
           transition={{ duration: 0.1 }}
@@ -83,7 +101,7 @@ const CollapsibleSection = (props: Props) => {
         {title}
       </h3>
       <motion.div
-        variants={variants.body}
+        variants={animationVariants.body}
         animate={!isOpen ? 'open' : 'closed'}
         initial={'closed'}
         transition={{ duration: 0.1 }}
@@ -95,7 +113,7 @@ const CollapsibleSection = (props: Props) => {
   );
 };
 
-export default dynamic(() => Promise.resolve(CollapsibleSection), {
+export default dynamic(() => Promise.resolve(Collapsible), {
   ssr: false,
-  loading: () => <CollapsibleSectionSkeleton />,
+  loading: () => <CollapsibleSkeleton />,
 });

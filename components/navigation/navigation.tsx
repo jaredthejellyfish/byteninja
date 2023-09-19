@@ -14,7 +14,7 @@ import { ProfileDropdown } from './profile-dropdown';
 import { DarkModeToggle } from './darkmode-toggle';
 
 const SiteLogo = () => (
-  <Link href="/" className='flex flex-row items-center'>
+  <Link href="/" className="flex flex-row items-center">
     <Image
       className="block dark:hidden"
       src={SiteLogoLight}
