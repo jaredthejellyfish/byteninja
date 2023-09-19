@@ -5,6 +5,8 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 
+import { Skeleton } from './ui/skeleton';
+
 type Props = {
   title: string;
   children: React.ReactNode;
@@ -45,6 +47,19 @@ const variants = {
   },
 };
 
+const CollapsibleSectionSkeleton = () => {
+  return (
+    <div className="flex flex-col gap-0 mb-3">
+      <h3 className="flex flex-row items-center m-0">
+        <div className="p-0 mr-2">
+          <ChevronRight height={'1em'} className="w-4" />
+        </div>
+        <Skeleton className="w-20 h-[1.1em] rounded-lg " />
+      </h3>
+    </div>
+  );
+};
+
 const CollapsibleSection = (props: Props) => {
   const { title, children } = props;
 
@@ -80,4 +95,7 @@ const CollapsibleSection = (props: Props) => {
   );
 };
 
-export default dynamic(() => Promise.resolve(CollapsibleSection));
+export default dynamic(() => Promise.resolve(CollapsibleSection), {
+  ssr: false,
+  loading: () => <CollapsibleSectionSkeleton />,
+});

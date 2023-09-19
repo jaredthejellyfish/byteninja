@@ -1,6 +1,6 @@
 import { ErrorBoundary } from 'react-error-boundary';
-import React from 'react';
 import type { Metadata } from 'next';
+import React from 'react';
 
 import PageContainer from '@/components/page-container';
 import { Separator } from '@/components/ui/separator';
