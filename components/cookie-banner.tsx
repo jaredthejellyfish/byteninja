@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import React from 'react';
 
 import { Button } from './ui/button';
@@ -42,32 +43,38 @@ function CookieBanner() {
       animate={cookieConsent ? 'hidden' : 'visible'}
       variants={motionVariants}
       exit={{ opacity: 0, y: 50 }}
-      className={
-        'bg-neutral-950 absolute bottom-0 w-full flex sm:flex-row flex-col justify-between items-center px-5 py-5 lg:py-8'
-      }
+      className="dark:bg-neutral-950 right-5 left-5 sm:right-0 sm:left-0 bg-white border rounded-xl sm:rounded-none sm:border-x-0 sm:border-b-0 sm:border-t absolute sm:bottom-0 bottom-[50%] sm:w-full flex sm:flex-row flex-col justify-between sm:items-center sm:px-5 sm:py-5 lg:py-8"
     >
-      <div className="max-w-[66%]">
-        <h4 className="text-lg font-semibold">Cookies</h4>
-        <p>
-          Hey there! We use cookies to make your browsing experience sweeter.
-          Tap &apos;Accept&apos; to unlock the yumminess!
-        </p>
+      <div className="sm:max-w-[66%] px-5 pt-5 sm:p-0">
+        <h4 className="text-xl mb-2 sm:mb-0 sm:text-lg font-semibold">Cookies</h4>
+        <span>
+          Hey there! We use{' '}
+          <Link
+            className="text-blue-700 dark:text-blue-500"
+            href="https://www.cloudflare.com/learning/privacy/what-are-cookies/"
+            target="_blank"
+          >
+            cookies
+          </Link>{' '}
+          to make your browsing experience sweeter. Tap &apos;Accept&apos; to
+          unlock the yumminess!
+        </span>
       </div>
 
-      <div className="flex flex-row gap-3">
-        <Button
-          variant="secondary"
-          className=""
-          onClick={() => setCookieConsent(true)}
-        >
-          Accept
-        </Button>
+      <div className="flex flex-row gap-3 px-5 pt-4 pb-5 sm:p-0">
         <Button
           variant="destructive"
           className=""
           onClick={() => setCookieConsent(false)}
         >
           Decline
+        </Button>
+        <Button
+          variant="secondary"
+          className=""
+          onClick={() => setCookieConsent(true)}
+        >
+          Accept
         </Button>
       </div>
     </motion.div>
