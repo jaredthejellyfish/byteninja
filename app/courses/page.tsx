@@ -47,7 +47,10 @@ const CoursesPage = async (params: { searchParams: { p: number } }) => {
   }
 
   return (
-    <PageContainer className="flex items-center flex-col" id="course-container">
+    <PageContainer
+      className="relative flex items-center flex-col justify-between sm:pb-5 pb-5"
+      id="course-container"
+    >
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {courses?.map((course) => (
           <CourseCard
@@ -60,15 +63,15 @@ const CoursesPage = async (params: { searchParams: { p: number } }) => {
             skills={course.skills}
           />
         ))}
-
-        <PageNavigation
-          className="col-span-full"
-          {...{
-            currentPage,
-            coursesCount,
-          }}
-        />
       </div>
+
+      <PageNavigation
+        className="w-full lg:px-32 sm:px-14 px-10"
+        {...{
+          currentPage,
+          coursesCount,
+        }}
+      />
     </PageContainer>
   );
 };

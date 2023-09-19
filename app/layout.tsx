@@ -14,6 +14,7 @@ import { ReduxProvider } from '@/redux/provider';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
+
 const Providers = dynamic(() => import('@/components/providers'), {
   ssr: false,
 });

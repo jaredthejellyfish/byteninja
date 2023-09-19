@@ -2,6 +2,7 @@ import remarkFlexibleContainers from 'remark-flexible-containers';
 import { defineDocumentType } from 'contentlayer/source-files';
 import { makeSource } from 'contentlayer/source-remote-files';
 import rehypeTwemojify from 'rehype-twemojify';
+import readingTime from 'reading-time';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 import emoji from 'remark-emoji';
@@ -54,6 +55,11 @@ const Lesson = defineDocumentType(() => ({
 
         return `/${courseSlug}/${post.id}`;
       },
+    },
+    readingTime: { type: 'json', resolve: (doc) => readingTime(doc.body.raw) },
+    wordCount: {
+      type: 'number',
+      resolve: (doc) => doc.body.raw.split(/\s+/gu).length,
     },
   },
 }));
@@ -163,10 +169,7 @@ export default makeSource({
   mdx: {
     remarkPlugins: [
       remarkGfm,
-
-      // @ts-expect-error - remark-flexible-containers is not typed correctly
       remarkFlexibleContainers,
-      // @ts-expect-error - remark-emoji is not typed correctly
       [emoji, { emoticon: true, accessible: true, padSpaceAfter: true }],
     ],
     rehypePlugins: [rehypeSlug, rehypeTwemojify],

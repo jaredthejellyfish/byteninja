@@ -1,16 +1,19 @@
 'use client';
 
+import {
+  githubLight,
+  githubLightInit,
+  githubDark,
+  githubDarkInit,
+} from '@uiw/codemirror-theme-github';
 import CodeMirror, { ReactCodeMirrorRef } from '@uiw/react-codemirror';
-import { githubDarkInit } from '@uiw/codemirror-theme-github';
 import { Delete, Hourglass, PlayCircle } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { WebContainer } from '@webcontainer/api';
 
 import Terminal from './terminal';
 
-type Props = {
-  children?: string;
-};
+type Props = {};
 
 function MDIde(props: Props) {
   const [webContainerInstance, setWebContainerInstance] =
@@ -99,7 +102,7 @@ function MDIde(props: Props) {
           throw e;
       }
     };
-  }, [isBooting, webContainerInstance]);
+  }, [isBooting]);
 
   const reset = async () => {
     if (webContainerInstance === null) return;
@@ -152,9 +155,8 @@ function MDIde(props: Props) {
       </div>
       <div className="flex flex-row gap-2 max-h-[300px]">
         <CodeMirror
-          className="w-full rounded h-full"
-          placeholder={'Please enter JS code.'}
-          value={props.children || `console.log('Hello World!')`}
+          className="w-full rounded"
+          placeholder={'Please enter JS code.\n \n \n \n \n \n \n \n '}
           lang="javascript"
           theme={githubDarkInit({
             settings: {

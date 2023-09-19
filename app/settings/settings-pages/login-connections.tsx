@@ -25,25 +25,25 @@ const providers = [
   {
     name: 'github',
     icon: GithubIcon,
-    color: 'bg-github gap-2.5 pl-3.5 pr-4',
-    wh: 20,
+    color: 'bg-github ',
+    wh: 29,
   },
   {
     name: 'twitch',
     icon: TwitchIcon,
-    color: 'bg-twitch gap-1 pl-3 pr-4.5',
+    color: 'bg-twitch',
     wh: 29,
   },
   {
     name: 'discord',
     icon: DiscordIcon,
-    color: 'bg-discord gap-1.5 pl-3 pr-4',
+    color: 'bg-discord',
     wh: 29,
   },
   {
     name: 'google',
     icon: GoogleIcon,
-    color: 'bg-google gap-1 pl-3 pr-4.5',
+    color: 'bg-google´',
     wh: 29,
   },
 ];
@@ -69,7 +69,7 @@ function ProviderLabel(props: { provider: string }) {
       <Image
         src={providerData.icon}
         alt={`${provider} icon`}
-        className="filter invert"
+        className="filter invert mr-2"
         height={providerData.wh}
         width={providerData.wh}
       />

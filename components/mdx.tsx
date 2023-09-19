@@ -5,7 +5,9 @@ import Image from 'next/image';
 import * as React from 'react';
 import Link from 'next/link';
 
+import CollapsibleSection from './collapsible-section';
 import { barnCatThemeSSR } from '@/lib/codeTheme';
+import YoutubeEmbed from './youtube-embed';
 import { cn } from '@/lib/utils/cn';
 
 const Code = dynamic(() => import('bright').then((mod) => mod.Code), {
@@ -54,9 +56,10 @@ const components = {
   ),
 
   pre: ({ ...props }) => <Code theme={barnCatThemeSSR} {...props} />,
-  // Terminal: dynamic(() =>
-  //   import('@/components/terminal').then((mod) => mod.Terminal),
-  // ),
+
+  YoutubeEmbed,
+
+  CollapsibleSection,
 };
 
 export async function Mdx({ source }: MdxProps) {
@@ -65,7 +68,7 @@ export async function Mdx({ source }: MdxProps) {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <article className="prose prose-neutral dark:prose-invert max-w-none prose-h1:leading-normal px-7">
-        {/* @ts-expect-error issue with MDXComponent type */}
+        {/* @ts-expect-error typing of a element is incompatible */}
         <Content components={components} />
       </article>
     </Suspense>
