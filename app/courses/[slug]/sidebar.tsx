@@ -94,48 +94,13 @@ const sidebarVariants = {
 };
 
 const generateLessonCircle = (
-    isLoading: boolean,
-    isAuthed: boolean,
-    lessonComplete: boolean,
-    currentLessonSlug: string,
-    lessonSlug: string,
-  ) => {
-    if (isLoading)
-      return (
-        <Circle
-          className="text-neutral-500 dark:text-neutral-400"
-          size={16}
-          strokeWidth={2}
-        />
-      );
-
-    if (!isAuthed)
-      return (
-        <XCircle
-          className="text-red-500 dark:text-red-700"
-          size={16}
-          strokeWidth={2}
-        />
-      );
-
-    if (lessonComplete)
-      return (
-        <CheckCircle2
-          className="text-green-500 dark:text-green-600"
-          size={16}
-          strokeWidth={2}
-        />
-      );
-
-    if (lessonSlug === currentLessonSlug)
-      return (
-        <CircleDot
-          className="text-neutral-500 dark:text-neutral-400"
-          size={16}
-          strokeWidth={2}
-        />
-      );
-
+  isLoading: boolean,
+  isAuthed: boolean,
+  lessonComplete: boolean,
+  currentLessonSlug: string,
+  lessonSlug: string,
+) => {
+  if (isLoading)
     return (
       <Circle
         className="text-neutral-500 dark:text-neutral-400"
@@ -143,7 +108,42 @@ const generateLessonCircle = (
         strokeWidth={2}
       />
     );
-  };
+
+  if (!isAuthed)
+    return (
+      <XCircle
+        className="text-red-500 dark:text-red-700"
+        size={16}
+        strokeWidth={2}
+      />
+    );
+
+  if (lessonComplete)
+    return (
+      <CheckCircle2
+        className="text-green-500 dark:text-green-600"
+        size={16}
+        strokeWidth={2}
+      />
+    );
+
+  if (lessonSlug === currentLessonSlug)
+    return (
+      <CircleDot
+        className="text-neutral-500 dark:text-neutral-400"
+        size={16}
+        strokeWidth={2}
+      />
+    );
+
+  return (
+    <Circle
+      className="text-neutral-500 dark:text-neutral-400"
+      size={16}
+      strokeWidth={2}
+    />
+  );
+};
 
 type LessonProps = {
   course: {
@@ -176,8 +176,6 @@ const Lesson = (props: LessonProps) => {
       (childLesson) => childLesson.slug === currentLessonSlug,
     ) || false;
 
-
-
   return (
     <>
       <Link
@@ -196,13 +194,11 @@ const Lesson = (props: LessonProps) => {
           props.childLessons && props.childLessons.length > 0 ? 'pl-2' : 'pl-3',
           childIsCurrentLesson ? 'bg-neutral-600/20' : '',
         )}
+        onClick={() => {
+          if (lesson.slug === currentLessonSlug) setOpen(!isOpen);
+        }}
       >
-        <div
-          className="flex flex-row items-center"
-          onClick={() => {
-            if (lesson.slug === currentLessonSlug) setOpen(!isOpen);
-          }}
-        >
+        <div className="flex flex-row items-center">
           {props.childLessons && props.childLessons.length > 0 && (
             <motion.div
               variants={sidebarVariants.caret}
