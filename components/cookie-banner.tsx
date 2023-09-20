@@ -64,7 +64,7 @@ function CookieBanner() {
   return (
     <>
       <motion.div
-        className="absolute top-0 bottom-0 left-0 right-0 bg-black/60 w-screen h-screen"
+        className="absolute top-0 bottom-0 left-0 right-0 bg-black/60 w-screen h-screen z-40"
         initial="hidden"
         animate={cookieConsent ? 'hidden' : 'visible'}
         variants={motionVariants.background}
@@ -75,7 +75,7 @@ function CookieBanner() {
         animate={cookieConsent ? 'hidden' : 'visible'}
         variants={motionVariants.banner}
         exit={{ opacity: 0, y: 50 }}
-        className="dark:bg-neutral-950 right-5 left-5 sm:right-0 sm:left-0 bg-white border rounded-xl sm:rounded-none sm:border-x-0 sm:border-b-0 sm:border-t absolute sm:bottom-0 bottom-[50%] sm:w-full flex sm:flex-row flex-col justify-between sm:items-center sm:px-5 sm:py-5 lg:py-8"
+        className="dark:bg-neutral-950 right-5 left-5 sm:right-0 sm:left-0 bg-white border rounded-xl sm:rounded-none sm:border-x-0 sm:border-b-0 sm:border-t absolute sm:bottom-0 bottom-[50%] sm:w-full flex sm:flex-row flex-col justify-between sm:items-center sm:px-5 sm:py-5 lg:py-8 z-50"
       >
         <div className="sm:max-w-[66%] px-5 pt-5 sm:p-0">
           <h4 className="text-xl mb-2 sm:mb-0 sm:text-lg font-semibold">
