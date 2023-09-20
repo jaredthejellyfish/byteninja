@@ -1,7 +1,14 @@
 'use client';
 
+import {
+  CheckCircle2,
+  Circle,
+  CircleDot,
+  SidebarClose,
+  SidebarOpen,
+  XCircle,
+} from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
-import { SidebarClose, SidebarOpen } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -18,6 +25,7 @@ type Props = {
     slug: string;
     lessons: CourseLesson[];
   };
+  completedLessons: string[];
 };
 
 const sidebarVariants = {
@@ -68,25 +76,62 @@ type LessonProps = {
     lessons: CourseLesson[];
   };
   lesson: CourseLesson;
-  currentLessonId: string;
+  currentLessonSlug: string;
+  lessonComplete?: boolean;
+  isAuthed: boolean;
 };
 const Lesson = (props: LessonProps) => {
-  const { course, lesson, currentLessonId } = props;
-
+  const { course, lesson, currentLessonSlug, lessonComplete, isAuthed } = props;
   return (
     <Link
-      href={`/courses/${course.slug}/${lesson.id}`}
+      href={
+        isAuthed
+          ? `/courses/${course.slug}/${lesson.slug}`
+          : `/courses/${course.slug}`
+      }
       key={lesson.id}
       className={cn(
-        'text-sm dark:text-neutral-400 px-2 py-2 transition-colors rounded hover:bg-neutral-500/20',
-        lesson.id === currentLessonId
+        'text-sm dark:text-neutral-400 pl-3 pr-4 py-2 transition-colors rounded hover:bg-neutral-500/20 flex flex-row items-center justify-between',
+        lesson.slug === currentLessonSlug
           ? 'bg-neutral-500/20 dark:text-white'
           : '',
+        isAuthed ? 'cursor-pointer' : 'cursor-not-allowed',
       )}
     >
       <p className="line-clamp-1">
         {lesson.name.at(0)?.toUpperCase() + lesson.name.slice(1)}
       </p>
+
+      {isAuthed ? (
+        lessonComplete ? (
+          <CheckCircle2
+            className="text-green-500 dark:text-green-600"
+            size={16}
+            strokeWidth={2}
+          />
+        ) : !lessonComplete && lesson.slug === currentLessonSlug ? (
+          <CircleDot
+            className="text-neutral-500 dark:text-neutral-400"
+            size={16}
+            strokeWidth={2}
+          />
+        ) : (
+          !lessonComplete &&
+          lesson.slug !== currentLessonSlug && (
+            <Circle
+              className="text-neutral-500 dark:text-neutral-400"
+              size={16}
+              strokeWidth={2}
+            />
+          )
+        )
+      ) : (
+        <XCircle
+          className="text-red-500 dark:text-red-700"
+          size={16}
+          strokeWidth={2}
+        />
+      )}
     </Link>
   );
 };
@@ -94,7 +139,7 @@ const Lesson = (props: LessonProps) => {
 const Sidebar = (props: Props) => {
   const [isHovering, setHovering] = useState(false);
   const showButtonBoundsRef = useRef(null);
-  const currentLessonId = usePathname().split('/')[3];
+  const currentLessonSlug = usePathname().split('/')[3];
   const dispatch = useAppDispatch();
 
   const isMobile =
@@ -144,7 +189,13 @@ const Sidebar = (props: Props) => {
               key={lesson.id}
               course={course}
               lesson={lesson}
-              currentLessonId={currentLessonId}
+              currentLessonSlug={currentLessonSlug}
+              isAuthed={!!props.completedLessons}
+              lessonComplete={
+                props.completedLessons
+                  ? props.completedLessons.includes(lesson.id)
+                  : false
+              }
             />
           ))}
         </div>

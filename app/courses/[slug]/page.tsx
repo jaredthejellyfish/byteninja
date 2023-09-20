@@ -9,7 +9,10 @@ import UpdateCourseRedux from './update-course-redux';
 import { Mdx } from '@/components/mdx';
 import prisma from '@/lib/prisma';
 
-type Props = { params: { slug: string } };
+type Props = {
+  params: { slug: string };
+  searchParams: { reason: string };
+};
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { course, isError, error } = await getCourseBySlug(props.params.slug);

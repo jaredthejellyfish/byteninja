@@ -39,6 +39,7 @@ export interface ExtendedSession extends Session {
 export type CourseLesson = {
   id: string;
   name: string;
+  slug: string;
   description: string;
   image: string | null;
   courseId: string;

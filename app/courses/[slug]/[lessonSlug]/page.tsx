@@ -1,7 +1,9 @@
 import { allLessons } from 'contentlayer/generated';
+import { redirect } from 'next/navigation';
 import React, { cache } from 'react';
 import type { Metadata } from 'next';
 
+import { getServerUser } from '@/lib/utils/getServerUser';
 import PageContainer from '@/components/page-container';
 import { Mdx } from '@/components/mdx';
 import prisma from '@/lib/prisma';
@@ -26,10 +28,10 @@ export async function generateStaticParams() {
   }));
 }
 
-type Props = { params: { courseId: string } };
+type Props = { params: { slug: string; lessonSlug: string } };
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  const lesson = await getLessonBySlug(props.params.courseId);
+  const lesson = await getLessonBySlug(props.params.lessonSlug);
 
   if (!lesson) {
     return {
@@ -52,24 +54,30 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 export const revalidate = 600; // revalidate the data at most every 20 min
 
-const getLessonBySlug = cache(async (courseId: string) => {
+const getLessonBySlug = cache(async (lessonSlug: string) => {
   const lesson = await prisma.lesson.findUnique({
     where: {
-      id: courseId,
+      slug: lessonSlug,
     },
   });
   return lesson;
 });
 
 const CourseChallengePage = async (props: Props) => {
-  const lesson = await getLessonBySlug(props.params.courseId);
+  const { user } = await getServerUser();
+
+  if (!user) {
+    redirect(`/courses/${props.params.slug}?reason=notAllowed`);
+  }
+
+  const lesson = await getLessonBySlug(props.params.lessonSlug);
   if (!lesson) {
-    return `Failed to find lesson for course ID ${props.params.courseId}`;
+    return `Failed to find lesson for course ID ${props.params.lessonSlug}`;
   }
 
   const mdLesson = allLessons.find((p) => p.id === lesson.id);
   if (!mdLesson) {
-    return `Failed to find post for course ID ${props.params.courseId}`;
+    return `Failed to find post for course ID ${props.params.lessonSlug}`;
   }
 
   return (
