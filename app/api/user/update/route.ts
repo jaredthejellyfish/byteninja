@@ -38,8 +38,7 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json(newUserWithoutPassword, { status: 200 });
   } catch (e) {
     const error = e as Error;
-    console.log('error', error);
-    console.log('request', await request.json());
+
     return NextResponse.json(error.message, { status: 500 });
   }
 }
