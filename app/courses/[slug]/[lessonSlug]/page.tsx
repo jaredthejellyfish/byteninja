@@ -14,7 +14,7 @@ export async function generateStaticParams() {
     select: {
       lessons: {
         select: {
-          id: true,
+          slug: true,
         },
       },
     },
@@ -24,7 +24,7 @@ export async function generateStaticParams() {
 
   return flatLessons.map((lesson) => ({
     params: {
-      courseId: lesson.id,
+      lessonSlug: lesson.slug,
     },
   }));
 }

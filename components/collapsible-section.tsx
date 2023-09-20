@@ -55,6 +55,7 @@ const variants = cva('flex flex-row items-center m-0 cursor-pointer', {
   variants: {
     variant: {
       header: 'text-xl font-semibold text-neutral-900 dark:text-neutral-100',
+      sectionTitle: 'text-2xl font-bold text-neutral-900 dark:text-neutral-100',
       footer: 'text-base font-medium text-neutral-700 dark:text-neutral-300',
     },
   },
