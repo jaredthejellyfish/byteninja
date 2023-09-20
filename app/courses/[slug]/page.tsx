@@ -44,7 +44,7 @@ export async function generateStaticParams() {
     },
   });
 
-  return courses.map((course) => ({
+  return courses.map((course: { slug: string }) => ({
     params: {
       slug: course.slug,
     },
@@ -74,3 +74,5 @@ const CoursePage = async (props: Props) => {
 };
 
 export default CoursePage;
+
+export const dynamic = 'force-dynamic';
