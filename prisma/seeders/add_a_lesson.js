@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 const { PrismaClient } = require('@prisma/client');
+const { faker } = require('@faker-js/faker');
 
 const prisma = new PrismaClient();
 
 
 
-const LESSON_ID = "clm91teyv0007utqnzt98zvmy";
+const COURSE_ID = "clmat4ytd0000utuh1ucmbcdc";
 
 const markdown = `
 # Markdown-it demo
@@ -155,14 +156,27 @@ SyntaxHighlighter.registerLanguage('jsx', jsx);
 `;
 
 
-async function modifyLesson() {
-    await prisma.lesson.update({
-        where: { id: LESSON_ID },
-        data: { description: markdown },
-    });
+async function addALesson() {
+    for (let i = 3; i < 13; i++) {
+        const name = faker.lorem.words({ min: 1, max: 3 })
+        await prisma.lesson.create({
+            data: {
+                lessonOrder: i,
+                name: name,
+                slug: name.split(' ').join('-').toLowerCase(),
+                description:
+                    markdown,
+                course: {
+                    connect: {
+                        id: COURSE_ID
+                    }
+                }
+            }
+        });
+    }
 }
 
-modifyLesson();
+await addALesson();
 
 
 
