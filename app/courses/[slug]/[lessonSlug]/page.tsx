@@ -1,9 +1,7 @@
 import { allLessons } from 'contentlayer/generated';
-import { redirect } from 'next/navigation';
 import React, { cache } from 'react';
 import type { Metadata } from 'next';
 
-import { getServerUser } from '@/lib/utils/getServerUser';
 import PageContainer from '@/components/page-container';
 import { Mdx } from '@/components/mdx';
 import prisma from '@/lib/prisma';
@@ -64,12 +62,6 @@ const getLessonBySlug = cache(async (lessonSlug: string) => {
 });
 
 const CourseChallengePage = async (props: Props) => {
-  const { user } = await getServerUser();
-
-  if (!user) {
-    redirect(`/courses/${props.params.slug}?reason=notAllowed`);
-  }
-
   const lesson = await getLessonBySlug(props.params.lessonSlug);
   if (!lesson) {
     return `Failed to find lesson for course ID ${props.params.lessonSlug}`;
@@ -88,5 +80,3 @@ const CourseChallengePage = async (props: Props) => {
 };
 
 export default CourseChallengePage;
-
-export const dynamic = 'force-static';

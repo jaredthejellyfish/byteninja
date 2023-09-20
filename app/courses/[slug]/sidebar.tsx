@@ -9,11 +9,15 @@ import {
   XCircle,
 } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { motion } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
 import { set, reset, SidebarStatus } from '@/redux/features/sidebarStatusSlice';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useAppDispatch } from '@/redux/hooks';
 import { cn } from '@/lib/utils/cn';
 
@@ -31,7 +35,6 @@ type Props = {
     slug: string;
     lessons: Lesson[];
   };
-  completedLessons: string[];
 };
 
 const sidebarVariants = {
@@ -85,9 +88,17 @@ type LessonProps = {
   currentLessonSlug: string;
   lessonComplete?: boolean;
   isAuthed: boolean;
+  isLoading: boolean;
 };
 const Lesson = (props: LessonProps) => {
-  const { course, lesson, currentLessonSlug, lessonComplete, isAuthed } = props;
+  const {
+    course,
+    lesson,
+    currentLessonSlug,
+    lessonComplete,
+    isAuthed,
+    isLoading,
+  } = props;
   return (
     <Link
       href={
@@ -108,38 +119,62 @@ const Lesson = (props: LessonProps) => {
         {lesson.name.at(0)?.toUpperCase() + lesson.name.slice(1)}
       </p>
 
-      {isAuthed ? (
-        lessonComplete ? (
-          <CheckCircle2
-            className="text-green-500 dark:text-green-600"
-            size={16}
-            strokeWidth={2}
-          />
-        ) : !lessonComplete && lesson.slug === currentLessonSlug ? (
-          <CircleDot
-            className="text-neutral-500 dark:text-neutral-400"
-            size={16}
-            strokeWidth={2}
-          />
-        ) : (
-          !lessonComplete &&
-          lesson.slug !== currentLessonSlug && (
+      {(() => {
+        if (isLoading)
+          return (
             <Circle
               className="text-neutral-500 dark:text-neutral-400"
               size={16}
               strokeWidth={2}
             />
-          )
-        )
-      ) : (
-        <XCircle
-          className="text-red-500 dark:text-red-700"
-          size={16}
-          strokeWidth={2}
-        />
-      )}
+          );
+
+        if (!isAuthed)
+          return (
+            <XCircle
+              className="text-red-500 dark:text-red-700"
+              size={16}
+              strokeWidth={2}
+            />
+          );
+
+        if (lessonComplete)
+          return (
+            <CheckCircle2
+              className="text-green-500 dark:text-green-600"
+              size={16}
+              strokeWidth={2}
+            />
+          );
+
+        if (lesson.slug === currentLessonSlug)
+          return (
+            <CircleDot
+              className="text-neutral-500 dark:text-neutral-400"
+              size={16}
+              strokeWidth={2}
+            />
+          );
+
+        return (
+          <Circle
+            className="text-neutral-500 dark:text-neutral-400"
+            size={16}
+            strokeWidth={2}
+          />
+        );
+      })()}
     </Link>
   );
+};
+
+const fetchCompletedLessonsData = async () => {
+  const res = await fetch(`/api/user/get/completedLessons`);
+  const data = (await res.json()) as { completedLessons: string[] };
+
+  if (!data.completedLessons) return [];
+
+  return data.completedLessons;
 };
 
 const Sidebar = (props: Props) => {
@@ -148,10 +183,18 @@ const Sidebar = (props: Props) => {
   const currentLessonSlug = usePathname().split('/')[3];
   const dispatch = useAppDispatch();
 
+  const { status } = useSession();
+
   const isMobile =
     typeof window !== 'undefined' ? window.innerWidth < 640 : false;
 
   const [isHidden, setHidden] = useState(isMobile);
+
+  const { data: completedLessons, isLoading } = useQuery({
+    queryKey: ['completed-lessons'],
+    queryFn: () => fetchCompletedLessonsData(),
+    enabled: status === 'authenticated',
+  });
 
   useEffect(() => {
     if (isHidden) {
@@ -196,11 +239,10 @@ const Sidebar = (props: Props) => {
               course={course}
               lesson={lesson}
               currentLessonSlug={currentLessonSlug}
-              isAuthed={!!props.completedLessons}
+              isAuthed={status === 'authenticated'}
+              isLoading={isLoading}
               lessonComplete={
-                props.completedLessons
-                  ? props.completedLessons.includes(lesson.id)
-                  : false
+                completedLessons ? completedLessons.includes(lesson.id) : false
               }
             />
           ))}
@@ -233,4 +275,50 @@ const Sidebar = (props: Props) => {
   );
 };
 
-export default Sidebar;
+export default dynamic(() => Promise.resolve(Sidebar), {
+  ssr: false,
+  loading: () => (
+    <div className="flex flex-col sm:min-w-max sm:w-1/3 sm:max-w-[350px] sm:pt-[80px] w-full pb-4 pt-[80px] overflow-hidden relative sm:h-screen dark:bg-black border border-neutral-200 dark:border-neutral-900">
+      <div className="flex flex-row gap-2 justify-between w-full items-center px-7 ">
+        <h3 className="font-medium sm:text-xl line-clamp-1">
+          <Skeleton className="h-[1.4em] w-44 rounded-sm" />
+        </h3>
+        <SidebarClose className="text-neutral-500" />
+      </div>
+      <div className="mt-4 flex flex-col gap-1 text-xs sm:text-base pl-6 pr-8 ">
+        <div className="text-sm pl-3 pr-4 py-2 transition-colors rounded hover:bg-neutral-500/20 flex flex-row items-center justify-between bg-neutral-500/20 dark:text-white">
+          <Skeleton className="h-[1.4em] w-44 rounded-sm" />
+          <Circle
+            className="text-neutral-500 dark:text-neutral-400"
+            size={16}
+            strokeWidth={2}
+          />
+        </div>
+        <div className="text-sm dark:text-neutral-400 pl-3 pr-4 py-2 transition-colors rounded hover:bg-neutral-500/20 flex flex-row items-center justify-between">
+          <Skeleton className="h-[1.4em] w-44 rounded-sm" />
+          <Circle
+            className="text-neutral-500 dark:text-neutral-400"
+            size={16}
+            strokeWidth={2}
+          />
+        </div>
+        <div className="text-sm dark:text-neutral-400 pl-3 pr-4 py-2 transition-colors rounded hover:bg-neutral-500/20 flex flex-row items-center justify-between">
+          <Skeleton className="h-[1.4em] w-44 rounded-sm" />
+          <Circle
+            className="text-neutral-500 dark:text-neutral-400"
+            size={16}
+            strokeWidth={2}
+          />
+        </div>
+        <div className="text-sm dark:text-neutral-400 pl-3 pr-4 py-2 transition-colors rounded hover:bg-neutral-500/20 flex flex-row items-center justify-between">
+          <Skeleton className="h-[1.4em] w-44 rounded-sm" />
+          <Circle
+            className="text-neutral-500 dark:text-neutral-400"
+            size={16}
+            strokeWidth={2}
+          />
+        </div>
+      </div>
+    </div>
+  ),
+});

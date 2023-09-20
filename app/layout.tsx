@@ -1,3 +1,4 @@
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Inter } from 'next/font/google';
 import '@uploadthing/react/styles.css';
 import type { Metadata } from 'next';
@@ -38,6 +39,7 @@ export default async function RootLayout({
             <Providers>
               <Navigation />
               {children}
+              <ReactQueryDevtools />
               <CookieBanner />
               <Toaster />
               <KeyboardShortcuts />

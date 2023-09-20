@@ -74,5 +74,3 @@ const CoursePage = async (props: Props) => {
 };
 
 export default CoursePage;
-
-export const dynamic = 'force-static';
