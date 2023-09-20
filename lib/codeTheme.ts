@@ -1,3 +1,5 @@
+import { PrismTheme } from 'prism-react-renderer';
+
 export const barnCatThemeSSR = {
   name: 'Barn Cat',
   type: 'dark',
@@ -644,6 +646,82 @@ export const barnCatThemeSSR = {
       scope: ['markup.table'],
       settings: {
         foreground: '#EEFFFF',
+      },
+    },
+  ],
+};
+
+export const barnCatTheme: PrismTheme = {
+  plain: {
+    color: '#ccba8d',
+    backgroundColor: '#212121',
+  },
+  styles: [
+    {
+      types: ['comment', 'punctuation'],
+      style: {
+        color: '#546E7A',
+        fontStyle: 'italic',
+      },
+    },
+    {
+      types: ['variable', 'hexcode'],
+      style: {
+        color: '#F2A552',
+      },
+    },
+    {
+      types: ['keyword', 'number', 'char', 'constant'],
+      style: {
+        color: '#F78C6C',
+      },
+    },
+    {
+      types: ['tag', 'deleted'],
+      style: {
+        color: '#C75A5F',
+      },
+    },
+    {
+      types: ['function'],
+      style: {
+        color: '#27B3A8',
+      },
+    },
+    {
+      types: ['builtin'],
+      style: {
+        color: '#3A9AF2',
+      },
+    },
+    {
+      types: ['string'],
+      style: {
+        color: '#F07178',
+      },
+    },
+    {
+      types: ['symbol', 'inserted'],
+      style: {
+        color: '#C3E88D',
+      },
+    },
+    {
+      types: ['changed'],
+      style: {
+        color: '#FF835C',
+      },
+    },
+    {
+      types: ['attr-name', 'selector'],
+      style: {
+        color: '#CE8567',
+      },
+    },
+    {
+      types: ['regex'],
+      style: {
+        color: '#89DDFF',
       },
     },
   ],
