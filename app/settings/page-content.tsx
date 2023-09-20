@@ -104,30 +104,35 @@ const SettingsContent = ({ user }: { user: UserWithSettings }) => {
               >
                 <span>{page.name}</span>
               </div>
-              <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800 sm:hidden block" />
-              <div className="block sm:hidden overflow:hidden m-0">
-                <motion.div
-                  variants={menuVariants}
-                  initial="closed"
-                  animate={activePage === page.name ? 'open' : 'closed'}
-                  className="mt-5"
-                >
-                  <ActivePageComponent
-                    user={user}
-                    key={0}
-                    updateUser={(user: UserWithSettings) => {
-                      mutateUser(user);
-                    }}
-                    updateSession={update}
-                    session={session as ExtendedSession}
-                    isLoading={isLoading}
-                  />
-                </motion.div>
-              </div>
+              {checkIfMobile() && (
+                <>
+                  <Separator className="w-full h-[1px] bg-neutral-200 dark:bg-zinc-800 sm:hidden block" />
+                  <div className="block sm:hidden overflow:hidden m-0">
+                    <motion.div
+                      variants={menuVariants}
+                      initial="closed"
+                      animate={activePage === page.name ? 'open' : 'closed'}
+                      className="mt-5"
+                    >
+                      <ActivePageComponent
+                        user={user}
+                        key={0}
+                        updateUser={(user: UserWithSettings) => {
+                          mutateUser(user);
+                        }}
+                        updateSession={update}
+                        session={session as ExtendedSession}
+                        isLoading={isLoading}
+                      />
+                    </motion.div>
+                  </div>
+                </>
+              )}
             </div>
           );
         })}
       </div>
+
       <div id="right" className="hidden sm:w-3/4 sm:block">
         {settingsPages.map((page) => {
           if (page.name === activePage) {
