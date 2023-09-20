@@ -14,16 +14,22 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 
 import { set, reset, SidebarStatus } from '@/redux/features/sidebarStatusSlice';
-import { CourseLesson } from '@/lib/types/types';
 import { useAppDispatch } from '@/redux/hooks';
 import { cn } from '@/lib/utils/cn';
+
+type Lesson = {
+  name: string;
+  id: string;
+  slug: string;
+  lessonOrder: number;
+};
 
 type Props = {
   course: {
     name: string;
     id: string;
     slug: string;
-    lessons: CourseLesson[];
+    lessons: Lesson[];
   };
   completedLessons: string[];
 };
@@ -73,9 +79,9 @@ type LessonProps = {
     name: string;
     id: string;
     slug: string;
-    lessons: CourseLesson[];
+    lessons: Lesson[];
   };
-  lesson: CourseLesson;
+  lesson: Lesson;
   currentLessonSlug: string;
   lessonComplete?: boolean;
   isAuthed: boolean;

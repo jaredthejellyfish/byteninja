@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { getServerUser } from '@/lib/utils/getServerUser';
-import { CourseLesson } from '@/lib/types/types';
 import prisma from '@/lib/prisma';
 import Sidebar from './sidebar';
 
@@ -32,8 +31,18 @@ async function getLessonsByCourseSlug(slug: string) {
     : [];
 
   return {
-    ...lessons,
+    ...lessons!,
     lessons: lessonsInOrder,
+  } as {
+    name: string;
+    id: string;
+    slug: string;
+    lessons: {
+      name: string;
+      id: string;
+      slug: string;
+      lessonOrder: number;
+    }[];
   };
 }
 
