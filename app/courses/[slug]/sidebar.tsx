@@ -2,6 +2,7 @@
 
 import {
   CheckCircle2,
+  ChevronRight,
   Circle,
   CircleDot,
   SidebarClose,
@@ -75,6 +76,21 @@ const sidebarVariants = {
       },
     },
   },
+  caret: {
+    open: {
+      rotate: 90,
+      transition: {
+        duration: 0.2,
+      },
+    },
+
+    closed: {
+      rotate: 0,
+      transition: {
+        duration: 0.2,
+      },
+    },
+  },
 };
 
 type LessonProps = {
@@ -89,6 +105,7 @@ type LessonProps = {
   lessonComplete?: boolean;
   isAuthed: boolean;
   isLoading: boolean;
+  childLessons?: Lesson[];
 };
 const Lesson = (props: LessonProps) => {
   const {
@@ -99,28 +116,89 @@ const Lesson = (props: LessonProps) => {
     isAuthed,
     isLoading,
   } = props;
-  return (
-    <Link
-      href={
-        isAuthed
-          ? `/courses/${course.slug}/${lesson.slug}`
-          : `/courses/${course.slug}`
-      }
-      key={lesson.id}
-      className={cn(
-        'text-sm dark:text-neutral-400 pl-3 pr-4 py-2 transition-colors rounded hover:bg-neutral-500/20 flex flex-row items-center justify-between',
-        lesson.slug === currentLessonSlug
-          ? 'bg-neutral-500/20 dark:text-white'
-          : '',
-        isAuthed ? 'cursor-pointer' : 'cursor-not-allowed',
-      )}
-    >
-      <p className="line-clamp-1">
-        {lesson.name.at(0)?.toUpperCase() + lesson.name.slice(1)}
-      </p>
 
-      {(() => {
-        if (isLoading)
+  const [isOpen, setOpen] = useState(false);
+
+  return (
+    <>
+      <Link
+        href={
+          isAuthed
+            ? `/courses/${course.slug}/${lesson.slug}`
+            : `/courses/${course.slug}`
+        }
+        key={lesson.id}
+        className={cn(
+          'text-sm dark:text-neutral-400 pr-4 py-2 transition-colors rounded hover:bg-neutral-500/20 flex flex-row items-center justify-between',
+          lesson.slug === currentLessonSlug
+            ? 'bg-neutral-500/20 dark:text-white'
+            : '',
+          isAuthed ? 'cursor-pointer' : 'cursor-not-allowed',
+          props.childLessons && props.childLessons.length > 0 ? 'pl-2' : 'pl-3',
+        )}
+      >
+        <div
+          className="flex flex-row items-center"
+          onClick={() => {
+            if (lesson.slug === currentLessonSlug) setOpen(!isOpen);
+          }}
+        >
+          {props.childLessons && props.childLessons.length > 0 && (
+            <motion.div
+              variants={sidebarVariants.caret}
+              animate={isOpen ? 'open' : 'closed'}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setOpen(!isOpen);
+              }}
+              className="mr-1 flex items-center justyify-center"
+            >
+              <ChevronRight height={15} width={15} />
+            </motion.div>
+          )}
+          <p className="line-clamp-1">
+            {lesson.name.at(0)?.toUpperCase() + lesson.name.slice(1)}
+          </p>
+        </div>
+
+        {(() => {
+          if (isLoading)
+            return (
+              <Circle
+                className="text-neutral-500 dark:text-neutral-400"
+                size={16}
+                strokeWidth={2}
+              />
+            );
+
+          if (!isAuthed)
+            return (
+              <XCircle
+                className="text-red-500 dark:text-red-700"
+                size={16}
+                strokeWidth={2}
+              />
+            );
+
+          if (lessonComplete)
+            return (
+              <CheckCircle2
+                className="text-green-500 dark:text-green-600"
+                size={16}
+                strokeWidth={2}
+              />
+            );
+
+          if (lesson.slug === currentLessonSlug)
+            return (
+              <CircleDot
+                className="text-neutral-500 dark:text-neutral-400"
+                size={16}
+                strokeWidth={2}
+              />
+            );
+
           return (
             <Circle
               className="text-neutral-500 dark:text-neutral-400"
@@ -128,45 +206,91 @@ const Lesson = (props: LessonProps) => {
               strokeWidth={2}
             />
           );
+        })()}
+      </Link>
+      {props.childLessons &&
+        props.childLessons.length > 0 &&
+        isOpen &&
+        props.childLessons.map((childLesson: Lesson) => (
+          <Link
+            key={childLesson.id}
+            href={
+              isAuthed
+                ? `/courses/${course.slug}/${childLesson.slug}`
+                : `/courses/${course.slug}`
+            }
+            className={cn(
+              'text-sm dark:text-neutral-400 pl-3 pr-4 py-2 transition-colors rounded hover:bg-neutral-500/20 flex flex-row items-center justify-between',
+              childLesson.slug === currentLessonSlug
+                ? 'bg-neutral-500/20 dark:text-white'
+                : '',
+              isAuthed ? 'cursor-pointer' : 'cursor-not-allowed',
+            )}
+          >
+            <div className="flex flex-row items-center">
+              {'• '}
+              {childLesson.name.at(0)?.toUpperCase() +
+                childLesson.name.slice(1)}
+            </div>
+            {(() => {
+              if (isLoading)
+                return (
+                  <Circle
+                    className="text-neutral-500 dark:text-neutral-400"
+                    size={16}
+                    strokeWidth={2}
+                  />
+                );
 
-        if (!isAuthed)
-          return (
-            <XCircle
-              className="text-red-500 dark:text-red-700"
-              size={16}
-              strokeWidth={2}
-            />
-          );
+              if (!isAuthed)
+                return (
+                  <XCircle
+                    className="text-red-500 dark:text-red-700"
+                    size={16}
+                    strokeWidth={2}
+                  />
+                );
 
-        if (lessonComplete)
-          return (
-            <CheckCircle2
-              className="text-green-500 dark:text-green-600"
-              size={16}
-              strokeWidth={2}
-            />
-          );
+              if (lessonComplete)
+                return (
+                  <CheckCircle2
+                    className="text-green-500 dark:text-green-600"
+                    size={16}
+                    strokeWidth={2}
+                  />
+                );
 
-        if (lesson.slug === currentLessonSlug)
-          return (
-            <CircleDot
-              className="text-neutral-500 dark:text-neutral-400"
-              size={16}
-              strokeWidth={2}
-            />
-          );
+              if (childLesson.slug === currentLessonSlug)
+                return (
+                  <CircleDot
+                    className="text-neutral-500 dark:text-neutral-400"
+                    size={16}
+                    strokeWidth={2}
+                  />
+                );
 
-        return (
-          <Circle
-            className="text-neutral-500 dark:text-neutral-400"
-            size={16}
-            strokeWidth={2}
-          />
-        );
-      })()}
-    </Link>
+              return (
+                <Circle
+                  className="text-neutral-500 dark:text-neutral-400"
+                  size={16}
+                  strokeWidth={2}
+                />
+              );
+            })()}
+          </Link>
+        ))}
+    </>
   );
 };
+
+function findSubLessons(lessons: Lesson[], targetOrder: number) {
+  const matchingLessons = lessons.filter((lesson) => {
+    const lessonOrder = lesson.lessonOrder.toString();
+    return lessonOrder.startsWith(targetOrder.toString() + '.');
+  });
+
+  return matchingLessons;
+}
 
 const fetchCompletedLessonsData = async () => {
   const res = await fetch(`/api/user/get/completedLessons`);
@@ -233,19 +357,27 @@ const Sidebar = (props: Props) => {
           />
         </div>
         <div className="mt-4 flex flex-col gap-1 text-xs sm:text-base pl-6 pr-8">
-          {course.lessons.map((lesson) => (
-            <Lesson
-              key={lesson.id}
-              course={course}
-              lesson={lesson}
-              currentLessonSlug={currentLessonSlug}
-              isAuthed={status === 'authenticated'}
-              isLoading={isLoading}
-              lessonComplete={
-                completedLessons ? completedLessons.includes(lesson.id) : false
-              }
-            />
-          ))}
+          {course.lessons
+            .filter((lesson) => Number.isInteger(lesson.lessonOrder))
+            .map((lesson) => (
+              <Lesson
+                key={lesson.id}
+                course={course}
+                lesson={lesson}
+                currentLessonSlug={currentLessonSlug}
+                isAuthed={status === 'authenticated'}
+                isLoading={isLoading}
+                childLessons={findSubLessons(
+                  course.lessons,
+                  lesson.lessonOrder,
+                )}
+                lessonComplete={
+                  completedLessons
+                    ? completedLessons.includes(lesson.id)
+                    : false
+                }
+              />
+            ))}
         </div>
       </motion.div>
       <motion.div

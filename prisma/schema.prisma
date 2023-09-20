@@ -96,10 +96,10 @@ model Course {
   image       String?
   authorId    String
   skills      String[]
-  author      User     @relation(name: "authoredCourses", fields: [authorId], references: [id], onDelete: Cascade)
-  lessons     Lesson[]
   created_at  DateTime @default(now())
   updated_at  DateTime @default(now()) @updatedAt
+  author      User     @relation(name: "authoredCourses", fields: [authorId], references: [id], onDelete: Cascade)
+  lessons     Lesson[]
   subscribers User[]   @relation(name: "subscribedCourse")
 
   @@map("courses")
@@ -108,7 +108,7 @@ model Course {
 model Lesson {
   id          String   @id @default(cuid())
   name        String
-  lessonOrder Int      @default(0)
+  lessonOrder Float      @default(0)
   slug        String   @unique
   description String
   image       String?

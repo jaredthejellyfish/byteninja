@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "lessons" ALTER COLUMN "lessonOrder" SET DEFAULT 0,
+ALTER COLUMN "lessonOrder" SET DATA TYPE DOUBLE PRECISION;

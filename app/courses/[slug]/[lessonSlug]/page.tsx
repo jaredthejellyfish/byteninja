@@ -3,6 +3,7 @@ import React, { cache } from 'react';
 import type { Metadata } from 'next';
 
 import PageContainer from '@/components/page-container';
+import ReadingTime from '@/components/reading-time';
 import { Mdx } from '@/components/mdx';
 import prisma from '@/lib/prisma';
 
@@ -74,6 +75,7 @@ const CourseChallengePage = async (props: Props) => {
 
   return (
     <PageContainer className="dark:bg-neutral-900/50 bg-neutral-100/30 w-full px-0">
+      <ReadingTime readingTime={mdLesson.readingTime} />
       <Mdx source={mdLesson.body.code} />
     </PageContainer>
   );
