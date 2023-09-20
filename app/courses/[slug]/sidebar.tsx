@@ -93,6 +93,58 @@ const sidebarVariants = {
   },
 };
 
+const generateLessonCircle = (
+    isLoading: boolean,
+    isAuthed: boolean,
+    lessonComplete: boolean,
+    currentLessonSlug: string,
+    lessonSlug: string,
+  ) => {
+    if (isLoading)
+      return (
+        <Circle
+          className="text-neutral-500 dark:text-neutral-400"
+          size={16}
+          strokeWidth={2}
+        />
+      );
+
+    if (!isAuthed)
+      return (
+        <XCircle
+          className="text-red-500 dark:text-red-700"
+          size={16}
+          strokeWidth={2}
+        />
+      );
+
+    if (lessonComplete)
+      return (
+        <CheckCircle2
+          className="text-green-500 dark:text-green-600"
+          size={16}
+          strokeWidth={2}
+        />
+      );
+
+    if (lessonSlug === currentLessonSlug)
+      return (
+        <CircleDot
+          className="text-neutral-500 dark:text-neutral-400"
+          size={16}
+          strokeWidth={2}
+        />
+      );
+
+    return (
+      <Circle
+        className="text-neutral-500 dark:text-neutral-400"
+        size={16}
+        strokeWidth={2}
+      />
+    );
+  };
+
 type LessonProps = {
   course: {
     name: string;
@@ -119,6 +171,13 @@ const Lesson = (props: LessonProps) => {
 
   const [isOpen, setOpen] = useState(false);
 
+  const childIsCurrentLesson =
+    props.childLessons?.some(
+      (childLesson) => childLesson.slug === currentLessonSlug,
+    ) || false;
+
+
+
   return (
     <>
       <Link
@@ -135,6 +194,7 @@ const Lesson = (props: LessonProps) => {
             : '',
           isAuthed ? 'cursor-pointer' : 'cursor-not-allowed',
           props.childLessons && props.childLessons.length > 0 ? 'pl-2' : 'pl-3',
+          childIsCurrentLesson ? 'bg-neutral-600/20' : '',
         )}
       >
         <div
@@ -162,51 +222,13 @@ const Lesson = (props: LessonProps) => {
           </p>
         </div>
 
-        {(() => {
-          if (isLoading)
-            return (
-              <Circle
-                className="text-neutral-500 dark:text-neutral-400"
-                size={16}
-                strokeWidth={2}
-              />
-            );
-
-          if (!isAuthed)
-            return (
-              <XCircle
-                className="text-red-500 dark:text-red-700"
-                size={16}
-                strokeWidth={2}
-              />
-            );
-
-          if (lessonComplete)
-            return (
-              <CheckCircle2
-                className="text-green-500 dark:text-green-600"
-                size={16}
-                strokeWidth={2}
-              />
-            );
-
-          if (lesson.slug === currentLessonSlug)
-            return (
-              <CircleDot
-                className="text-neutral-500 dark:text-neutral-400"
-                size={16}
-                strokeWidth={2}
-              />
-            );
-
-          return (
-            <Circle
-              className="text-neutral-500 dark:text-neutral-400"
-              size={16}
-              strokeWidth={2}
-            />
-          );
-        })()}
+        {generateLessonCircle(
+          isLoading,
+          isAuthed,
+          lessonComplete || false,
+          currentLessonSlug,
+          lesson.slug,
+        )}
       </Link>
       {props.childLessons &&
         props.childLessons.length > 0 &&
@@ -227,56 +249,20 @@ const Lesson = (props: LessonProps) => {
               isAuthed ? 'cursor-pointer' : 'cursor-not-allowed',
             )}
           >
-            <div className="flex flex-row items-center">
-              {'• '}
-              {childLesson.name.at(0)?.toUpperCase() +
-                childLesson.name.slice(1)}
+            <div className="flex flex-row items-center gap-1.5">
+              <div>•</div>
+              <div>
+                {childLesson.name.at(0)?.toUpperCase() +
+                  childLesson.name.slice(1)}
+              </div>
             </div>
-            {(() => {
-              if (isLoading)
-                return (
-                  <Circle
-                    className="text-neutral-500 dark:text-neutral-400"
-                    size={16}
-                    strokeWidth={2}
-                  />
-                );
-
-              if (!isAuthed)
-                return (
-                  <XCircle
-                    className="text-red-500 dark:text-red-700"
-                    size={16}
-                    strokeWidth={2}
-                  />
-                );
-
-              if (lessonComplete)
-                return (
-                  <CheckCircle2
-                    className="text-green-500 dark:text-green-600"
-                    size={16}
-                    strokeWidth={2}
-                  />
-                );
-
-              if (childLesson.slug === currentLessonSlug)
-                return (
-                  <CircleDot
-                    className="text-neutral-500 dark:text-neutral-400"
-                    size={16}
-                    strokeWidth={2}
-                  />
-                );
-
-              return (
-                <Circle
-                  className="text-neutral-500 dark:text-neutral-400"
-                  size={16}
-                  strokeWidth={2}
-                />
-              );
-            })()}
+            {generateLessonCircle(
+              isLoading,
+              isAuthed,
+              lessonComplete || false,
+              currentLessonSlug,
+              childLesson.slug,
+            )}
           </Link>
         ))}
     </>
