@@ -7,6 +7,8 @@ import ReadingTime from '@/components/reading-time';
 import { Mdx } from '@/components/mdx';
 import prisma from '@/lib/prisma';
 
+type Props = { params: { slug: string; lessonSlug: string } };
+
 export async function generateStaticParams() {
   const lessons = await prisma.course.findMany({
     select: {
@@ -26,8 +28,6 @@ export async function generateStaticParams() {
     },
   }));
 }
-
-type Props = { params: { slug: string; lessonSlug: string } };
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const lesson = await getLessonBySlug(props.params.lessonSlug);
@@ -50,8 +50,6 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     title: `${fancyNameCapitalized} | ByteNinja`,
   };
 }
-
-export const revalidate = 600; // revalidate the data at most every 20 min
 
 const getLessonBySlug = cache(async (lessonSlug: string) => {
   const lesson = await prisma.lesson.findUnique({
@@ -82,3 +80,5 @@ const CourseChallengePage = async (props: Props) => {
 };
 
 export default CourseChallengePage;
+
+export const revalidate = 600; // revalidate the data at most every 20 min
